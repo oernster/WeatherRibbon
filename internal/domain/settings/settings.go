@@ -27,6 +27,11 @@ type City struct {
 	GeoNamesID int
 	// Label is the name shown.
 	Label string
+	// Unreadable is the reason the stored entry could not be read; empty when it was read (FR-804).
+	Unreadable string
+	// Original is the entry's stored text, kept so an unreadable entry is written back as it was
+	// found (FR-804).
+	Original string
 }
 
 // Settings is every choice the user has made: the ribbon's own, which ribbonkit holds, then the

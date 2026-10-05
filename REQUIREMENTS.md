@@ -12,6 +12,7 @@ where they apply.
 | 2 | 2026-10-05 | Running beside TimeRibbon the ribbon never lands on it, through an occupancy folder the shared module owns (FR-506, TimeRibbon's FR-412); built in the module before it is lifted out (section 8). |
 | 3 | 2026-10-05 | Brought up to the kit as built: on macOS the Dock icon stays, as TimeRibbon's Amendment 36 (FR-101); `ribbonkit` exists at v0.1.1 with TimeRibbon 2.7.0 released on it (CON-10, section 8); the Flatpak is granted the occupancy folder (section 5). 24-hour time when none is held (FR-401); a place with no region name (FR-202); the detail panel without a forecast or sun times (FR-410, FR-411); NFR-C-2 measured. Oliver's rulings of the same day. |
 | 4 | 2026-10-05 | The petrichor moment (FR-413; OQ-13 to OQ-16). Oliver's request and rulings of the same day. |
+| 5 | 2026-10-05 | One unreadable city entry leaves the others working, as TimeRibbon's FR-705 (FR-804); a period giving no rain figure is neither wet nor dry; the petrichor line goes only once the city is found dry (FR-413). Found while building the domain; Oliver's ruling the same day. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -441,7 +442,8 @@ Verified by: `TestAnUnknownSymbolShowsItsWords`, `TestBothSpellingsOfLightSleetT
 the curious to look the word up.
 - **Wet and dry.** A city is wet at a snapshot when its current period (FR-402) forecasts a
   `precipitation_amount` above 0, dry when it forecasts 0. A city whose forecast is stale (FR-305) or
-  has run out (FR-403) is neither; it changes nothing below.
+  has run out (FR-403) is neither; so is one whose current period gives no rain figure (Amendment
+  5). Neither changes nothing below.
 - **A dry spell.** The application shall keep, per city, the instant from which every snapshot has
   found it dry; the first wet snapshot clears it. Time while WeatherRibbon is not running does not
   break a spell; only a wet snapshot does.
@@ -454,8 +456,8 @@ the curious to look the word up.
 - **What shows.** For a petrichor moment, that city's cell shall show `Can you smell petrichor in the
   air?` beneath its conditions, pulsing gently: its opacity moves between 100 and 50 percent and back
   over 4 seconds. Where the system asks for reduced motion, the line shall stand still at 100 percent.
-- **How it ends.** The line shall go when the city is no longer wet at a snapshot or when it is
-  clicked. A click on the line hides it and opens no detail (FR-410). The line is not restored after a
+- **How it ends.** The line shall go when a snapshot finds the city dry or when it is clicked; a
+  finding of neither keeps it (Amendment 5). A click on the line hides it and opens no detail (FR-410). The line is not restored after a
   restart.
 - **Kept across restarts.** Each city's dry spell is kept with its cached forecast (FR-807); the
   countdown in the settings file (FR-801).
@@ -586,6 +588,15 @@ the cell shall keep its place, show its label with `Place not found` and offer C
 in Settings; no other place is substituted.
 Verified by: `TestAMissingPlaceIsNeverReplaced` (application).
 
+**FR-804 One unreadable city** (Must; Amendment 5). If a stored city entry cannot be read, then the
+application shall load the others, keep that entry's place, write it back exactly as found, show it
+reading `This city could not be read:` with the reason and offer Remove in Settings; nothing else is
+substituted for it. As TimeRibbon's FR-705.
+Acceptance: three cities, the second holding a GeoNames id that is not a number: the first and third
+show their weather, the second reads `This city could not be read:` and the file keeps it unchanged.
+Verified by: `TestOneBadCityLeavesTheOthersWorking` (store); `TestAnUnreadableCityIsWrittenBackAsFound`
+(store).
+
 **FR-807 Forecast cache** (Must). Each successful forecast shall be written atomically to the cache
 folder with its `Expires` and `Last-Modified` plus the city's dry spell (FR-413); at launch the cache is read, so an offline start shows
 the last forecasts with their age (FR-305). An unreadable cache entry is discarded and fetched again.
@@ -660,6 +671,7 @@ Flatpak granted the network for `api.met.no` and GitHub plus the occupancy folde
 | Two cities of the same name | FR-202 |
 | A stored place gone from a newer city list | FR-803 |
 | Settings or cache unreadable | FR-802, FR-807 |
+| One city entry unreadable | FR-804 |
 | Monitor removed, scaling or text size changed | FR-503, FR-504 |
 | Sleep and resume; clock or zone changed | FR-401 refreshes on the minute; forecasts follow FR-303 |
 | Upgrade from a previous version | NFR-C-1 |
@@ -707,7 +719,7 @@ No requirement is met until its test exists and has been seen to fail without th
 
 | Priority | Content |
 |---|---|
-| **Must** | FR-101 to FR-107, FR-109, FR-201 to FR-205, FR-301 to FR-308, FR-310, FR-401 to FR-409, FR-412, FR-501 to FR-504, FR-506, FR-601 to FR-603, FR-610, FR-701 to FR-703, FR-801 to FR-803, FR-807, every NFR, DATA-1, DATA-2 |
+| **Must** | FR-101 to FR-107, FR-109, FR-201 to FR-205, FR-301 to FR-308, FR-310, FR-401 to FR-409, FR-412, FR-501 to FR-504, FR-506, FR-601 to FR-603, FR-610, FR-701 to FR-703, FR-801 to FR-804, FR-807, every NFR, DATA-1, DATA-2 |
 | **Should** | FR-108, FR-207, FR-208, FR-309, FR-410, FR-505, FR-704 to FR-710 |
 | **Could** | FR-206, FR-411, FR-413 |
 | **Won't this time** | The out-of-scope table of section 1.3 |
