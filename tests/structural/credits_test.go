@@ -24,10 +24,9 @@ type shippedBuild struct {
 	packages []string
 }
 
-// shippedBuilds are the builds per platform. The setup program joins the Windows list when it is
-// ported.
+// shippedBuilds are the builds per platform; on Windows the setup program ships too.
 var shippedBuilds = map[string]shippedBuild{
-	product.Windows: {"desktop,production", "0", []string{"."}},
+	product.Windows: {"desktop,production", "0", []string{".", "./installer"}},
 	product.Linux:   {"desktop,production,webkit2_41", "1", []string{"."}},
 	product.MacOS:   {"desktop,production", "1", []string{"."}},
 }

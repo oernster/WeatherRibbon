@@ -42,12 +42,13 @@ the same rules; the kit's own invariants are listed in its ARCHITECTURE.md.
 | Only `internal/infrastructure/metno` imports a network package (NFR-S-1) | `TestOnlyTheForecastAndUpdateImportANetworkPackage` | [`network_test.go`](tests/structural/network_test.go) |
 | No Go file of WeatherRibbon's starts a program or names a Windows library outside the kit's `SystemLibraries` (NFR-S-1) | `TestNothingOfWeatherRibbonsStartsAProcess` | [`network_test.go`](tests/structural/network_test.go) |
 | The page uses no request API and names no web address, the SVG namespace aside (NFR-S-1) | `TestThePageMakesNoRequest` | [`network_test.go`](tests/structural/network_test.go) |
-| Each platform's About credits exactly the third-party modules its build links (FR-610) | `TestEveryLinkedModuleIsCredited` | [`credits_test.go`](tests/structural/credits_test.go) |
+| Each platform's About credits exactly the third-party modules its build links, setup's included on Windows (FR-610) | `TestEveryLinkedModuleIsCredited` | [`credits_test.go`](tests/structural/credits_test.go) |
 | No platform credits a module twice | `TestAModuleIsCreditedOncePerPlatform` | [`credits_test.go`](tests/structural/credits_test.go) |
 | WeatherRibbon's half of the wire is stated alike in `dto.go` and `frontend/src/wire.ts` | `TestTheWireIsStatedAlikeOnBothSides` | [`wire_test.go`](tests/structural/wire_test.go) |
 | The page names each word `app.go` shares with it: opening Add city and the detail panel | `TestThePageNamesEveryWordAppShares` | [`wire_test.go`](tests/structural/wire_test.go) |
 | Every method the page's `Bridge` calls is bound on `App`; none of the window's `Control` is | `TestEveryMethodThePageCallsIsBound`, `TestNothingOfTheControlIsBound` | [`page_api_test.go`](page_api_test.go) |
-| `wails.json` names its executable as `internal/product` does | `TestEachWailsConfigNamesItsExecutableAsTheProductDoes` | [`names_test.go`](tests/structural/names_test.go) |
+| Each `wails.json`, the application's and setup's, names its executable as `internal/product` does | `TestEachWailsConfigNamesItsExecutableAsTheProductDoes` | [`names_test.go`](tests/structural/names_test.go) |
+| WeatherRibbon's setup carries every picture the kit's setup page shows | `TestWeatherRibbonCarriesEveryPictureTheSetupPageShows` | [`main_test.go`](installer/main_test.go) |
 | The petrichor line pulses over four seconds between full and half opacity, standing still under reduced motion (FR-413) | `TestThePetrichorLinePulsesAndStandsStillWhenAsked` | [`petrichor_test.go`](tests/structural/petrichor_test.go) |
 | The Licence panel is sized for the LICENSE's widest line | `TestTheLicencePanelIsSizedForTheLicencesWidestLine` | [`licence_test.go`](tests/structural/licence_test.go) |
 | The settings file of the first release is read whole (NFR-C-1) | `TestA1Point0SettingsFileIsReadWhole` | [`contract_test.go`](internal/infrastructure/store/contract_test.go) |
@@ -95,9 +96,12 @@ the fixture frozen.
   package `main`, which embeds the kit's window and maps the service's answers into `dto.go`.
 - **Outside the layers**: `internal/product` holds the name, app id, repository, setup program's name,
   window class, donation address, version, User-Agent, author, copyright line, sign-in label and
-  credits. The domain and application never read it.
+  credits. The domain and application never read it. `installer/main.go` is the setup program's
+  composition root over the kit's setup window.
 - **Tools**, never shipped: `gencities` (the city list from GeoNames) and `genicons.py` (every
-  committed icon).
+  committed icon); `payload` (the setup program's payload), `versioninfo` (each executable's version
+  resource), `identity` (names for the Linux and macOS scripts) and `linuxicons` (the Flatpak's icons)
+  are mains handing `internal/product` to the kit's `delivery`, which does the work.
 
 ## Composition root
 
@@ -236,6 +240,31 @@ copyright line and a credit for MET Norway's data, GeoNames, the Yr icons and ev
 component this platform's build ships (FR-610), from one table in `internal/product/credits.go`; the
 kit is WeatherRibbon's author's own and is not credited. Licence shows the embedded `LICENSE` exactly
 as written.
+
+## Delivery
+
+**macOS and Linux** build with `go build` and Wails' `desktop,production` tags, the version from
+`VERSION` through `-ldflags`, names from `tools/identity`. Every build script sets `GOWORK=off`, so
+what ships is the kit tag `go.mod` requires.
+
+- `builddmg.sh` builds for Apple Silicon, assembles and signs `WeatherRibbon.app` with the hardened
+  runtime, notarises and staples it, then the DMG. The minimum macOS is read from the Go toolchain and
+  passed through the cgo flags; a link of code built for a newer macOS is refused.
+- `build_flatpak.sh` builds in the GNOME 50 SDK against WebKitGTK 4.1 (`-tags webkit2_41`). The
+  sandbox gets X11 with IPC, the GPU, the tray host's bus name, the single-instance lock's bus name,
+  the autostart folder, the shared ribbon folder (`xdg-run/ribbonkit`) and the network for MET
+  Norway's forecasts and the update check (NFR-S-1). Both scripts first stop a copy left running,
+  which holds the single-instance lock.
+
+Both are TimeRibbon's scripts with the names changed and have not yet been run for WeatherRibbon.
+
+**The setup program** (Windows) is a second Wails application in `installer/`, embedding the built
+application as a zip. `build.ps1` packs it through `tools/payload`, builds setup, then writes the
+empty placeholder back whatever happened. The install policy and the setup window are the kit's;
+`installer/main.go` is the composition root, its wiring the kit's `installer.Main`: it carries the
+payload, names the product (a `setup.Product` from `internal/product`), binds the kit's facade by
+embedding it in its own `App` and hands in the page's pictures, which `tools/genicons.py` writes to
+`installer/frontend/dist`.
 
 ## Data locations
 

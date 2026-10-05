@@ -42,16 +42,23 @@ figure with the fraction dropped, so it fails once cover is lost.
 | `internal/product` | 100% | 100% |
 | `tools/gencities` | 90.9% | 90% |
 | the root package (the Wails facade) | 68.6% | 68% |
+| `installer` | 0% | not gated |
+| `tools/versioninfo`, `payload`, `identity`, `linuxicons` | no tests | not gated |
 
-Every figure is the Windows build's, which `test.ps1` measures. That build compiles 168 Go test
+`installer` is the setup program's composition root; its one test reads the pictures it carries,
+which runs no statement. The four tools are mains that hand `internal/product` to the kit's
+`delivery` package, where their work and its tests live.
+
+Every figure is the Windows build's, which `test.ps1` measures. That build compiles 169 Go test
 functions, counted from the test files `go list` selects. Twenty are the structural tests in
 `tests/structural`, which read the source and are the same on every platform; two more in
 `page_api_test.go` hold the page's calls to what is bound. [ARCHITECTURE.md](ARCHITECTURE.md) lists
 each against its rule. `TestA1Point0SettingsFileIsReadWhole` in `store` holds the settings file's
 promise (NFR-C-1); `TestThePetrichorLinePulsesAndStandsStillWhenAsked` holds FR-413's pulse in Go
 because jsdom draws no animation and Vitest hands a test no stylesheet's text. The macOS and Linux
-builds compile 167: `cache/held_windows_test.go`, a cache entry another program holds open being left
-out and fetched again, is Windows only, since only Windows refuses to read a file held open
+builds compile 167. Two are Windows only: the setup program's test, since setup is built for Windows
+alone; `cache/held_windows_test.go`, a cache entry another program holds open being left out and
+fetched again, since only Windows refuses to read a file held open
 ([On macOS and Linux](#on-macos-and-linux)).
 
 ### The front end
@@ -76,8 +83,8 @@ city, the menus' choices with a greyed Position choice, the time format and the 
 | `tools/gencities` | unit over small GeoNames-shaped files in a temporary folder | the filesystem |
 | the front end | component tests under jsdom over `fakeBridge.ts`, which records every call and builds on the kit's stand-in (`@oernster/ribbonkit/testing`) | nothing |
 
-No Go test uses a mocking library. **No test writes to the user's own settings, cache or sign-in
-entry** and **no test reaches the network**: MET Norway is answered by the stand-in client; the update
+No Go test uses a mocking library. **No test writes to the user's own settings, cache, sign-in
+entry or Apps list** and **no test reaches the network**: MET Norway is answered by the stand-in client; the update
 check is the kit's and tested there.
 
 ## What is not tested and why
@@ -92,11 +99,13 @@ check is the kit's and tested there.
   reading the ribbon's choices out of the settings and having no pull out; every method the page's `Bridge` calls is bound,
   with nothing of the `Control`. Not reached: the composition root (`main`, `keepLog`, `settingsDir`,
   `run`).
+- **`installer` (0%).** Only the composition root; the setup window and its policy are tested in the
+  kit.
 - **`tools/gencities` (90.9%):** its `main` handing `run` its real arguments. Its reading, joining and
-  writing are tested.
+  writing are tested. The other tools' work is the kit's and tested there.
 
-What the window, the tray, focus, paint and a real MET Norway answer do on a real desktop is checked
-by hand in a real build of each platform.
+What the window, the tray, focus, paint, the install and a real MET Norway answer do on a real
+desktop is checked by hand in a real build of each platform.
 
 ## On macOS and Linux
 

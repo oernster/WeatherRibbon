@@ -9,8 +9,10 @@ What comes out, every file from one of the masters so the masters stay the one h
   frontend/src/assets/donate.png       the donate mark at the foot of Settings
   frontend/src/assets/add-city.png     the Add city button's artwork
   frontend/src/assets/app-icon.png     the application icon at the head of About
-
-The setup program's header and theme toggle are added here when the setup program is ported.
+  installer/frontend/dist/icon.png     the setup window's header mark
+  installer/frontend/dist/light-mode.png, dark-mode.png
+                                       the setup window's theme toggle, named for the appearance
+                                       each switches to
 
 Run it when a master changes:
 
@@ -34,6 +36,9 @@ REPO = pathlib.Path(__file__).resolve().parent.parent
 MASTERS = REPO / "assets"
 APP_MASTER = MASTERS / "application-icon.png"
 
+# TOGGLE_MASTERS are the setup toggle's two faces, named for the appearance each switches to.
+TOGGLE_MASTERS = ("light-mode.png", "dark-mode.png")
+
 # ICO_SIZES are the sizes Windows chooses between: the tray and menu sizes, the taskbar and
 # shortcut sizes, then the large one Explorer uses in its biggest view. Leaving one out makes
 # Windows scale a neighbour, which looks soft.
@@ -41,6 +46,11 @@ ICO_SIZES = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256,
 
 # APPICON_SIZE is the square Wails expects its build/appicon.png to be.
 APPICON_SIZE = 1024
+
+# HEADER_SIZE is about twice the setup header mark's 126 pixels; TOGGLE_SIZE about twice the
+# toggle's 44.
+HEADER_SIZE = 256
+TOGGLE_SIZE = 96
 
 # Button artwork is drawn at a button's height, not as an icon: each is cropped to its artwork and
 # scaled by height alone. BUTTON_MASTERS names each master with the height the page draws it at
@@ -57,6 +67,8 @@ ABOUT_ICON_TARGET = PAGE_ASSETS / "app-icon.png"
 
 ICO_TARGET = REPO / "build" / "windows" / "icon.ico"
 APPICON_TARGET = REPO / "build" / "appicon.png"
+SETUP = REPO / "installer" / "frontend" / "dist"
+HEADER_TARGET = SETUP / "icon.png"
 
 
 def squared(master: pathlib.Path) -> Image.Image:
@@ -89,7 +101,8 @@ def button_art(master: pathlib.Path, height: int) -> Image.Image:
 
 
 def main() -> int:
-    for master in (APP_MASTER, *(MASTERS / name for name in BUTTON_MASTERS)):
+    names = (*TOGGLE_MASTERS, *BUTTON_MASTERS)
+    for master in (APP_MASTER, *(MASTERS / name for name in names)):
         if not master.exists():
             sys.exit(f"no master artwork at {master}")
 
@@ -99,7 +112,10 @@ def main() -> int:
     sizes = ", ".join(str(width) for width, _ in ICO_SIZES)
     print(f"{ICO_TARGET.relative_to(REPO).as_posix():<42} {sizes} {ICO_TARGET.stat().st_size:>9,} bytes")
     write_png(app, APPICON_SIZE, APPICON_TARGET)
+    write_png(app, HEADER_SIZE, HEADER_TARGET)
     write_png(app, RENDER_SCALE * ABOUT_ICON_DRAWN, ABOUT_ICON_TARGET)
+    for name in TOGGLE_MASTERS:
+        write_png(squared(MASTERS / name), TOGGLE_SIZE, SETUP / name)
     for name, drawn in BUTTON_MASTERS.items():
         art = button_art(MASTERS / name, RENDER_SCALE * drawn)
         target = PAGE_ASSETS / name

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "WeatherRibbonSetup",
+  "outputfilename": "WeatherRibbonSetup",
+  "frontend:install": "cmd /c echo the setup page has no build step",
+  "frontend:build": "cmd /c echo the setup page has no build step",
+  "author": {
+    "name": "Oliver Ernster",
+    "email": "oernster@codecrafter.uk"
+  }
+}

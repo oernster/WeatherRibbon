@@ -97,8 +97,37 @@ monitor.
 
 ## Getting it
 
-No release has been published yet. Until one is, build it from source as
+No release has been published yet. Until one is, build the files below from source as
 [DEVELOPMENT.md](DEVELOPMENT.md) describes.
+
+### Windows
+
+Run `WeatherRibbonSetup.exe`. It installs for your account alone under
+`%LOCALAPPDATA%\Programs\WeatherRibbon`, never asks for administrator rights and offers a Start Menu
+entry, a Desktop shortcut and Start with Windows. Remove it from the Apps list; your cities and the
+kept forecasts stay unless you tick **Also forget my settings**.
+
+### macOS
+
+Open `WeatherRibbon.dmg` and drag WeatherRibbon to Applications. To remove it, turn off Open at
+Login, then move it to the Bin.
+
+### Linux
+
+```bash
+flatpak install --user weatherribbon.flatpak
+```
+
+```bash
+flatpak run uk.codecrafter.WeatherRibbon
+```
+
+It runs on the GNOME 50 runtime from Flathub. Exit it before installing a newer release, since a
+copy left running keeps the old one. To remove it, turn off Start when I sign in, Exit, then:
+
+```bash
+flatpak uninstall --user uk.codecrafter.WeatherRibbon
+```
 
 ### Your settings
 
@@ -106,7 +135,8 @@ No release has been published yet. Until one is, build it from source as
 |---|---|
 | Windows | `%APPDATA%\WeatherRibbon` |
 | macOS | `~/Library/Application Support/WeatherRibbon` |
-| Linux | `$XDG_CONFIG_HOME/WeatherRibbon`, else `~/.config/WeatherRibbon` |
+| Linux (the Flatpak) | `~/.var/app/uk.codecrafter.WeatherRibbon/config/WeatherRibbon` |
+| Linux (from source) | `$XDG_CONFIG_HOME/WeatherRibbon`, else `~/.config/WeatherRibbon` |
 
 ## Testing
 
@@ -120,11 +150,13 @@ measured floors. [TESTING.md](TESTING.md) has the figures.
 
 ## Building
 
-```powershell
-wails build
-```
+| Platform | Command | Output |
+|---|---|---|
+| Windows | `./build.ps1` | `build/bin/WeatherRibbon.exe` and `dist-installer/WeatherRibbonSetup.exe` |
+| macOS | `bash builddmg.sh` | `WeatherRibbon.dmg` |
+| Linux | `bash build_flatpak.sh` | `weatherribbon.flatpak` and an install for your account |
 
-It writes `build/bin/WeatherRibbon.exe`. [DEVELOPMENT.md](DEVELOPMENT.md) sets up the machine;
+`build.ps1` runs the gate first. [DEVELOPMENT.md](DEVELOPMENT.md) sets up each machine;
 [ARCHITECTURE.md](ARCHITECTURE.md) explains the layering.
 
 ## Supporting WeatherRibbon

@@ -34,8 +34,23 @@ frontend/dist/
 frontend/wailsjs/
 frontend/package.json.md5
 build/bin/
-# Written for each build: by Wails from its template until tools/versioninfo writes it, as TimeRibbon's.
+# Written by tools/versioninfo before each build, from VERSION and internal/product.
 build/windows/info.json
+# The setup program's build output. installer/payload.zip is tracked only as the empty placeholder
+# build.ps1 writes back after every build.
+installer/build/
+installer/frontend/wailsjs/
+installer/payload.zip.packing
+dist-installer/
+# The Flatpak's build output, written by build_flatpak.sh and removed by cleanup_flatpak.sh.
+.flatpak-build/
+.flatpak-repo/
+.flatpak-builder/
+*.flatpak
+build/linux/
+# The macOS DMG and its scratch folder, written by builddmg.sh.
+*.dmg
+dist-dmg/
 
 # Release notes, kept locally until a release is cut
 NOTES.md

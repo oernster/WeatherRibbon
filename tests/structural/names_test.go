@@ -17,7 +17,8 @@ import (
 
 // wailsNames names each wails.json with the name internal/product gives its executable.
 var wailsNames = map[string]string{
-	"wails.json": product.Name,
+	"wails.json":                             product.Name,
+	filepath.Join("installer", "wails.json"): product.SetupName,
 }
 
 // wailsIdentity is the part of a wails.json that names the executable.
