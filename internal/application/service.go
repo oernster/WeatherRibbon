@@ -25,6 +25,8 @@ type weather struct {
 	retryAt  time.Time
 	// asking is true while a request for the city is outstanding (FR-310).
 	asking bool
+	// moment is true while the city's cell shows the petrichor line (FR-413).
+	moment bool
 }
 
 // Service runs every use case over the current settings. It is safe to call from several

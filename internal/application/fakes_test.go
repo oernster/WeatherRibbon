@@ -19,6 +19,9 @@ var (
 	london = place.Place{GeoNamesID: 2643743, Name: "London", Region: "England", Country: "United Kingdom", Latitude: 51.50853, Longitude: -0.12574, Zone: "Europe/London"}
 	tokyo  = place.Place{GeoNamesID: 1850147, Name: "Tokyo", Region: "Tokyo", Country: "Japan", Latitude: 35.6895, Longitude: 139.69171, Zone: "Asia/Tokyo"}
 	paris  = place.Place{GeoNamesID: 2988507, Name: "Paris", Region: "Île-de-France", Country: "France", Latitude: 48.85341, Longitude: 2.3488, Zone: "Europe/Paris"}
+	// newYork lies behind UTC; nowhere's zone is one the tz database does not know.
+	newYork = place.Place{GeoNamesID: 5128581, Name: "New York City", Region: "New York", Country: "United States", Latitude: 40.71427, Longitude: -74.00597, Zone: "America/New_York"}
+	nowhere = place.Place{GeoNamesID: 9, Name: "Nowhere", Country: "Nowhere", Zone: "Not/AZone"}
 )
 
 type fakeStore struct {
@@ -138,7 +141,7 @@ func newRig() *rig {
 		pacer:     &fakePacer{clock: clock},
 	}
 	r.service = New(Ports{
-		Store: r.store, Places: fakePlaces{known: []place.Place{london, tokyo, paris}}, Forecasts: r.forecasts,
+		Store: r.store, Places: fakePlaces{known: []place.Place{london, tokyo, paris, newYork, nowhere}}, Forecasts: r.forecasts,
 		Cache: r.cache, Clock: clock, Pacer: r.pacer, IDs: &fakeIDs{}, Draw: func(int) int { return 0 },
 	})
 	return r
