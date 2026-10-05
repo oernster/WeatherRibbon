@@ -6,7 +6,10 @@ where they apply.
 
 ## Amendments
 
-None yet.
+| No. | Date | Change |
+|---|---|---|
+| 1 | 2026-10-05 | `ribbonkit`'s front-end half is an npm package at the repository root beside `go.mod`, each application depending on it by git tag; an npm workspace cannot span two repositories. It is first carved inside TimeRibbon, then lifted into its own repository (CON-10, OQ-9, section 8). |
+| 2 | 2026-10-05 | Running beside TimeRibbon the ribbon never lands on it, through an occupancy file the shared module owns (FR-506, TimeRibbon's FR-412); built in the module before it is lifted out (section 8). |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -168,9 +171,9 @@ Measurements this document rests on, each taken on 2026-10-05:
 | CON-7 | Monitors, work areas and placement go through the desktop's own calls, never Wails' position calls, as TimeRibbon's CON-7. |
 | CON-8 | Everything written is per user and nothing asks for administrator rights, in folders named `WeatherRibbon` in the places TimeRibbon's CON-8 names. |
 | CON-9 | Forecasts come only from MET Norway's Locationforecast 2.0, under its terms of service; the place search needs no network. |
-| CON-10 | The desktop behaviour TimeRibbon has proved (placement, drag, snapping, the grip, opacity, the tab, the tray, scaling, single instance, start at sign-in, the update check, setup) lives in one shared module, `ribbonkit` (OQ-9): a public repository holding a Go module plus an
-npm workspace package for its front-end half (the grip, opacity, measuring, pixel ratio), which both
-applications import. WeatherRibbon holds no copy of it. Extracting it is TimeRibbon work done first, under TimeRibbon's own tests, as its own unit (section 8). |
+| CON-10 | The desktop behaviour TimeRibbon has proved (placement, drag, snapping, the grip, opacity, the tab, the tray, scaling, single instance, start at sign-in, the update check, setup) lives in one shared module, `ribbonkit` (OQ-9; Amendment 1): a public repository holding a Go
+module plus, beside it at the root, an npm package for its front-end half (the grip, opacity,
+measuring, pixel ratio), both applications depending on one tag of it. WeatherRibbon holds no copy of it. Extracting it is TimeRibbon work done first, under TimeRibbon's own tests, as its own unit (section 8). |
 
 ### 2.5 Assumptions
 
@@ -444,6 +447,12 @@ the page's reported `devicePixelRatio`. As TimeRibbon's FR-407.
 
 **FR-505 Position, snapping, the last edge** (Should). As TimeRibbon's FR-408, FR-410 and FR-411.
 
+**FR-506 Never on another ribbon** (Must; Amendment 2). Running beside TimeRibbon (or any other
+product on the shared module) the ribbon shall never land on another's ribbon, tab or shown pull out:
+the one being placed takes the nearest free place along its edge, else the opposite edge. A placed
+ribbon never moves because of another. As TimeRibbon's FR-412, whose worked examples have WeatherRibbon
+arriving beside TimeRibbon.
+
 Verified by: the shared module's tests; `TestTheRibbonUsesTheSharedPlacement` (structural); by hand.
 
 ### 3.6 Tray and window behaviour
@@ -633,9 +642,10 @@ No requirement is met until its test exists and has been seen to fail without th
 
 ## 8. Build order
 
-1. **Extract the shared module from TimeRibbon** (CON-10), as TimeRibbon work under TimeRibbon's own
-   tests and gate, with no change of behaviour; TimeRibbon released on it before WeatherRibbon
-   imports it.
+1. **Extract the shared module from TimeRibbon** (CON-10; Amendment 1), as TimeRibbon work under
+   TimeRibbon's own tests and gate, with no change of behaviour: first carved into a `ribbonkit`
+   tree inside TimeRibbon that a structural test holds free of anything clock-specific, given the
+   occupancy that keeps two ribbons apart (FR-506), then lifted into its own repository and tagged; TimeRibbon released on it before WeatherRibbon imports it.
 2. WeatherRibbon's domain: the city list search, the forecast model, today, the outlook, units.
 3. Application: refreshing, backing off, the cache policy, each menu action as a callable entry point.
 4. Infrastructure: the MET Norway client, the cache store, the settings store.
@@ -648,7 +658,7 @@ No requirement is met until its test exists and has been seen to fail without th
 
 | Priority | Content |
 |---|---|
-| **Must** | FR-101 to FR-107, FR-109, FR-201 to FR-205, FR-301 to FR-308, FR-310, FR-401 to FR-409, FR-412, FR-501 to FR-504, FR-601 to FR-603, FR-610, FR-701 to FR-703, FR-801 to FR-803, FR-807, every NFR, DATA-1, DATA-2 |
+| **Must** | FR-101 to FR-107, FR-109, FR-201 to FR-205, FR-301 to FR-308, FR-310, FR-401 to FR-409, FR-412, FR-501 to FR-504, FR-506, FR-601 to FR-603, FR-610, FR-701 to FR-703, FR-801 to FR-803, FR-807, every NFR, DATA-1, DATA-2 |
 | **Should** | FR-108, FR-207, FR-208, FR-309, FR-410, FR-505, FR-704 to FR-710 |
 | **Could** | FR-206, FR-411 |
 | **Won't this time** | The out-of-scope table of section 1.3 |
@@ -674,7 +684,7 @@ Each number in a requirement above is stated once there; this list says where it
 
 ## 11. Open questions
 
-None is open. Oliver ruled on OQ-1 to OQ-5 and OQ-8 to OQ-11 on 2026-10-05, accepting each proposal
+None is open. Oliver ruled on OQ-1 to OQ-5 and OQ-8 to OQ-12 on 2026-10-05, accepting each proposal
 and supplying the donation link; OQ-6 and OQ-7 were settled by measurement the same day (section 2.3).
 
 | ID | Question | Ruling | Held by |
@@ -687,6 +697,7 @@ and supplying the donation link; OQ-6 and OQ-7 were settled by measurement the s
 | OQ-6 | Is rain probability shown? | No: measured present for Nordic cities alone | Section 1.3 |
 | OQ-7 | Does every symbol code have an icon? | Yes: 83 codes, 83 icons per format; both spellings of one code accepted. How each icon reads on a dark cell is checked by hand | ASM-5, FR-412 |
 | OQ-8 | Which donation link? | `https://www.paypal.com/ncp/payment/88LQG589TJEM6` | FR-709 |
-| OQ-9 | What is the shared module and where does it live? | `ribbonkit`, a public repository holding a Go module plus an npm workspace package | CON-10 |
+| OQ-9 | What is the shared module and where does it live? | `ribbonkit`, a public repository holding a Go module plus an npm package at its root (Amendment 1) | CON-10 |
 | OQ-10 | An `Add city` picture beside the place search? | Supplied as `assets/add-city.png` | FR-208 |
 | OQ-11 | A website at the first release? | Yes, at `https://weatherribbon.world`, ported from TimeRibbon's | Section 4 |
+| OQ-12 | What keeps WeatherRibbon and TimeRibbon apart on one desktop? | The shared module's occupancy file; TimeRibbon's OQ-32 to OQ-36 | FR-506 |
