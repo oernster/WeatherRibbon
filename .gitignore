@@ -28,6 +28,12 @@ go.work.sum
 # env file
 .env
 
+# Release notes, kept locally until a release is cut
+NOTES.md
+
+# Claude's resume snapshot
+.claude/resume.md
+
 # Editor/IDE
 # .idea/
 # .vscode/
