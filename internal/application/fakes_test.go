@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/oernster/ribbonkit/domain/placement"
 	"github.com/oernster/weatherribbon/internal/domain/forecast"
 	"github.com/oernster/weatherribbon/internal/domain/place"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
@@ -138,6 +139,36 @@ func (f *fakeIDs) NewID() string {
 	return fmt.Sprintf("city-%d", f.next)
 }
 
+type fakeMonitors struct{ monitors []placement.Monitor }
+
+func (f fakeMonitors) Monitors() ([]placement.Monitor, error) { return f.monitors, nil }
+
+type fakeStartup struct{ enabled bool }
+
+func (f *fakeStartup) Enabled() (bool, error) { return f.enabled, nil }
+
+func (f *fakeStartup) Enable() error {
+	f.enabled = true
+	return nil
+}
+
+func (f *fakeStartup) Disable() error {
+	f.enabled = false
+	return nil
+}
+
+// testLayout is the cell geometry the tests arrange with, in DIP.
+var testLayout = Layout{
+	Cell:    placement.Size{Width: 160, Height: 120},
+	Prompt:  placement.Size{Width: 200, Height: 140},
+	Padding: 8,
+}
+
+// primaryMonitor is one 1920 by 1032 work area at 100 percent.
+var primaryMonitor = placement.Monitor{
+	Device: `\\.\DISPLAY1`, Work: placement.Rect{Right: 1920, Bottom: 1032}, DPI: placement.BaseDPI, Primary: true,
+}
+
 // rig is a service over fakes, started with no stored settings at 2026-10-05T07:36Z.
 type rig struct {
 	service   *Service
@@ -162,7 +193,8 @@ func newRig() *rig {
 	r.service = New(Ports{
 		Store: r.store, Places: fakePlaces{known: []place.Place{london, tokyo, paris, newYork, nowhere}}, Forecasts: r.forecasts, SunTimes: r.sun,
 		Cache: r.cache, Clock: clock, Pacer: r.pacer, IDs: &fakeIDs{}, Draw: func(int) int { return 0 },
-	})
+		Monitors: fakeMonitors{monitors: []placement.Monitor{primaryMonitor}}, Startup: &fakeStartup{},
+	}, testLayout)
 	return r
 }
 

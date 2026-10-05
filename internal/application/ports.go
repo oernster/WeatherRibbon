@@ -10,6 +10,9 @@ import (
 	"errors"
 	"time"
 
+	"github.com/oernster/ribbonkit/application/arranger"
+	"github.com/oernster/ribbonkit/application/controls"
+	"github.com/oernster/ribbonkit/application/release"
 	"github.com/oernster/weatherribbon/internal/domain/forecast"
 	"github.com/oernster/weatherribbon/internal/domain/petrichor"
 	"github.com/oernster/weatherribbon/internal/domain/place"
@@ -130,4 +133,14 @@ type Ports struct {
 	IDs       IDs
 	// Draw is the countdown's source of chance (FR-413), injected so the domain holds none.
 	Draw petrichor.Draw
+	// Monitors and Neighbours are what the kit's arranger places the ribbon among (FR-501 to FR-506);
+	// a nil Neighbours is a ribbon alone.
+	Monitors   arranger.Monitors
+	Neighbours arranger.Neighbours
+	// Startup is the start at sign-in value (FR-710).
+	Startup  controls.Startup
+	Releases release.Source
+	// Build is not a collaborator but the facts about the running build the update check compares
+	// against, given here so the composition root states them once (FR-603).
+	Build release.Build
 }

@@ -26,6 +26,24 @@ const (
 	secondsPerHour       = 3600
 )
 
+// The coldest and hottest air a cell is sized to show, in degrees Celsius (FR-103).
+const (
+	coldestC = -60
+	hottestC = 60
+)
+
+// Temperatures answers every whole temperature a cell can show in system, coldest first: every
+// degree from the coldest air written in system to the hottest, so imperial holds each Fahrenheit
+// degree between rather than only those a whole Celsius degree lands on (FR-103).
+func Temperatures(system System) []int {
+	coldest, hottest := Temperature(coldestC, system), Temperature(hottestC, system)
+	all := make([]int, 0, hottest-coldest+1)
+	for degree := coldest; degree <= hottest; degree++ {
+		all = append(all, degree)
+	}
+	return all
+}
+
 // Normalise answers system where it is one of Systems; Metric otherwise, so a file holding an
 // unknown word still draws (OQ-1).
 func Normalise(system System) System {

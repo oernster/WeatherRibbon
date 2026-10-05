@@ -71,6 +71,8 @@ type Snapshot struct {
 	Cells  []Cell
 	Units  units.System
 	Format localtime.Format
+	// Layout is the size the cells are drawn at, the window sized by the same (FR-103).
+	Layout Layout
 	// Now is the instant the snapshot was taken at; NextRefresh the minute boundary to take the next
 	// at (FR-401).
 	Now         time.Time
@@ -113,7 +115,7 @@ func (s *Service) Snapshot() Snapshot {
 		cells = append(cells, each.cell)
 	}
 	return Snapshot{
-		Cells: cells, Units: current.Units, Format: current.Format,
+		Cells: cells, Units: current.Units, Format: current.Format, Layout: s.layoutFor(current),
 		Now: now, NextRefresh: localtime.NextRefresh(now), Notices: s.notices(),
 	}
 }

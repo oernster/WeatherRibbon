@@ -5,6 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/oernster/ribbonkit/application/arranger"
+	"github.com/oernster/ribbonkit/application/controls"
 	"github.com/oernster/weatherribbon/internal/domain/forecast"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
 )
@@ -36,8 +38,16 @@ type weather struct {
 
 // Service runs every use case over the current settings. It is safe to call from several
 // goroutines: Wails, the tray and the refresh loop each call in on their own.
+//
+// The ribbon is arranged by the kit's Arranger and its choices set by the kit's Controls, both
+// embedded so their use cases are the service's own; the service is their host, answering the
+// cities as the ribbon's content and saving the choices with the rest (see host).
 type Service struct {
-	ports Ports
+	*arranger.Arranger
+	*controls.Controls
+
+	ports  Ports
+	layout Layout
 
 	// refreshing lets one refresh run at a time, so requests from two never interleave closer than a
 	// second (NFR-S-2); lastRequest is when the last request left. Both are held by refreshing alone.
@@ -51,11 +61,18 @@ type Service struct {
 	loadNotice  string
 	cacheNotice string
 	saveNotice  string
+	// measured is the cell width the page last measured its widest text to need, with what it was
+	// measured under; the zero value, before it says, widens nothing (FR-103).
+	measured Measured
 }
 
-// New answers a service over ports with the first-run settings; Start loads the stored ones.
-func New(ports Ports) *Service {
-	return &Service{ports: ports, current: settings.Defaults(), weather: map[string]*weather{}}
+// New answers a service over ports drawing cells at layout, with the first-run settings; Start
+// loads the stored ones.
+func New(ports Ports, layout Layout) *Service {
+	s := &Service{ports: ports, layout: layout, current: settings.Defaults(), weather: map[string]*weather{}}
+	s.Arranger = arranger.New(host{s}, ports.Monitors, ports.Neighbours)
+	s.Controls = controls.New(host{s}, ports.Startup, ports.Releases, ports.Build)
+	return s
 }
 
 // Start loads the stored settings, then the saved forecasts. A fault reading the settings is

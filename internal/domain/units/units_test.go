@@ -28,6 +28,23 @@ func TestEachUnitConvertsAndRounds(t *testing.T) {
 	}
 }
 
+// FR-103: the samples hold every whole degree from -60 to 60 Celsius written in the units, -76 to
+// 140 imperial, with no degree skipped between.
+func TestSamplesHoldEveryTemperature(t *testing.T) {
+	t.Parallel()
+	for system, want := range map[System][2]int{Metric: {-60, 60}, Imperial: {-76, 140}} {
+		got := Temperatures(system)
+		if len(got) != want[1]-want[0]+1 || got[0] != want[0] || got[len(got)-1] != want[1] {
+			t.Fatalf("%s: %d degrees from %d to %d; want %d to %d", system, len(got), got[0], got[len(got)-1], want[0], want[1])
+		}
+		for index := 1; index < len(got); index++ {
+			if got[index] != got[index-1]+1 {
+				t.Errorf("%s: %d follows %d", system, got[index], got[index-1])
+			}
+		}
+	}
+}
+
 // OQ-1: an unknown system reads as Metric, the default.
 func TestAnUnknownSystemIsMetric(t *testing.T) {
 	t.Parallel()
