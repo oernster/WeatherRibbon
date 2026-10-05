@@ -10,6 +10,8 @@ where they apply.
 |---|---|---|
 | 1 | 2026-10-05 | `ribbonkit`'s front-end half is an npm package at the repository root beside `go.mod`, each application depending on it by git tag; an npm workspace cannot span two repositories. It is first carved inside TimeRibbon, then lifted into its own repository (CON-10, OQ-9, section 8). |
 | 2 | 2026-10-05 | Running beside TimeRibbon the ribbon never lands on it, through an occupancy folder the shared module owns (FR-506, TimeRibbon's FR-412); built in the module before it is lifted out (section 8). |
+| 3 | 2026-10-05 | Brought up to the kit as built: on macOS the Dock icon stays, as TimeRibbon's Amendment 36 (FR-101); `ribbonkit` exists at v0.1.1 with TimeRibbon 2.7.0 released on it (CON-10, section 8); the Flatpak is granted the occupancy folder (section 5). 24-hour time when none is held (FR-401); a place with no region name (FR-202); the detail panel without a forecast or sun times (FR-410, FR-411); NFR-C-2 measured. Oliver's rulings of the same day. |
+| 4 | 2026-10-05 | The petrichor moment (FR-413; OQ-13 to OQ-16). Oliver's request and rulings of the same day. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -171,9 +173,11 @@ Measurements this document rests on, each taken on 2026-10-05:
 | CON-7 | Monitors, work areas and placement go through the desktop's own calls, never Wails' position calls, as TimeRibbon's CON-7. |
 | CON-8 | Everything written is per user and nothing asks for administrator rights, in folders named `WeatherRibbon` in the places TimeRibbon's CON-8 names. |
 | CON-9 | Forecasts come only from MET Norway's Locationforecast 2.0, under its terms of service; the place search needs no network. |
-| CON-10 | The desktop behaviour TimeRibbon has proved (placement, drag, snapping, the grip, opacity, the tab, the tray, scaling, single instance, start at sign-in, the update check, setup) lives in one shared module, `ribbonkit` (OQ-9; Amendment 1): a public repository holding a Go
-module plus, beside it at the root, an npm package for its front-end half (the grip, opacity,
-measuring, pixel ratio), both applications depending on one tag of it. WeatherRibbon holds no copy of it. Extracting it is TimeRibbon work done first, under TimeRibbon's own tests, as its own unit (section 8). |
+| CON-10 | The desktop behaviour TimeRibbon has proved (placement, drag, snapping, the grip, opacity, the tab, the tray, scaling, single instance, start at sign-in, the update check, setup) lives in one shared module, `ribbonkit` (OQ-9; Amendments 1, 3): a public repository holding a Go
+module plus, beside it at the root, an npm package for its front-end half (the band and tab, the pull
+out, the grip, the opacity slider, Help with About and Licence, the page shell and the setup page),
+both applications depending on one tag of it. WeatherRibbon holds no copy of it. It was extracted
+from TimeRibbon under TimeRibbon's own tests and tagged v0.1.1; TimeRibbon 2.7.0 is released on it. |
 
 ### 2.5 Assumptions
 
@@ -220,9 +224,10 @@ build on each platform. Test names are proposals until written.
 
 ### 3.1 The ribbon
 
-**FR-101 Frameless ribbon** (Must). The ribbon shall be a window with no title bar, no system border
-and no taskbar or Dock button; on macOS and Linux any spare area of the window shall answer a
-right-click and a drag as the ribbon does.
+**FR-101 Frameless ribbon** (Must; Amendment 3). The ribbon shall be a window with no title bar, no
+system border and no taskbar button on Windows or Linux; on macOS WeatherRibbon keeps its Dock icon,
+as TimeRibbon's FR-101. On macOS and Linux any spare area of the window shall answer a right-click and
+a drag as the ribbon does.
 Verified by: by hand.
 
 **FR-102 Shown once sized** (Must). At launch the application shall show the ribbon only once the page
@@ -253,8 +258,8 @@ Verified by: `ribbon.test.tsx`.
 **FR-107 Orientation** (Must). The ribbon shall lay its cells out horizontally or vertically as held
 in settings, vertical when none is held; choosing one sends the ribbon to its home edge (top for
 horizontal, right for vertical), as TimeRibbon's FR-409.
-Verified by: `TestDefaultsAreVerticalAndMetric` (domain); `TestEachOrientationHasAHomeEdge` (shared
-module).
+Verified by: `TestDefaultsAreVerticalMetricAndTwentyFourHour` (domain); `TestEachOrientationHasAHomeEdge`
+(shared module).
 
 **FR-108 Cells in time order** (Should; OQ-4). The ribbon shall order its cells running east from
 Greenwich by each zone's offset at the snapshot's instant, as TimeRibbon's FR-102; cities keeping the
@@ -276,8 +281,10 @@ Verified by: `TestAddingACityAppendsItWithItsName` (application).
 
 **FR-202 Place search** (Must). The search shall list the city list's places matching what is typed,
 case-insensitively, at the start of a word of the place's name, its ASCII name, its first-level
-region or its country. Each result shall show the name, region and country. Places whose name
-begins with the text come first, then the rest; within each, larger population first.
+region or its country. Each result shall show the name, region and country; a place whose region
+GeoNames does not name shows its name and country alone (104 of the 34,153, measured 2026-10-05;
+Amendment 3). Places whose name begins with the text come first, then the rest; within each, larger
+population first.
 Acceptance: `london` lists `London, England, United Kingdom` before `London, Ontario, Canada`;
 `springf` lists eight US Springfields, each with its state.
 Verified by: `TestPlaceSearchMatchesNameRegionOrCountry`, `TestLargerPlacesComeFirst` (application).
@@ -363,9 +370,9 @@ Verified by: `TestASecondRefreshWaitsForTheFirst` (application).
 
 ### 3.4 Today and the outlook
 
-**FR-401 Local time** (Must). Each cell shall show the city's local time from its zone through the tz
-database of CON-5, in the chosen 12-hour or 24-hour format, with its zone mark as TimeRibbon's FR-203,
-refreshed at each minute boundary.
+**FR-401 Local time** (Must; Amendment 3). Each cell shall show the city's local time from its zone
+through the tz database of CON-5, in the chosen 12-hour or 24-hour format (24-hour when none is held),
+with its zone mark as TimeRibbon's FR-203, refreshed at each minute boundary.
 Acceptance: at 2026-10-05T07:36:00Z, London shows `08:36 BST`.
 Verified by: `TestLocalTimeAndZoneMark` (domain).
 
@@ -414,18 +421,55 @@ Verified by: `TestADaysSymbolIsTheOneNearestNoon` (domain).
 
 **FR-410 Hourly detail** (Should). A click on a cell, moved less than the drag threshold, shall open a
 panel for that city showing the next 24 hourly steps, each with its local hour, symbol, temperature,
-rain and wind speed and direction; Close and Escape return to the ribbon.
+rain and wind speed and direction; Close and Escape return to the ribbon. If the city has no forecast,
+then the panel shall say `Forecast unavailable` (Amendment 3).
 Verified by: `detail.test.tsx`; by hand.
 
 **FR-411 Sunrise and sunset** (Could). The hourly detail shall show the city's sunrise and sunset for
-today from MET Norway's Sunrise 3.0, fetched at most once per city per local date.
-Verified by: `TestSunTimesAreAskedOncePerDay` (application).
+today from MET Norway's Sunrise 3.0, fetched at most once per city per local date. If that request
+fails, then the panel shall show the hours without them; the next opening of the panel shall ask
+again; a failed request does not count towards the once per date (Amendment 3).
+Verified by: `TestSunTimesAreAskedOncePerDay`, `TestAFailedSunRequestIsAskedAgain` (application).
 
 **FR-412 Unknown symbol** (Must). If a symbol code has no icon, then the cell shall show the code's
 words (`lightrainshowers day`) in place of the icon and log the code once. `lightsleetshowersandthunder`
 and `lightssleetshowersandthunder` each find the icon the set files under the second.
 Verified by: `TestAnUnknownSymbolShowsItsWords`, `TestBothSpellingsOfLightSleetThunderHaveAnIcon`
 (application).
+
+**FR-413 The petrichor moment** (Could; Amendment 4; OQ-13 to OQ-16). A rare, quiet line inviting
+the curious to look the word up.
+- **Wet and dry.** A city is wet at a snapshot when its current period (FR-402) forecasts a
+  `precipitation_amount` above 0, dry when it forecasts 0. A city whose forecast is stale (FR-305) or
+  has run out (FR-403) is neither; it changes nothing below.
+- **A dry spell.** The application shall keep, per city, the instant from which every snapshot has
+  found it dry; the first wet snapshot clears it. Time while WeatherRibbon is not running does not
+  break a spell; only a wet snapshot does.
+- **A petrichor event.** When a city is wet at a snapshot after a dry spell of at least 72 hours, the
+  application shall count one petrichor event and clear that city's spell.
+- **The countdown.** The application shall hold one countdown for all cities, drawn uniformly from 10
+  to 15 inclusive on first run and again after each moment. Each petrichor event takes one from it;
+  the event that brings it to 0 is a petrichor moment. The draw is injected into the domain, never
+  read there.
+- **What shows.** For a petrichor moment, that city's cell shall show `Can you smell petrichor in the
+  air?` beneath its conditions, pulsing gently: its opacity moves between 100 and 50 percent and back
+  over 4 seconds. Where the system asks for reduced motion, the line shall stand still at 100 percent.
+- **How it ends.** The line shall go when the city is no longer wet at a snapshot or when it is
+  clicked. A click on the line hides it and opens no detail (FR-410). The line is not restored after a
+  restart.
+- **Kept across restarts.** Each city's dry spell is kept with its cached forecast (FR-807); the
+  countdown in the settings file (FR-801).
+
+Acceptance: London is dry at every snapshot from 2026-10-01T09:00Z; at 2026-10-04T10:00Z its current
+period forecasts 0.3 mm, 73 hours later, so a petrichor event is counted. With the countdown at 1 it
+reaches 0: London's cell shows the line and a new countdown is drawn. At 2026-10-04T13:00Z the current
+period forecasts 0 mm and the line goes. Had the rain come at 2026-10-03T09:00Z, 48 hours in, no event
+would be counted and the spell would start afresh at the next dry snapshot.
+Verified by: `TestRainAfterThreeDryDaysIsAPetrichorEvent`, `TestRainSoonerIsNoEvent`,
+`TestAStaleForecastIsNeitherWetNorDry`, `TestTheCountdownIsDrawnFromTenToFifteen`,
+`TestTheEventThatEndsTheCountdownIsAMoment` (domain); `TestTheMomentEndsWhenTheRainDoes`,
+`TestTheSpellAndCountdownSurviveARestart` (application); `petrichor.test.tsx` (the pulse, still under
+reduced motion, a click hides it without opening the detail); by hand.
 
 ### 3.5 Placement and drag
 
@@ -530,8 +574,8 @@ Verified by: `settings.test.tsx`; by hand.
 
 **FR-801 Settings file** (Must). Settings shall be kept as indented JSON with the format `version`,
 units, time format, theme, colour, orientation, Always on top, placement, `pinned`, `lastEdge`,
-`opacity`, `scale`, `skippedUpdate` and the cities (a stable id, the GeoNames id, label and position
-each). Derived values are never stored.
+`opacity`, `scale`, `skippedUpdate`, `petrichorCountdown` (FR-413) and the cities (a stable id, the
+GeoNames id, label and position each). Derived values are never stored.
 Verified by: `TestSettingsRoundTrip`, `TestNoDerivedValueIsStored` (store).
 
 **FR-802 Atomic writes, first run, unreadable file, write failure** (Must). As TimeRibbon's FR-702 to
@@ -543,7 +587,7 @@ in Settings; no other place is substituted.
 Verified by: `TestAMissingPlaceIsNeverReplaced` (application).
 
 **FR-807 Forecast cache** (Must). Each successful forecast shall be written atomically to the cache
-folder with its `Expires` and `Last-Modified`; at launch the cache is read, so an offline start shows
+folder with its `Expires` and `Last-Modified` plus the city's dry spell (FR-413); at launch the cache is read, so an offline start shows
 the last forecasts with their age (FR-305). An unreadable cache entry is discarded and fetched again.
 Verified by: `TestTheCacheSurvivesARestart`, `TestAnUnreadableCacheEntryIsFetchedAgain` (store).
 
@@ -554,7 +598,7 @@ Verified by: `TestTheCacheSurvivesARestart`, `TestAnUnreadableCacheEntryIsFetche
 | NFR-P-1 | Launch to cells drawn from the cache in at most 1.5 s on TimeRibbon's reference machine. | Log's first line to first snapshot, median of 5 launches |
 | NFR-P-2 | A place search over the whole city list answers each keystroke within 50 ms at the 95th percentile on the reference machine. | Benchmark over 200 typed prefixes |
 | NFR-P-3 | The page schedules no periodic timer more often than once a minute. | `timers.test.ts` |
-| NFR-C-2 | The bundled city list adds at most 4 MB to the executable. | Size of the built extract; measured before code |
+| NFR-C-2 | The bundled city list adds at most 4 MB to the executable. | Size of the built extract. Measured 2026-10-05 (Amendment 3): DATA-1's nine fields as tab-separated text for all 34,153 places, 2,974,978 bytes; 896,700 compressed by gzip at level 9 |
 | NFR-S-1 | No network request but forecasts and sun times to `api.met.no` and the update check to GitHub; neither sends anything about the user beyond the cities' coordinates and the User-Agent. | `TestOnlyTheForecastAndUpdateImportANetworkPackage` (structural) |
 | NFR-S-2 | With 12 cities the application makes at most 12 forecast requests per `Expires` window and never more than 1 request a second in total. | `TestRequestsAreSpacedAtLeastASecondApart` (application) |
 | NFR-S-3 | Non-claim: WeatherRibbon issues no warnings; the README says to rely on the national weather service for those. | Inspection of the README |
@@ -594,7 +638,8 @@ live in Claude's project memory, never in these documents.
 As TimeRibbon's section 5 and FR-801 to FR-811, under the name WeatherRibbon: `build.ps1` reading
 `VERSION` and running `test.ps1` first; the setup program as a second Wails application whose header
 shows `assets/light-mode.png` or `assets/dark-mode.png` with the theme; a signed and notarised DMG; a
-Flatpak granted the network for `api.met.no` and GitHub. The application icon is generated from
+Flatpak granted the network for `api.met.no` and GitHub plus the occupancy folder of FR-506
+(`xdg-run/ribbonkit`, Amendment 3). The application icon is generated from
 `assets/application-icon.png`.
 
 ---
@@ -620,6 +665,10 @@ Flatpak granted the network for `api.met.no` and GitHub. The application icon is
 | Upgrade from a previous version | NFR-C-1 |
 | Twelve cities refreshing together | NFR-S-2, FR-310 |
 | Second launch | FR-602 |
+| Rain after a dry spell while WeatherRibbon was closed | FR-413: the spell holds; the first wet snapshot after launch counts |
+| A stale forecast during a dry spell | FR-413: neither wet nor dry |
+| Rain in several cities at once | FR-413: one event each; only the one ending the countdown shows the line |
+| Reduced motion asked for | FR-413: the line stands still |
 
 ---
 
@@ -635,6 +684,7 @@ Flatpak granted the network for `api.met.no` and GitHub. The application icon is
 | Local time per city | FR-401 |
 | Settings with the donation icon | FR-701, FR-709 |
 | Installer artwork, light and dark | Section 5 |
+| The petrichor moment: dry spell then rain, rarely, a gently pulsing line | FR-413 |
 
 No requirement is met until its test exists and has been seen to fail without the implementation.
 
@@ -642,10 +692,9 @@ No requirement is met until its test exists and has been seen to fail without th
 
 ## 8. Build order
 
-1. **Extract the shared module from TimeRibbon** (CON-10; Amendment 1), as TimeRibbon work under
-   TimeRibbon's own tests and gate, with no change of behaviour: first carved into a `ribbonkit`
-   tree inside TimeRibbon that a structural test holds free of anything clock-specific, given the
-   occupancy that keeps two ribbons apart (FR-506), then lifted into its own repository and tagged; TimeRibbon released on it before WeatherRibbon imports it.
+1. **Extract the shared module from TimeRibbon** (CON-10; Amendments 1, 3). Done: carved inside
+   TimeRibbon with no change of behaviour, given the occupancy that keeps two ribbons apart (FR-506),
+   lifted into its own repository, tagged v0.1.1 and released under TimeRibbon 2.7.0.
 2. WeatherRibbon's domain: the city list search, the forecast model, today, the outlook, units.
 3. Application: refreshing, backing off, the cache policy, each menu action as a callable entry point.
 4. Infrastructure: the MET Norway client, the cache store, the settings store.
@@ -660,7 +709,7 @@ No requirement is met until its test exists and has been seen to fail without th
 |---|---|
 | **Must** | FR-101 to FR-107, FR-109, FR-201 to FR-205, FR-301 to FR-308, FR-310, FR-401 to FR-409, FR-412, FR-501 to FR-504, FR-506, FR-601 to FR-603, FR-610, FR-701 to FR-703, FR-801 to FR-803, FR-807, every NFR, DATA-1, DATA-2 |
 | **Should** | FR-108, FR-207, FR-208, FR-309, FR-410, FR-505, FR-704 to FR-710 |
-| **Could** | FR-206, FR-411 |
+| **Could** | FR-206, FR-411, FR-413 |
 | **Won't this time** | The out-of-scope table of section 1.3 |
 
 ---
@@ -679,12 +728,15 @@ Each number in a requirement above is stated once there; this list says where it
 | 20 to 100 percent opacity, steps of 5 | TimeRibbon's FR-622 |
 | 75 to 200 percent scale | TimeRibbon's FR-623 |
 | 34,153 places | GeoNames `cities15000`, measured 2026-10-05 |
+| 72 hours of dry before rain counts | Oliver's ruling (OQ-13) |
+| A countdown from 10 to 15 events | Oliver's ruling (OQ-14) |
+| A 4 second pulse between 100 and 50 percent | Proposal |
 
 ---
 
 ## 11. Open questions
 
-None is open. Oliver ruled on OQ-1 to OQ-5 and OQ-8 to OQ-12 on 2026-10-05, accepting each proposal
+None is open. Oliver ruled on OQ-1 to OQ-5 and OQ-8 to OQ-16 on 2026-10-05, accepting each proposal
 and supplying the donation link; OQ-6 and OQ-7 were settled by measurement the same day (section 2.3).
 
 | ID | Question | Ruling | Held by |
@@ -701,3 +753,7 @@ and supplying the donation link; OQ-6 and OQ-7 were settled by measurement the s
 | OQ-10 | An `Add city` picture beside the place search? | Supplied as `assets/add-city.png` | FR-208 |
 | OQ-11 | A website at the first release? | Yes, at `https://weatherribbon.world`, ported from TimeRibbon's | Section 4 |
 | OQ-12 | What keeps WeatherRibbon and TimeRibbon apart on one desktop? | The shared module's occupancy folder; TimeRibbon's OQ-32 to OQ-38 | FR-506 |
+| OQ-13 | How long a dry spell before rain counts? | 3 days, judged from the forecasts seen | FR-413 |
+| OQ-14 | How is the moment kept rare? | A countdown drawn from 10 to 15 events, so the wait is bounded | FR-413 |
+| OQ-15 | Where does the moment show? | In the cell of the city where the rain arrived | FR-413 |
+| OQ-16 | How long does it last? | While it rains there; a click hides it; still under reduced motion | FR-413 |
