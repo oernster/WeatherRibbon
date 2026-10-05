@@ -1,0 +1,219 @@
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  color: var(--text);
+  font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Everything the window shows is drawn inside #root. Only its backgrounds are drawn at the opacity
+   chosen (FR-704): the ribbon and the tab; the cells' text, temperatures and weather icons stay
+   wholly opaque. The page behind is clear, so below full opacity the desktop shows through. App sets
+   --window-opacity from the snapshot while the window is the ribbon; to 1 while it is a panel. */
+html,
+body {
+  background: transparent;
+}
+
+#root {
+  position: relative;
+  --fade: calc(var(--window-opacity, 1) * 100%);
+  --surface-shown: color-mix(in srgb, var(--surface) var(--fade), transparent);
+  --accent-shown: color-mix(in srgb, var(--accent) var(--fade), transparent);
+  background: var(--surface-shown);
+}
+
+/* The surface's own colour, never faded, for background.ts to hand to Go: #root's background is
+   mixed with the opacity, which is no colour the window can be painted in (FR-704). Hidden, so it
+   is never drawn. */
+#surface-swatch {
+  background: var(--surface);
+}
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--cell);
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* A button whose face is artwork. The picture is drawn at BUTTON_DRAWN in tools/genicons.py, which
+   renders it at four times this height; display: block drops the descender space under it. */
+.art {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+}
+
+.art img {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+/* Large artwork stands above its caption rather than beside it. */
+.art.large {
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+}
+
+.art.large img {
+  height: 128px;
+}
+
+/* The ribbon and its tab are ribbonkit's (ribbon.css); what follows
+   is what WeatherRibbon draws in them. */
+
+.cell {
+  flex: none;
+  box-sizing: border-box;
+  width: var(--cell-w);
+  height: var(--cell-h);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.horizontal .cell + .cell {
+  border-left: 1px solid var(--divider);
+}
+
+.vertical .cell + .cell {
+  border-top: 1px solid var(--divider);
+}
+
+.place {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.place .label {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.place .clock {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A cell opens its city's hourly detail when clicked (FR-410). */
+.cell.weather,
+.cell:has(.problem) {
+  cursor: pointer;
+}
+
+.now {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.temperature {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.today,
+.age {
+  font-size: 13px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.age {
+  color: var(--text-muted);
+}
+
+.outlook {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.day .range {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A weather icon; the current conditions' is drawn larger. */
+.symbol {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.symbol.large {
+  width: 44px;
+  height: 44px;
+}
+
+.symbol-words {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.problem {
+  font-size: 12px;
+  color: var(--problem);
+}
+
+.prompt {
+  align-items: center;
+  gap: 6px;
+}
+
+/* The petrichor line pulses gently between full and half opacity over four seconds; where the
+   system asks for reduced motion it stands still (FR-413). It is a button, so a click on it hides it
+   and starts no drag. */
+.petrichor {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12px;
+  font-style: italic;
+  text-align: left;
+  animation: petrichor 4s ease-in-out infinite;
+}
+
+@keyframes petrichor {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petrichor {
+    animation: none;
+  }
+}
+

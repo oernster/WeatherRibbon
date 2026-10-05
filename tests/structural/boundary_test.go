@@ -32,11 +32,10 @@ func TestCompositionRootIsWhitelisted(t *testing.T) {
 	layout(t).CheckCompositionRootIsWhitelisted(t, goFiles(t))
 }
 
-// sourceFiles is every file the size rule governs. Until the page exists that is the Go alone;
-// frontend/src joins it with the front end (CON-2).
+// sourceFiles is every file the size rule governs: the Go and the page's own source (CON-2).
 func sourceFiles(t *testing.T) []string {
 	t.Helper()
-	return goFiles(t)
+	return append(goFiles(t), pageFiles(t)...)
 }
 
 func TestNoFileExceedsLineLimit(t *testing.T) {

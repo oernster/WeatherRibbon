@@ -32,7 +32,7 @@ func sunWith(t *testing.T, client *stand) (application.Sun, string, error) {
 		t.Fatal(err)
 	}
 	var log bytes.Buffer
-	sun, err := NewSunTimesWith("https://example.test/sun", "1.2.3", client, &log).
+	sun, err := NewSunTimesWith("https://example.test/sun", testUserAgent, client, &log).
 		Fetch(context.Background(), 51.5085, -0.1257, october5, london)
 	return sun, log.String(), err
 }
@@ -60,10 +60,10 @@ func TestTheSunTimesAreReadFromTheAnswer(t *testing.T) {
 		got.Get("date") != "2026-10-05" || got.Get("offset") != "+01:00" {
 		t.Errorf("query %v", got)
 	}
-	if client.sent.Header.Get("User-Agent") != UserAgent("1.2.3") || log != "sun 51.5085,-0.1257 2026-10-05: ok\n" {
+	if client.sent.Header.Get("User-Agent") != testUserAgent || log != "sun 51.5085,-0.1257 2026-10-05: ok\n" {
 		t.Errorf("User-Agent %q, log %q", client.sent.Header.Get("User-Agent"), log)
 	}
-	if NewSunTimes("1", io.Discard).baseURL != SunriseURL {
+	if NewSunTimes(testUserAgent, io.Discard).baseURL != SunriseURL {
 		t.Error("the production client does not ask Sunrise 3.0")
 	}
 }

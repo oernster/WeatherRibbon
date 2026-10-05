@@ -48,14 +48,14 @@ type SunTimes struct {
 	baseURL string
 }
 
-// NewSunTimes answers the production client for version, writing one line per request to log.
-func NewSunTimes(version string, log io.Writer) *SunTimes {
-	return NewSunTimesWith(SunriseURL, version, productionClient(), log)
+// NewSunTimes answers the production client sending userAgent, writing one line per request to log.
+func NewSunTimes(userAgent string, log io.Writer) *SunTimes {
+	return NewSunTimesWith(SunriseURL, userAgent, productionClient(), log)
 }
 
 // NewSunTimesWith answers a client asking baseURL through client.
-func NewSunTimesWith(baseURL, version string, client Doer, log io.Writer) *SunTimes {
-	return &SunTimes{caller: newCaller(version, client, log), baseURL: baseURL}
+func NewSunTimesWith(baseURL, userAgent string, client Doer, log io.Writer) *SunTimes {
+	return &SunTimes{caller: newCaller(userAgent, client, log), baseURL: baseURL}
 }
 
 // Fetch asks for the sunrise and sunset at the coordinates on date as lived in location (FR-411).

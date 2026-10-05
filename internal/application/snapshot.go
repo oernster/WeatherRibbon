@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/oernster/ribbonkit/domain/localtime"
+	"github.com/oernster/ribbonkit/domain/ribbon"
 	"github.com/oernster/weatherribbon/internal/domain/forecast"
 	"github.com/oernster/weatherribbon/internal/domain/place"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
@@ -38,7 +39,7 @@ type Day struct {
 	High    int
 	Low     int
 	Rain    float64
-	Symbol  string
+	Symbol  Symbol
 	// Known is false for a day the forecast does not reach; nothing else is then meaningful.
 	Known bool
 }
@@ -54,7 +55,7 @@ type Cell struct {
 	// Temperature and Symbol are the current conditions (FR-402); meaningful only where Problem is
 	// empty.
 	Temperature int
-	Symbol      string
+	Symbol      Symbol
 	Today       Day
 	Outlook     []Day
 	// Age is "Updated <age> ago" while the forecast is stale (FR-305); empty while it is fresh.
@@ -73,6 +74,10 @@ type Snapshot struct {
 	Format localtime.Format
 	// Layout is the size the cells are drawn at, the window sized by the same (FR-103).
 	Layout Layout
+	// Choices are the ribbon's own: colour, theme, orientation, opacity and the rest (FR-704, FR-707).
+	Choices ribbon.Choices
+	// Scale is the percent the ribbon is drawn at, a preview's while its grip is dragged (FR-705).
+	Scale float64
 	// Now is the instant the snapshot was taken at; NextRefresh the minute boundary to take the next
 	// at (FR-401).
 	Now         time.Time
@@ -116,6 +121,7 @@ func (s *Service) Snapshot() Snapshot {
 	}
 	return Snapshot{
 		Cells: cells, Units: current.Units, Format: current.Format, Layout: s.layoutFor(current),
+		Choices: current.Choices, Scale: s.DrawnScale(current.Scale),
 		Now: now, NextRefresh: localtime.NextRefresh(now), Notices: s.notices(),
 	}
 }
@@ -181,20 +187,20 @@ func (s *Service) fillWeather(cell *Cell, state *weather, now time.Time, locatio
 		cell.Age = age(now.Sub(state.cached.Fetched))
 	}
 	cell.Temperature = units.Temperature(conditions.AirC, system)
-	cell.Symbol = conditions.Symbol
+	cell.Symbol = s.symbolOf(conditions.Symbol)
 	today, _ := state.cached.Forecast.TodayAt(now, location)
-	cell.Today = dayIn(today, system)
+	cell.Today = s.dayIn(today, system)
 	for _, each := range state.cached.Forecast.OutlookAt(now, location) {
-		cell.Outlook = append(cell.Outlook, dayIn(each, system))
+		cell.Outlook = append(cell.Outlook, s.dayIn(each, system))
 	}
 }
 
 // dayIn answers day in system.
-func dayIn(day forecast.Day, system units.System) Day {
+func (s *Service) dayIn(day forecast.Day, system units.System) Day {
 	return Day{
 		Date: day.Date, Weekday: day.Date.Weekday().String(),
 		High: units.Temperature(day.HighC, system), Low: units.Temperature(day.LowC, system),
-		Rain: units.Rain(day.RainMM, system), Symbol: day.Symbol, Known: day.Known,
+		Rain: units.Rain(day.RainMM, system), Symbol: s.symbolOf(day.Symbol), Known: day.Known,
 	}
 }
 

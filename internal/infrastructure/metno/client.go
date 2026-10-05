@@ -12,10 +12,6 @@ import (
 	"github.com/oernster/weatherribbon/internal/application"
 )
 
-// Repository is the address the User-Agent names as the application's contact; no email address is
-// sent (FR-301, OQ-2).
-const Repository = "https://github.com/oernster/WeatherRibbon"
-
 // requestTimeout bounds one request. A proposal: MET Norway names no figure; a request still waiting
 // after this counts as failed and backs off (FR-305, FR-306).
 const requestTimeout = 10 * time.Second
@@ -29,22 +25,17 @@ type Doer interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-// UserAgent answers the User-Agent every request carries: the application, its version and its
-// contact (FR-301).
-func UserAgent(version string) string {
-	return "WeatherRibbon/" + version + " " + Repository
-}
-
-// caller is what every request to MET Norway shares: who is asking, through what, logged where.
+// caller is what every request to MET Norway shares: who is asking, through what, logged where. The
+// User-Agent naming the application is the product's to word (FR-301); every request carries it.
 type caller struct {
 	userAgent string
 	client    Doer
 	log       io.Writer
 }
 
-// newCaller answers a caller for version asking through client, logging to log.
-func newCaller(version string, client Doer, log io.Writer) caller {
-	return caller{userAgent: UserAgent(version), client: client, log: log}
+// newCaller answers a caller sending userAgent through client, logging to log.
+func newCaller(userAgent string, client Doer, log io.Writer) caller {
+	return caller{userAgent: userAgent, client: client, log: log}
 }
 
 // productionClient answers the HTTP client every production request goes through.

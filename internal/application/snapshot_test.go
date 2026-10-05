@@ -63,7 +63,7 @@ func TestACellShowsTheWeatherInTheChosenUnits(t *testing.T) {
 	if cell.Time != "08:36" || cell.ZoneMark != "BST" || cell.Place != "London, England, United Kingdom" {
 		t.Errorf("time %q %q, place %q", cell.Time, cell.ZoneMark, cell.Place)
 	}
-	if cell.Problem != "" || cell.Age != "" || cell.Temperature != 14 || cell.Symbol != "rain" {
+	if cell.Problem != "" || cell.Age != "" || cell.Temperature != 14 || cell.Symbol != (Symbol{Icon: "rain"}) {
 		t.Errorf("current %+v", cell)
 	}
 	if !cell.Today.Known || cell.Today.High != 14 || len(cell.Outlook) != 3 || cell.Outlook[0].Weekday != "Tuesday" {

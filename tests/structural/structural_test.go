@@ -7,6 +7,9 @@
 package structural
 
 import (
+	"os/exec"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/oernster/ribbonkit/structure"
@@ -33,6 +36,29 @@ func layout(t *testing.T) structure.Layout {
 		Dependencies:    []string{kitModule},
 		CompositionRoot: []string{"main.go"},
 	}
+}
+
+// pageExtensions are the page's source files the size rule governs.
+var pageExtensions = []string{".ts", ".tsx", ".css"}
+
+// pageFiles answers the page's own source files under frontend/src.
+func pageFiles(t *testing.T) []string {
+	t.Helper()
+	return structure.FilesWith(t, pageExtensions, filepath.Join(structure.Root(t), "frontend", "src"))
+}
+
+// kitDir answers the folder Go builds ribbonkit from: the tagged module go.mod requires (else the
+// working copy a local go.work names instead).
+func kitDir(t *testing.T) string {
+	t.Helper()
+	command := exec.Command("go", "list", "-m", "-f", "{{.Dir}}", kitModule)
+	command.Dir = structure.Root(t)
+	out, err := command.Output()
+	dir := strings.TrimSpace(string(out))
+	if err != nil || dir == "" {
+		t.Fatalf("go list could not find %s (%v); run go mod download", kitModule, err)
+	}
+	return dir
 }
 
 // goFiles answers every Go file of WeatherRibbon.

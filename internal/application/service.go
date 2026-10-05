@@ -64,6 +64,8 @@ type Service struct {
 	// measured is the cell width the page last measured its widest text to need, with what it was
 	// measured under; the zero value, before it says, widens nothing (FR-103).
 	measured Measured
+	// missing holds each symbol code met with no icon, so each is told once a run (FR-412).
+	missing sync.Map
 }
 
 // New answers a service over ports drawing cells at layout, with the first-run settings; Start

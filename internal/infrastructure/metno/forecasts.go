@@ -22,14 +22,15 @@ type Forecasts struct {
 	baseURL string
 }
 
-// New answers the production client for version, writing one line per request to log (NFR-O-1).
-func New(version string, log io.Writer) *Forecasts {
-	return NewWith(LocationforecastURL, version, productionClient(), log)
+// New answers the production client sending userAgent, writing one line per request to log
+// (NFR-O-1).
+func New(userAgent string, log io.Writer) *Forecasts {
+	return NewWith(LocationforecastURL, userAgent, productionClient(), log)
 }
 
 // NewWith answers a client asking baseURL through client.
-func NewWith(baseURL, version string, client Doer, log io.Writer) *Forecasts {
-	return &Forecasts{caller: newCaller(version, client, log), baseURL: baseURL}
+func NewWith(baseURL, userAgent string, client Doer, log io.Writer) *Forecasts {
+	return &Forecasts{caller: newCaller(userAgent, client, log), baseURL: baseURL}
 }
 
 // Fetch asks for the forecast at request's coordinates. A 304 answers NotModified with the new

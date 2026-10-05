@@ -1,0 +1,5 @@
+{
+  "extends": "@oernster/ribbonkit/tsconfig.json",
+  "include": ["src"],
+  "exclude": []
+}

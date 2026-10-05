@@ -121,6 +121,14 @@ type IDs interface {
 	NewID() string
 }
 
+// Icons is the weather icon set the page draws (FR-412).
+type Icons interface {
+	// Has answers whether the set holds an icon named name.
+	Has(name string) bool
+	// Missing hears a symbol code the set holds no icon for, once per code each run, to log it.
+	Missing(code string)
+}
+
 // Ports gathers the collaborators a Service is built from.
 type Ports struct {
 	Store     Store
@@ -132,7 +140,8 @@ type Ports struct {
 	Pacer     Pacer
 	IDs       IDs
 	// Draw is the countdown's source of chance (FR-413), injected so the domain holds none.
-	Draw petrichor.Draw
+	Draw  petrichor.Draw
+	Icons Icons
 	// Monitors and Neighbours are what the kit's arranger places the ribbon among (FR-501 to FR-506);
 	// a nil Neighbours is a ribbon alone.
 	Monitors   arranger.Monitors

@@ -59,13 +59,16 @@ func london(t *testing.T) []byte {
 func fetchWith(t *testing.T, client *stand, lastModified string) (application.Answer, string, error) {
 	t.Helper()
 	var log bytes.Buffer
-	answer, err := NewWith("https://example.test/forecast", "1.2.3", client, &log).
+	answer, err := NewWith("https://example.test/forecast", testUserAgent, client, &log).
 		Fetch(context.Background(), application.Request{Latitude: 51.5085, Longitude: -0.1257, LastModified: lastModified})
 	return answer, log.String(), err
 }
 
-// FR-301, FR-302, NFR-O-1: a request names the application and asks for the rounded coordinates;
-// each request is one line in the log.
+// testUserAgent is the User-Agent the tests hand in; its wording is the product package's test.
+const testUserAgent = "WeatherRibbon/1.2.3 https://github.com/oernster/WeatherRibbon"
+
+// FR-301, FR-302, NFR-O-1: a request carries the User-Agent it was handed and asks for the rounded
+// coordinates; each request is one line in the log.
 func TestEveryRequestIdentifiesTheApplication(t *testing.T) {
 	t.Parallel()
 	client := answering(http.StatusOK, london(t))
@@ -73,7 +76,7 @@ func TestEveryRequestIdentifiesTheApplication(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := client.sent.Header.Get("User-Agent"); got != "WeatherRibbon/1.2.3 https://github.com/oernster/WeatherRibbon" {
+	if got := client.sent.Header.Get("User-Agent"); got != testUserAgent {
 		t.Errorf("User-Agent %q", got)
 	}
 	if got := client.sent.URL.RawQuery; got != "lat=51.5085&lon=-0.1257" {
@@ -85,7 +88,7 @@ func TestEveryRequestIdentifiesTheApplication(t *testing.T) {
 	if log != "forecast 51.5085,-0.1257: ok\n" {
 		t.Errorf("log %q", log)
 	}
-	if New("1.2.3", io.Discard).baseURL != LocationforecastURL {
+	if New(testUserAgent, io.Discard).baseURL != LocationforecastURL {
 		t.Error("the production client does not ask Locationforecast")
 	}
 }
@@ -169,7 +172,7 @@ func TestABrokenAnswerIsAFailure(t *testing.T) {
 		t.Error("a body failing part way through was accepted")
 	}
 	var log bytes.Buffer
-	_, err := NewWith("://not a url", "1", broken, &log).Fetch(context.Background(), application.Request{})
+	_, err := NewWith("://not a url", testUserAgent, broken, &log).Fetch(context.Background(), application.Request{})
 	if err == nil || !strings.Contains(err.Error(), "building the request") {
 		t.Errorf("a bad address answered %v", err)
 	}

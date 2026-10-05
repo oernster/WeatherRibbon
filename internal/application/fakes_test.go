@@ -157,6 +157,25 @@ func (f *fakeStartup) Disable() error {
 	return nil
 }
 
+// fakeIcons is an icon set holding the names in has, recording each code told missing.
+type fakeIcons struct {
+	has     map[string]bool
+	mutex   sync.Mutex
+	missing []string
+}
+
+func (f *fakeIcons) Has(name string) bool { return f.has[name] }
+
+func (f *fakeIcons) Missing(code string) {
+	f.mutex.Lock()
+	defer f.mutex.Unlock()
+	f.missing = append(f.missing, code)
+}
+
+// testIcons are the icons the rig's set holds: the symbols the tests' forecasts carry plus the
+// doubled-s spelling of light sleet showers and thunder (FR-412).
+var testIcons = []string{"rain", "cloudy", "lightssleetshowersandthunder_day"}
+
 // testLayout is the cell geometry the tests arrange with, in DIP.
 var testLayout = Layout{
 	Cell:    placement.Size{Width: 160, Height: 120},
@@ -178,6 +197,7 @@ type rig struct {
 	cache     *fakeCache
 	clock     *fakeClock
 	pacer     *fakePacer
+	icons     *fakeIcons
 }
 
 func newRig() *rig {
@@ -189,11 +209,15 @@ func newRig() *rig {
 		cache:     &fakeCache{entries: map[string]Cached{}},
 		clock:     clock,
 		pacer:     &fakePacer{clock: clock},
+		icons:     &fakeIcons{has: map[string]bool{}},
+	}
+	for _, name := range testIcons {
+		r.icons.has[name] = true
 	}
 	r.service = New(Ports{
 		Store: r.store, Places: fakePlaces{known: []place.Place{london, tokyo, paris, newYork, nowhere}}, Forecasts: r.forecasts, SunTimes: r.sun,
 		Cache: r.cache, Clock: clock, Pacer: r.pacer, IDs: &fakeIDs{}, Draw: func(int) int { return 0 },
-		Monitors: fakeMonitors{monitors: []placement.Monitor{primaryMonitor}}, Startup: &fakeStartup{},
+		Monitors: fakeMonitors{monitors: []placement.Monitor{primaryMonitor}}, Startup: &fakeStartup{}, Icons: r.icons,
 	}, testLayout)
 	return r
 }

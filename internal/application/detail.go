@@ -16,7 +16,7 @@ import (
 type HourView struct {
 	// Time is the hour's local time, such as "09:00" or "9:00 AM".
 	Time        string
-	Symbol      string
+	Symbol      Symbol
 	Temperature int
 	Rain        float64
 	WindSpeed   int
@@ -90,7 +90,7 @@ func (s *Service) detailOf(id string) (Detail, *sunAsking, error) {
 	now := s.ports.Clock.Now()
 	state := s.weatherOf(id)
 	current := s.current.Normalised()
-	detail.Hours = hourViews(state.cached.Forecast.HoursAt(now), where.location, current)
+	detail.Hours = s.hourViews(state.cached.Forecast.HoursAt(now), where.location, current)
 	if !state.held || len(detail.Hours) == 0 {
 		detail.Problem = forecastUnavailable
 		return detail, nil, nil
@@ -119,11 +119,11 @@ func (s *Service) askSun(ctx context.Context, ask *sunAsking) (Sun, error) {
 }
 
 // hourViews answers hours as the panel shows them in location under current's units and format.
-func hourViews(hours []forecast.Hour, location *time.Location, current settings.Settings) []HourView {
+func (s *Service) hourViews(hours []forecast.Hour, location *time.Location, current settings.Settings) []HourView {
 	views := make([]HourView, 0, len(hours))
 	for _, each := range hours {
 		views = append(views, HourView{
-			Time: localtime.Text(each.Time.In(location), current.Format), Symbol: each.Symbol,
+			Time: localtime.Text(each.Time.In(location), current.Format), Symbol: s.symbolOf(each.Symbol),
 			Temperature: units.Temperature(each.AirC, current.Units), Rain: units.Rain(each.RainMM, current.Units),
 			WindSpeed: units.WindSpeed(each.WindMS, current.Units), WindFrom: each.WindFrom,
 		})
