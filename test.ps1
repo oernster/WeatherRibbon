@@ -84,7 +84,7 @@ try {
 # package's shortfall is the composition root (main.go). ribbonkit's packages are held by the kit's
 # own gate.
 $measured = [ordered]@{
-    '.'                                  = 67
+    '.'                                  = 68
     './internal/infrastructure/cache'    = 100
     './internal/infrastructure/metno'    = 100
     './internal/infrastructure/pacing'   = 100

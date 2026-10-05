@@ -1,0 +1,4 @@
+# Every text file is checked out with LF endings, whatever core.autocrlf says on the machine. gofmt
+# refuses CRLF, so a checkout converted to CRLF fails the gate before it tests anything (measured on
+# a fresh Windows checkout, 2026-09-28). Binary files are detected and left alone.
+* text=auto eol=lf

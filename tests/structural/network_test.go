@@ -2,11 +2,12 @@ package structural
 
 // NFR-S-1: the only network requests are the forecasts and sun times to api.met.no, which the metno
 // package makes, plus the update check, which is ribbonkit's and held there by the same rules. Nothing else
-// of WeatherRibbon's imports a network package or starts a program. The city list is built into the
-// executable (DATA-1), so the search never reaches the network. The page joins these checks once it
-// exists.
+// of WeatherRibbon's imports a network package or starts a program. Its page asks no network either:
+// the weather symbols and every picture are built in. The city list is built into the executable
+// (DATA-1), so the search never reaches the network.
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/oernster/ribbonkit/structure"
@@ -21,4 +22,9 @@ func TestOnlyTheForecastAndUpdateImportANetworkPackage(t *testing.T) {
 
 func TestNothingOfWeatherRibbonsStartsAProcess(t *testing.T) {
 	structure.CheckOnlyNamedFilesStartAProcess(t, structure.Root(t), goFiles(t), nil)
+}
+
+func TestThePageMakesNoRequest(t *testing.T) {
+	page := append(pageFiles(t), filepath.Join(structure.Root(t), "frontend", "index.html"))
+	structure.CheckThePageMakesNoRequest(t, page)
 }

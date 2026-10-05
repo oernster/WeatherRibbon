@@ -14,6 +14,7 @@ where they apply.
 | 4 | 2026-10-05 | The petrichor moment (FR-413; OQ-13 to OQ-16). Oliver's request and rulings of the same day. |
 | 5 | 2026-10-05 | One unreadable city entry leaves the others working, as TimeRibbon's FR-705 (FR-804); a period giving no rain figure is neither wet nor dry; the petrichor line goes only once the city is found dry (FR-413). Found while building the domain; Oliver's ruling the same day. |
 | 6 | 2026-10-05 | A Position item that would leave the ribbon where it stands is greyed (FR-505), as TimeRibbon's Amendment 37. Oliver found Centre on right edge doing nothing beside TimeRibbon; his ruling the same day. |
+| 7 | 2026-10-05 | A cell fits every whole degree from minus 60 to 60 Celsius written in the chosen units, not minus 60 to 60 of whichever unit is chosen (FR-103). Oliver's ruling. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -239,8 +240,9 @@ Verified by: `TestTheRibbonIsShownOnlyOnceSized` (facade); by hand at 150 percen
 
 **FR-103 A cell fits its text** (Must). Every cell shall be at least as wide as the widest text it can
 show in the font the page draws with: over every minute of a day, every weekday and date, every
-temperature from minus 60 to 60 degrees in the chosen units and the longest label held. After any
-choice affecting text changes, the page shall measure again.
+whole degree from minus 60 to 60 Celsius written in the chosen units and the longest label held. After
+any choice affecting text changes, the page shall measure again. The range is one span of weather
+however it is written (Amendment 7): in Fahrenheit the cell fits minus 76 to 140 degrees.
 Verified by: `TestSamplesHoldEveryTemperature` (domain); `measure.test.ts`; by hand.
 
 **FR-104 Re-centred when its length changes** (Must). When the ribbon's length changes because a city
@@ -618,7 +620,7 @@ Verified by: `TestTheCacheSurvivesARestart`, `TestAnUnreadableCacheEntryIsFetche
 | NFR-P-2 | A place search over the whole city list answers each keystroke within 50 ms at the 95th percentile on the reference machine. | Benchmark over 200 typed prefixes |
 | NFR-P-3 | The page schedules no periodic timer more often than once a minute. | `timers.test.ts` |
 | NFR-C-2 | The bundled city list adds at most 4 MB to the executable. | Size of the built extract. Measured 2026-10-05 (Amendment 3): DATA-1's nine fields as tab-separated text for all 34,153 places, 2,974,978 bytes; 896,700 compressed by gzip at level 9 |
-| NFR-S-1 | No network request but forecasts and sun times to `api.met.no` and the update check to GitHub; neither sends anything about the user beyond the cities' coordinates and the User-Agent. | `TestOnlyTheForecastAndUpdateImportANetworkPackage` (structural) |
+| NFR-S-1 | No network request but forecasts and sun times to `api.met.no` and the update check to GitHub; neither sends anything about the user beyond the cities' coordinates and the User-Agent. | `TestOnlyTheForecastAndUpdateImportANetworkPackage`, `TestNothingOfWeatherRibbonsStartsAProcess`, `TestThePageMakesNoRequest` (structural) |
 | NFR-S-2 | With 12 cities the application makes at most 12 forecast requests per `Expires` window and never more than 1 request a second in total. | `TestRequestsAreSpacedAtLeastASecondApart` (application) |
 | NFR-S-3 | Non-claim: WeatherRibbon issues no warnings; the README says to rely on the national weather service for those. | Inspection of the README |
 | NFR-U-1 | Every text in a cell meets 4.5:1 against the cell in both themes at 100 percent opacity. | Structural contrast test, every scheme |

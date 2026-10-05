@@ -65,7 +65,8 @@ func TestTheSnapshotCarriesEveryCellAndTheWindowsReading(t *testing.T) {
 	service.snapshot = application.Snapshot{
 		Cells: []application.Cell{{
 			ID: "city-1", Label: "London", Time: "08:36", Symbol: application.Symbol{Icon: "rain"},
-			Today: application.Day{Date: forecast.Date{Year: 2026, Month: 10, Day: 5}, Symbol: application.Symbol{Words: "fog"}},
+			Today:   application.Day{Date: forecast.Date{Year: 2026, Month: 10, Day: 5}, Symbol: application.Symbol{Words: "fog"}},
+			Outlook: []application.Day{{Date: forecast.Date{Year: 2026, Month: 10, Day: 6}, Weekday: "Tuesday", High: 15, Known: true}},
 		}},
 		Units:   units.Imperial,
 		Choices: ribbon.Choices{Colour: ribbon.Ocean, Opacity: 40},
@@ -77,8 +78,11 @@ func TestTheSnapshotCarriesEveryCellAndTheWindowsReading(t *testing.T) {
 	if len(got.Cells) != 1 || got.Cells[0].Symbol != (symbolDTO{Icon: "rain"}) || got.Cells[0].Today.Date != "2026-10-05" {
 		t.Errorf("cells %+v, want the one cell the service answered", got.Cells)
 	}
-	if got.Cells[0].Outlook == nil || got.Notices == nil || got.Cells[0].Today.Symbol.Words != "fog" {
-		t.Error("a list went out as null or the day's words were lost")
+	if got.Notices == nil || got.Cells[0].Today.Symbol.Words != "fog" {
+		t.Error("the notices went out as null or the day's words were lost")
+	}
+	if outlook := got.Cells[0].Outlook; len(outlook) != 1 || outlook[0].Date != "2026-10-06" || outlook[0].Weekday != "Tuesday" || outlook[0].High != 15 || !outlook[0].Known {
+		t.Errorf("outlook %+v, want the service's one day", outlook)
 	}
 	if got.Units != "imperial" || got.Colour != "ocean" || got.Opacity != 40 || got.Scale != 125 || got.MinScale != ribbon.MinScale {
 		t.Errorf("units %q, colour %q, opacity %d, scale %v of at least %d", got.Units, got.Colour, got.Opacity, got.Scale, got.MinScale)
@@ -109,6 +113,12 @@ func TestTheDetailAndThePetrichorLineReachTheService(t *testing.T) {
 	got, err := app.OpenDetail("city-1")
 	if err != nil || got.ID != "city-1" || got.Sunrise != "07:07" || got.Hours == nil {
 		t.Errorf("detail %+v (%v)", got, err)
+	}
+	service.detail.Hours = []application.HourView{{Time: "08:00", Symbol: application.Symbol{Icon: "rain"}, Temperature: 14, Rain: 0.2, WindSpeed: 18, WindFrom: 225}}
+	got, _ = app.OpenDetail("city-1")
+	want := hourDTO{Time: "08:00", Symbol: symbolDTO{Icon: "rain"}, Temperature: 14, Rain: 0.2, WindSpeed: 18, WindFrom: 225}
+	if len(got.Hours) != 1 || got.Hours[0] != want {
+		t.Errorf("hours %+v, want %+v", got.Hours, want)
 	}
 	service.changeErr = errPlanted
 	if _, err := app.OpenDetail("city-1"); !errors.Is(err, errPlanted) {
