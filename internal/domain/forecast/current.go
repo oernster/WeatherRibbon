@@ -9,6 +9,9 @@ type Current struct {
 	// Symbol is the symbol code of the current step's next_1_hours block, else its next_6_hours
 	// block; empty when the step carries neither.
 	Symbol string
+	// RainMM is the same block's rain in millimetres; HasRain says whether it gave one (FR-413).
+	RainMM  float64
+	HasRain bool
 }
 
 // currentIndex answers the index of the latest step at or before now; -1 when there is none.
@@ -32,12 +35,12 @@ func (f Forecast) CurrentAt(now time.Time) (Current, bool) {
 		return Current{}, false
 	}
 	step := f.steps[index]
-	symbol := ""
-	switch {
-	case step.Next1.Present():
-		symbol = step.Next1.Symbol
-	case step.Next6.Present():
-		symbol = step.Next6.Symbol
+	current := Current{AirC: step.AirC}
+	for _, block := range []Period{step.Next1, step.Next6} {
+		if block.Present() {
+			current.Symbol, current.RainMM, current.HasRain = block.Symbol, block.RainMM, block.HasRain
+			break
+		}
 	}
-	return Current{AirC: step.AirC, Symbol: symbol}, true
+	return current, true
 }

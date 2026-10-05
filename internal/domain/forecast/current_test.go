@@ -31,10 +31,10 @@ func TestTheCurrentStepIsTheLatestNotAfterNow(t *testing.T) {
 	t.Parallel()
 	f := New([]Step{
 		{Time: at(t, "2026-10-05T08:00:00Z"), AirC: 15, Next1: hourly("cloudy", 0)},
-		{Time: at(t, "2026-10-05T07:00:00Z"), AirC: 14.4, Next1: hourly("partlycloudy_day", 0)},
+		{Time: at(t, "2026-10-05T07:00:00Z"), AirC: 14.4, Next1: hourly("partlycloudy_day", 0.3)},
 	})
 	got, ok := f.CurrentAt(at(t, "2026-10-05T07:36:00Z"))
-	if !ok || got.AirC != 14.4 || got.Symbol != "partlycloudy_day" {
+	if !ok || got.AirC != 14.4 || got.Symbol != "partlycloudy_day" || got.RainMM != 0.3 || !got.HasRain {
 		t.Fatalf("CurrentAt = %+v, %v; want the 07:00Z step", got, ok)
 	}
 	exact, ok := f.CurrentAt(at(t, "2026-10-05T08:00:00Z"))
