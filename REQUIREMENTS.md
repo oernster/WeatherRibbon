@@ -13,6 +13,7 @@ where they apply.
 | 3 | 2026-10-05 | Brought up to the kit as built: on macOS the Dock icon stays, as TimeRibbon's Amendment 36 (FR-101); `ribbonkit` exists at v0.1.1 with TimeRibbon 2.7.0 released on it (CON-10, section 8); the Flatpak is granted the occupancy folder (section 5). 24-hour time when none is held (FR-401); a place with no region name (FR-202); the detail panel without a forecast or sun times (FR-410, FR-411); NFR-C-2 measured. Oliver's rulings of the same day. |
 | 4 | 2026-10-05 | The petrichor moment (FR-413; OQ-13 to OQ-16). Oliver's request and rulings of the same day. |
 | 5 | 2026-10-05 | One unreadable city entry leaves the others working, as TimeRibbon's FR-705 (FR-804); a period giving no rain figure is neither wet nor dry; the petrichor line goes only once the city is found dry (FR-413). Found while building the domain; Oliver's ruling the same day. |
+| 6 | 2026-10-05 | A Position item that would leave the ribbon where it stands is greyed (FR-505), as TimeRibbon's Amendment 37. Oliver found Centre on right edge doing nothing beside TimeRibbon; his ruling the same day. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -491,7 +492,14 @@ shows elsewhere at launch is placed again before its move settles. As TimeRibbon
 **FR-504 Scaling across monitors** (Must). The ribbon keeps its size in DIP across monitors, sized by
 the page's reported `devicePixelRatio`. As TimeRibbon's FR-407.
 
-**FR-505 Position, snapping, the last edge** (Should). As TimeRibbon's FR-408, FR-410 and FR-411.
+**FR-505 Position, snapping, the last edge** (Should; Amendment 6). As TimeRibbon's FR-408, FR-410
+and FR-411, so a Position item whose press would leave the ribbon where it stands is greyed in both
+menus and in Settings (TimeRibbon's Amendment 37).
+Acceptance: WeatherRibbon vertical against the right edge beside TimeRibbon, which holds that edge's
+centre, has `Centre on right edge` greyed and `Centre on left edge` offered; moved to the left edge,
+`Centre on right edge` is offered again and puts it beside TimeRibbon.
+Verified by: the kit's tests TimeRibbon's FR-408 names; `TestTheSnapshotCarriesEveryCellAndTheWindowsReading`
+(facade); `settings.test.tsx` (page); by hand.
 
 **FR-506 Never on another ribbon** (Must; Amendment 2). Running beside TimeRibbon (or any other
 product on the shared module) the ribbon shall never land on another's ribbon, tab or shown pull out:

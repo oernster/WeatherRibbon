@@ -34,6 +34,8 @@ frontend/dist/
 frontend/wailsjs/
 frontend/package.json.md5
 build/bin/
+# Written for each build: by Wails from its template until tools/versioninfo writes it, as TimeRibbon's.
+build/windows/info.json
 
 # Release notes, kept locally until a release is cut
 NOTES.md

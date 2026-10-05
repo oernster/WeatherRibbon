@@ -19,6 +19,20 @@ describe('Settings (FR-701, FR-702)', () => {
     await waitFor(() => expect(reload).toHaveBeenCalled())
   })
 
+  it('greys a Position choice that would leave the ribbon where it stands, so pressing it does nothing (FR-505)', () => {
+    const bridge = installBridge()
+    const shown = snapshot()
+    shown.choices = shown.choices.map((choice) =>
+      choice.label !== 'Position' ? choice : { ...choice, children: choice.children.map((item) => ({ ...item, disabled: item.action === 'right-edge' })) },
+    )
+    render(<Settings snapshot={shown} startAdding={false} reload={vi.fn()} onClose={vi.fn()} />)
+    const right = screen.getByRole('button', { name: 'Centre on right edge' }) as HTMLButtonElement
+    expect(right.disabled).toBe(true)
+    expect((screen.getByRole('button', { name: 'Centre on left edge' }) as HTMLButtonElement).disabled).toBe(false)
+    fireEvent.click(right)
+    expect(bridge.Choose).not.toHaveBeenCalled()
+  })
+
   it('lists nothing until something is typed', () => {
     settings()
     expect(screen.queryAllByRole('option')).toHaveLength(0)

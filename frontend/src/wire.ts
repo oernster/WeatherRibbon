@@ -93,6 +93,8 @@ export interface MenuChoice {
   label: string
   checkable: boolean
   checked: boolean
+  /** Greyed, as a Position item that would leave the ribbon where it stands is. */
+  disabled: boolean
   children: MenuChoice[]
 }
 

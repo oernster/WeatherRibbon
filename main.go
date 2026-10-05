@@ -158,7 +158,7 @@ func run(log io.Writer) error {
 		_ = control.Refitted(nil)
 		control.Redraw()
 	}, func(doing string, err error) { control.Report(doing, err) })
-	desk := desktop.New(product.App(), func() []menus.Item { return service.TrayMenu(control.Visible()) }, log)
+	desk := desktop.New(product.App(), func() []menus.Item { return control.Offered(service.TrayMenu(control.Visible())) }, log)
 	app, control := newApp(ctx, service, fetch, window.Config{Service: kitService{service}, Desktop: desk, Log: log, Panels: panels})
 	platform.Prepare(desk, trayIcon, control.ExitWhen)
 	if err := desk.Start(); err != nil {

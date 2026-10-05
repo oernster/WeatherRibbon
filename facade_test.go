@@ -86,8 +86,8 @@ func TestTheSnapshotCarriesEveryCellAndTheWindowsReading(t *testing.T) {
 	if !got.Collapsed || !got.Scrolls || got.DragThreshold != (sizeDTO{Width: 4, Height: 4}) || got.StartLabel != product.StartAtSignIn {
 		t.Errorf("collapsed %v, scrolls %v, threshold %v, start label %q", got.Collapsed, got.Scrolls, got.DragThreshold, got.StartLabel)
 	}
-	if len(got.Choices) != 1 || got.Choices[0].Action != string(menus.Pin) || got.Choices[0].Children == nil {
-		t.Errorf("choices %+v, want the service's with never a null list of children", got.Choices)
+	if len(got.Choices) != 1 || got.Choices[0].Action != string(menus.Pin) || got.Choices[0].Children == nil || !got.Choices[0].Disabled {
+		t.Errorf("choices %+v, want the service's as the window offers them, never a null list of children", got.Choices)
 	}
 }
 

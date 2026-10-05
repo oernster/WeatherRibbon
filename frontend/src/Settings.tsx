@@ -41,7 +41,10 @@ interface ChoiceProps {
   choose: (action: string) => void
 }
 
-/** MenuGroup draws one of the menus' submenus: ticked items as radio buttons, moves as plain buttons. */
+/**
+ * MenuGroup draws one of the menus' submenus: ticked items as radio buttons, moves as plain buttons;
+ * a disabled item greyed.
+ */
 function MenuGroup({ choice, choose }: ChoiceProps) {
   return (
     <fieldset>
@@ -49,11 +52,11 @@ function MenuGroup({ choice, choose }: ChoiceProps) {
       {choice.children.map((item) =>
         item.checkable ? (
           <label key={item.action}>
-            <input type="radio" name={choice.label} value={item.action} checked={item.checked} onChange={() => choose(item.action)} />
+            <input type="radio" name={choice.label} value={item.action} checked={item.checked} disabled={item.disabled} onChange={() => choose(item.action)} />
             {item.label}
           </label>
         ) : (
-          <button key={item.action} type="button" onClick={() => choose(item.action)}>
+          <button key={item.action} type="button" disabled={item.disabled} onClick={() => choose(item.action)}>
             {item.label}
           </button>
         ),

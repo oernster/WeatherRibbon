@@ -109,12 +109,14 @@ type snapshotDTO struct {
 }
 
 // choiceDTO is one of the menus' choices as Settings draws it (FR-701): either a group of Children
-// or one item whose Action the page hands back to Choose.
+// or one item whose Action the page hands back to Choose; greyed while Disabled, as a Position item
+// that would not move the ribbon is.
 type choiceDTO struct {
 	Action    string      `json:"action"`
 	Label     string      `json:"label"`
 	Checkable bool        `json:"checkable"`
 	Checked   bool        `json:"checked"`
+	Disabled  bool        `json:"disabled"`
 	Children  []choiceDTO `json:"children"`
 }
 
@@ -153,7 +155,7 @@ func choicesOf(items []menus.Item) []choiceDTO {
 	for _, item := range items {
 		out = append(out, choiceDTO{
 			Action: string(item.Action), Label: item.Label, Checkable: item.Checkable, Checked: item.Checked,
-			Children: choicesOf(item.Children),
+			Disabled: item.Disabled, Children: choicesOf(item.Children),
 		})
 	}
 	return out

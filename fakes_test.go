@@ -117,6 +117,16 @@ func (c *recordingControl) PageMeasured() { c.record("PageMeasured") }
 
 func (c *recordingControl) Shown() window.Shown { return c.shown }
 
+// Offered greys every item, so a test reads which menu passed through it.
+func (c *recordingControl) Offered(items []menus.Item) []menus.Item {
+	greyed := make([]menus.Item, len(items))
+	for index, item := range items {
+		item.Disabled = true
+		greyed[index] = item
+	}
+	return greyed
+}
+
 func (c *recordingControl) SetColour(colour string) error {
 	c.colours = append(c.colours, colour)
 	return c.choiceErr

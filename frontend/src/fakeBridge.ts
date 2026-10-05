@@ -22,11 +22,11 @@ export function cell(overrides: Partial<Cell> = {}): Cell {
 }
 
 function item(action: string, label: string, checked?: boolean): MenuChoice {
-  return { action, label, checkable: checked != null, checked: checked === true, children: [] }
+  return { action, label, checkable: checked != null, checked: checked === true, disabled: false, children: [] }
 }
 
 function group(label: string, children: MenuChoice[]): MenuChoice {
-  return { action: '', label, checkable: false, checked: false, children }
+  return { action: '', label, checkable: false, checked: false, disabled: false, children }
 }
 
 /** The menus' choices as Go sends them, in their order; Colour cut to two schemes. */
