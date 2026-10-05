@@ -10,10 +10,18 @@ import (
 	"time"
 )
 
+// The spans of a step's next_1_hours, next_6_hours and next_12_hours blocks, in hours.
+const (
+	Next1Hours  = 1
+	Next6Hours  = 6
+	Next12Hours = 12
+)
+
 // Period is one of a step's period blocks: the span from its step's instant for Hours hours, the
 // condition MET Norway names for it plus its rain and its extremes where the block gives them.
 type Period struct {
-	// Hours is the span in hours: 1, 6 or 12. Zero means the step carries no such block.
+	// Hours is the span in hours: Next1Hours, Next6Hours or Next12Hours. Zero means the step carries
+	// no such block.
 	Hours int
 	// Symbol is MET Norway's symbol code, such as "partlycloudy_day".
 	Symbol string

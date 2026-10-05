@@ -12,13 +12,6 @@ import (
 // errNoTimeseries is answered for an answer holding no timeseries (FR-308).
 var errNoTimeseries = errors.New("the answer holds no timeseries")
 
-// The block lengths Locationforecast gives, in hours.
-const (
-	oneHour     = 1
-	sixHours    = 6
-	twelveHours = 12
-)
-
 // payload is the part of a Locationforecast 2.0 answer read. Every figure is a pointer, so a figure
 // the answer leaves out is told apart from a zero.
 type payload struct {
@@ -73,8 +66,9 @@ func decode(body []byte) (forecast.Forecast, error) {
 		steps = append(steps, forecast.Step{
 			Time: each.Time, AirC: *instant.AirTemperature,
 			WindMS: valueOf(instant.WindSpeed), WindFrom: valueOf(instant.WindFromDirection),
-			Next1: blockOf(each.Data.Next1, oneHour), Next6: blockOf(each.Data.Next6, sixHours),
-			Next12: blockOf(each.Data.Next12, twelveHours),
+			Next1:  blockOf(each.Data.Next1, forecast.Next1Hours),
+			Next6:  blockOf(each.Data.Next6, forecast.Next6Hours),
+			Next12: blockOf(each.Data.Next12, forecast.Next12Hours),
 		})
 	}
 	return forecast.New(steps), nil

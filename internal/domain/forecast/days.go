@@ -5,9 +5,6 @@ import "time"
 // OutlookDays is how many days after today a cell shows (FR-406, OQ-3).
 const OutlookDays = 3
 
-// sixHours is the span of the blocks a day's symbol is chosen from (FR-409).
-const sixHours = 6
-
 // Day is what a cell shows for one local date (FR-404, FR-406 to FR-409).
 type Day struct {
 	// Date is the city's local date this day covers.
@@ -85,7 +82,8 @@ func symbolNearestNoon(steps []Step, date Date, location *time.Location) string 
 	symbol := ""
 	nearest := time.Duration(-1)
 	for _, each := range blockSpans(steps) {
-		if each.block.Hours != sixHours {
+		// A day's symbol is chosen from the 6-hour blocks alone (FR-409).
+		if each.block.Hours != Next6Hours {
 			continue
 		}
 		middle := midpoint(each.start, each.block)
