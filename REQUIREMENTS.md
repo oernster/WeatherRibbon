@@ -9,7 +9,7 @@ where they apply.
 | No. | Date | Change |
 |---|---|---|
 | 1 | 2026-10-05 | `ribbonkit`'s front-end half is an npm package at the repository root beside `go.mod`, each application depending on it by git tag; an npm workspace cannot span two repositories. It is first carved inside TimeRibbon, then lifted into its own repository (CON-10, OQ-9, section 8). |
-| 2 | 2026-10-05 | Running beside TimeRibbon the ribbon never lands on it, through an occupancy file the shared module owns (FR-506, TimeRibbon's FR-412); built in the module before it is lifted out (section 8). |
+| 2 | 2026-10-05 | Running beside TimeRibbon the ribbon never lands on it, through an occupancy folder the shared module owns (FR-506, TimeRibbon's FR-412); built in the module before it is lifted out (section 8). |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -700,4 +700,4 @@ and supplying the donation link; OQ-6 and OQ-7 were settled by measurement the s
 | OQ-9 | What is the shared module and where does it live? | `ribbonkit`, a public repository holding a Go module plus an npm package at its root (Amendment 1) | CON-10 |
 | OQ-10 | An `Add city` picture beside the place search? | Supplied as `assets/add-city.png` | FR-208 |
 | OQ-11 | A website at the first release? | Yes, at `https://weatherribbon.world`, ported from TimeRibbon's | Section 4 |
-| OQ-12 | What keeps WeatherRibbon and TimeRibbon apart on one desktop? | The shared module's occupancy file; TimeRibbon's OQ-32 to OQ-36 | FR-506 |
+| OQ-12 | What keeps WeatherRibbon and TimeRibbon apart on one desktop? | The shared module's occupancy folder; TimeRibbon's OQ-32 to OQ-38 | FR-506 |
