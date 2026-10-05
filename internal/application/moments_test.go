@@ -37,6 +37,39 @@ func TestRainAfterADrySpellShowsTheMomentWhereItRained(t *testing.T) {
 	}
 }
 
+// FR-413, FR-801, FR-807: the dry spell kept with the cache and the countdown kept in the settings
+// carry an event across a restart. With either lost, rain after the restart would show no line.
+func TestTheSpellAndCountdownSurviveARestart(t *testing.T) {
+	t.Parallel()
+	before := added(t, london.GeoNamesID)
+	before.service.current.PetrichorCountdown = 2
+	start := before.clock.now
+	hold(before, "city-1", hourlyAround(start, 10, 0), start)
+	_ = before.service.Snapshot()
+	before.clock.now = start.Add(73 * time.Hour)
+	hold(before, "city-1", hourlyAround(before.clock.now, 10, 1), before.clock.now)
+	_ = before.service.Snapshot()
+	dryAgain := before.clock.now.Add(time.Hour)
+	before.clock.now = dryAgain
+	hold(before, "city-1", hourlyAround(dryAgain, 10, 0), dryAgain)
+	_ = before.service.Snapshot()
+
+	after := newRig()
+	after.store.loaded = Loaded{Settings: before.store.saved[len(before.store.saved)-1]}
+	after.cache.entries = before.cache.entries
+	if err := after.service.Start(); err != nil {
+		t.Fatal(err)
+	}
+	if got := after.service.Settings().PetrichorCountdown; got != 1 {
+		t.Fatalf("countdown after the restart %d; want 1", got)
+	}
+	after.clock.now = dryAgain.Add(73 * time.Hour)
+	hold(after, "city-1", hourlyAround(after.clock.now, 10, 1), after.clock.now)
+	if cell := after.service.Snapshot().Cells[0]; !cell.Petrichor {
+		t.Error("the spell begun before the restart did not end in the line")
+	}
+}
+
 // FR-413: an event that does not end the countdown shows nothing; a click hides a line.
 func TestAnEventBeforeTheCountdownEndsShowsNothing(t *testing.T) {
 	t.Parallel()

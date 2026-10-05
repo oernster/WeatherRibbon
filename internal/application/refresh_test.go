@@ -6,6 +6,8 @@ import (
 	"slices"
 	"testing"
 	"time"
+
+	"github.com/oernster/weatherribbon/internal/domain/place"
 )
 
 // added answers a started rig holding the given places as cities, in order.
@@ -72,6 +74,62 @@ func TestANotModifiedAnswerKeepsTheForecast(t *testing.T) {
 	kept := r.cache.entries["city-1"]
 	if !kept.Expires.Equal(later) || kept.LastModified != "Mon, 05 Oct 2026 07:30:00 GMT" || !kept.Fetched.Equal(first) {
 		t.Errorf("kept %+v; want the new Expires with the old Last-Modified, fetched at %v", kept, first)
+	}
+}
+
+// FR-305: a failed request leaves the forecast already held in place, still shown, with no problem.
+func TestAFailedRequestKeepsTheForecast(t *testing.T) {
+	t.Parallel()
+	r := added(t, london.GeoNamesID)
+	fetched := r.clock.now
+	expires := fetched.Add(time.Hour)
+	r.forecasts.answers = append(r.forecasts.answers, func(Request) (Answer, error) {
+		return Answer{Forecast: hourlyAround(fetched, 14.4, 0), Expires: expires}, nil
+	})
+	_ = r.service.Refresh(context.Background())
+	r.clock.now = expires
+	r.forecasts.answers = append(r.forecasts.answers, failure(errPlanted))
+	_ = r.service.Refresh(context.Background())
+	if len(r.forecasts.asked) != 2 {
+		t.Fatalf("asked %d times; want the success and the failure", len(r.forecasts.asked))
+	}
+	if kept := r.cache.entries["city-1"]; !kept.Fetched.Equal(fetched) || !kept.Expires.Equal(expires) {
+		t.Errorf("kept %+v; want the forecast fetched at %v", kept, fetched)
+	}
+	if cell := r.service.Snapshot().Cells[0]; cell.Problem != "" || cell.Temperature != 14 {
+		t.Errorf("cell %+v; want the held forecast shown", cell)
+	}
+}
+
+// FR-309: Refresh now asks for the city whose forecast has expired and the one backing off, never
+// the one still within its Expires.
+func TestRefreshNowAsksOnlyTheExpired(t *testing.T) {
+	t.Parallel()
+	r := added(t, london.GeoNamesID, tokyo.GeoNamesID, paris.GeoNamesID)
+	start := r.clock.now
+	parisAsked, tokyoAsked := place.RoundDegrees(paris.Latitude), place.RoundDegrees(tokyo.Latitude)
+	byCity := func(request Request) (Answer, error) {
+		switch request.Latitude {
+		case parisAsked:
+			return Answer{}, errPlanted
+		case tokyoAsked:
+			return Answer{Expires: start.Add(5 * time.Minute)}, nil
+		}
+		return Answer{Expires: start.Add(time.Hour)}, nil
+	}
+	for range 5 {
+		r.forecasts.answers = append(r.forecasts.answers, byCity)
+	}
+	_ = r.service.Refresh(context.Background())
+	r.clock.now = start.Add(5 * time.Minute)
+	_ = r.service.RefreshNow(context.Background())
+	var again []float64
+	for _, each := range r.forecasts.asked[3:] {
+		again = append(again, each.Latitude)
+	}
+	slices.Sort(again)
+	if want := []float64{tokyoAsked, parisAsked}; !slices.Equal(again, want) {
+		t.Errorf("Refresh now asked for latitudes %v; want Tokyo and Paris alone", again)
 	}
 }
 

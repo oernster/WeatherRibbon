@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/oernster/ribbonkit/domain/localtime"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
 	"github.com/oernster/weatherribbon/internal/domain/units"
 )
@@ -72,6 +73,42 @@ func TestWriteFailureIsReportedAndCleared(t *testing.T) {
 	r.store.saveErr = nil
 	if err := r.service.SetUnits(units.Metric); err != nil || len(noticesOf(r.service)) != 0 {
 		t.Errorf("a later save did not clear the notice: %v %v", err, noticesOf(r.service))
+	}
+}
+
+// FR-702: each of WeatherRibbon's own settings is saved the moment it changes, with no Save step.
+// The ribbon's choices are the kit's and saved through the same path (TestTheArrangersChangesAreSavedWithTheSettings).
+func TestChangingASettingPersistsIt(t *testing.T) {
+	t.Parallel()
+	r := added(t)
+	if err := r.service.SetUnits(units.Imperial); err != nil || len(r.store.saved) != 1 || r.store.saved[0].Units != units.Imperial {
+		t.Fatalf("SetUnits saved %+v, %v", r.store.saved, err)
+	}
+	if err := r.service.SetFormat(localtime.TwelveHour); err != nil || len(r.store.saved) != 2 {
+		t.Fatalf("SetFormat saved %d times, %v", len(r.store.saved), err)
+	}
+	if last := r.store.saved[1]; last.Format != localtime.TwelveHour || last.Units != units.Imperial {
+		t.Errorf("saved %+v; want both changes", last)
+	}
+}
+
+// FR-803: a stored city whose place is not in the list keeps its place in the file and its label on
+// the ribbon; no other place is put in its stead.
+func TestAMissingPlaceIsNeverReplaced(t *testing.T) {
+	t.Parallel()
+	lost := settings.City{ID: "lost", GeoNamesID: 1, Label: "Atlantis"}
+	r := newRig()
+	r.store.loaded = Loaded{Settings: settings.Defaults().WithCityAdded(lost)}
+	if err := r.service.Start(); err != nil {
+		t.Fatal(err)
+	}
+	cell := r.service.Snapshot().Cells[0]
+	if cell.Label != "Atlantis" || cell.Problem != placeNotFound {
+		t.Errorf("cell %+v; want Atlantis saying its place was not found", cell)
+	}
+	_ = r.service.SetUnits(units.Imperial)
+	if saved := r.store.saved[0].Cities; len(saved) != 1 || saved[0] != lost {
+		t.Errorf("saved cities %+v; want %+v kept as it was", saved, lost)
 	}
 }
 
