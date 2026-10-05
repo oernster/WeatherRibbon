@@ -49,27 +49,29 @@ figure with the fraction dropped, so it fails once cover is lost.
 which runs no statement. The four tools are mains that hand `internal/product` to the kit's
 `delivery` package, where their work and its tests live.
 
-Every figure is the Windows build's, which `test.ps1` measures. That build compiles 174 Go test
-functions, counted from the test files `go list` selects. Twenty are the structural tests in
+Every figure is the Windows build's, which `test.ps1` measures. That build compiles 176 Go test
+functions, counted from the test files `go list` selects. Twenty-two are the structural tests in
 `tests/structural`, which read the source and are the same on every platform; two more in
 `page_api_test.go` hold the page's calls to what is bound. [ARCHITECTURE.md](ARCHITECTURE.md) lists
 each against its rule. `TestA1Point0SettingsFileIsReadWhole` in `store` holds the settings file's
 promise (NFR-C-1); `TestThePetrichorLinePulsesAndStandsStillWhenAsked` holds FR-413's pulse in Go
 because jsdom draws no animation and Vitest hands a test no stylesheet's text. The macOS and Linux
-builds compile 172. Two are Windows only: the setup program's test, since setup is built for Windows
+builds compile 174. Two are Windows only: the setup program's test, since setup is built for Windows
 alone; `cache/held_windows_test.go`, a cache entry another program holds open being left out and
 fetched again, since only Windows refuses to read a file held open
 ([On macOS and Linux](#on-macos-and-linux)).
 
 ### The front end
 
-18 tests in 5 files under Vitest with jsdom, run from `frontend`: the cells in the kit's band, each
+26 tests in 7 files under Vitest with jsdom, run from `frontend`: the cells in the kit's band, each
 city's time, weather now, today and outlook, a symbol shown as words, a problem said in place of the
 weather, a stale forecast's age, the empty ribbon and opening the detail (`ribbon.test.tsx`); the
 detail's hours, its sun times and closing it (`detail.test.tsx`); Settings, its search, removing a
 city, the menus' choices with a greyed Position choice, the time format and the donate button
 (`settings.test.tsx`); measuring a cell's widest text (`measure.test.ts`, FR-103); the petrichor line
-(`petrichor.test.tsx`, FR-413). No coverage provider is installed, so no figure is claimed.
+(`petrichor.test.tsx`, FR-413); every shipped weather icon named by its code in words
+(`a11y.test.tsx`, NFR-U-2); every timer the page schedules, the kit's included, against a reasoned
+allow-list through the kit's `describePageTimers` (`timers.test.ts`, NFR-P-3). No coverage provider is installed, so no figure is claimed.
 
 ## How each layer is tested
 
@@ -116,7 +118,7 @@ macOS and Linux checks are in its TESTING.md.
 | What | macOS | Linux |
 |---|---|---|
 | Tags | `desktop,production` | `desktop,production,webkit2_41` |
-| Go test functions | 172 | 172 |
+| Go test functions | 174 | 174 |
 
 With the platform's tags in `TAGS`, run each and read its exit code:
 

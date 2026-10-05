@@ -15,6 +15,7 @@ where they apply.
 | 5 | 2026-10-05 | One unreadable city entry leaves the others working, as TimeRibbon's FR-705 (FR-804); a period giving no rain figure is neither wet nor dry; the petrichor line goes only once the city is found dry (FR-413). Found while building the domain; Oliver's ruling the same day. |
 | 6 | 2026-10-05 | A Position item that would leave the ribbon where it stands is greyed (FR-505), as TimeRibbon's Amendment 37. Oliver found Centre on right edge doing nothing beside TimeRibbon; his ruling the same day. |
 | 7 | 2026-10-05 | A cell fits every whole degree from minus 60 to 60 Celsius written in the chosen units, not minus 60 to 60 of whichever unit is chosen (FR-103). Oliver's ruling. |
+| 8 | 2026-10-05 | Behaviour the kit owns is verified by the kit's own tests, named here as the kit names them, never by a second copy in WeatherRibbon (FR-102, FR-105, FR-204, FR-704, FR-705, NFR-O-1). The ribbon's palette is the kit's alone, so its contrast is the kit's test, WeatherRibbon holding its stylesheets to that palette (NFR-U-1). Oliver's ruling. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -236,7 +237,8 @@ Verified by: by hand.
 **FR-102 Shown once sized** (Must). At launch the application shall show the ribbon only once the page
 has reported its scale and its measured widths; a page that never reports is shown one second
 after it is ready.
-Verified by: `TestTheRibbonIsShownOnlyOnceSized` (facade); by hand at 150 percent on KDE.
+Verified by: the kit's `TestDomReadyShowsTheRibbonOnceThePageHasSizedIt` and
+`TestARibbonThePageNeverSizesIsShownByTheFallbackOnce` (Amendment 8); by hand at 150 percent on KDE.
 
 **FR-103 A cell fits its text** (Must). Every cell shall be at least as wide as the widest text it can
 show in the font the page draws with: over every minute of a day, every weekday and date, every
@@ -253,7 +255,8 @@ Verified by: `TestARibbonWhoseLengthChangesIsRecentredAndKept` (application).
 
 **FR-105 Overflow scrolls** (Must). Cells needing more length than the work area shall scroll along
 the orientation, never clipped out of reach and never wrapped.
-Verified by: `TestRibbonLengthNeverExceedsWorkArea` (domain); `ribbon.test.tsx`.
+Verified by: the kit's `TestRibbonLengthFollowsClockCountAndNeverExceedsWorkArea` (Amendment 8);
+`ribbon.test.tsx`.
 
 **FR-106 Empty ribbon** (Must). With no city, the ribbon shall show one cell reading `No cities yet`
 with an `Add city` control opening the place search.
@@ -304,7 +307,8 @@ Verified by: `settings.test.tsx`.
 
 **FR-204 Edit a label** (Must). An edited label shall be stored; a label empty after trimming stores
 the place's name. A label holds at most 32 characters.
-Verified by: `TestEmptyLabelFallsBackToThePlaceName`, `TestLabelIsCappedAt32Characters` (domain).
+Verified by: `TestEmptyLabelFallsBackToThePlaceName` (domain); the kit's
+`TestLabelIsCappedAt32Characters` (Amendment 8).
 
 **FR-205 Remove a city** (Must). After a confirmation naming it, the application shall remove the city
 and its cached forecast.
@@ -553,8 +557,8 @@ value outside the bounds is refused by the setting and brought within them when 
 Acceptance: dragged to 40 and let go, Settings stays wholly opaque, the file holds `"opacity": 40`
 and a restart keeps it; closed, the cells' text and icons are solid while the desktop shows through
 behind them; a file holding 5 draws the background at 20.
-Verified by: `TestOpacityIsHeldWithinItsBounds` (domain); the shared module's opacity tests;
-`opacity.test.tsx`; by hand on Windows, macOS and Linux in Light and Dark.
+Verified by: the kit's `TestOpacityIsHeldWithinItsBounds`, `opacity.test.ts` and
+`OpacitySlider.test.tsx` (Amendment 8); by hand on Windows, macOS and Linux in Light and Dark.
 
 **FR-705 Resizing the cells** (Should). A grip in the ribbon's corner, dragged outward or back, shall
 draw everything in the cells (text, icons, padding) at 75 to 200 percent, the window following
@@ -562,7 +566,8 @@ smoothly; the pointer is read from the desktop. The ribbon grows and shrinks fro
 corner so the grip stays under the pointer. The preview scale is fractional; the kept one is whole,
 saved once let go; 100 percent when none is held; a double-click returns to 100. The scroll bar keeps
 its own thickness; pressing the grip never drags the window.
-Verified by: the shared module's grip tests; `scaleGrip.test.tsx`; by hand on all three platforms.
+Verified by: the kit's grip tests and `ScaleGrip.test.tsx` (Amendment 8); by hand on all three
+platforms.
 
 **FR-706 Pin ribbon and the tab** (Should). As TimeRibbon's FR-613 to FR-619: unpinned and flush
 against an edge, the ribbon collapses to an 8 DIP accent tab a second after the pointer leaves, opens
@@ -623,14 +628,14 @@ Verified by: `TestTheCacheSurvivesARestart`, `TestAnUnreadableCacheEntryIsFetche
 | NFR-S-1 | No network request but forecasts and sun times to `api.met.no` and the update check to GitHub; neither sends anything about the user beyond the cities' coordinates and the User-Agent. | `TestOnlyTheForecastAndUpdateImportANetworkPackage`, `TestNothingOfWeatherRibbonsStartsAProcess`, `TestThePageMakesNoRequest` (structural) |
 | NFR-S-2 | With 12 cities the application makes at most 12 forecast requests per `Expires` window and never more than 1 request a second in total. | `TestRequestsAreSpacedAtLeastASecondApart` (application) |
 | NFR-S-3 | Non-claim: WeatherRibbon issues no warnings; the README says to rely on the national weather service for those. | Inspection of the README |
-| NFR-U-1 | Every text in a cell meets 4.5:1 against the cell in both themes at 100 percent opacity. | Structural contrast test, every scheme |
+| NFR-U-1 | Every text in a cell meets 4.5:1 against the cell in both themes at 100 percent opacity. | The kit's `TestTheKitsTextMeetsTheContrastFloor`, every scheme (Amendment 8); `TestWeatherRibbonDrawsTextOnlyInTheKitsCheckedColours` (structural) |
 | NFR-U-2 | No condition is told by colour alone: each icon carries an accessible name with its words. | `a11y.test.tsx` |
 | NFR-U-3 | Every control in Settings, the search and the detail panel is reachable from the keyboard with a visible focus indicator. | `settings.test.tsx`; by hand |
 | NFR-U-4 | Targets are at least 24 by 24 DIP; the tab is exempt, as TimeRibbon's NFR-U-5. | Inspection |
 | NFR-M-1 | Coverage, size and layering are enforced by `test.ps1`, which `build.ps1` runs first with no switch to skip it. | `build.ps1` |
 | NFR-M-2 | Go passes gofmt, go vet and staticcheck; the front end eslint, `tsc --noEmit` and Vitest. | `test.ps1` |
 | NFR-C-1 | Every later release reads every settings file the first release writes; keys may be added, never renamed, dropped or redefined; an unknown key is written back. | `TestA1Point0SettingsFileIsReadWhole` |
-| NFR-O-1 | A log, `WeatherRibbon.log` in the settings folder, records launch, placement recovery, every forecast request with its answer's status, refusals and settings failures; standard error points at it before anything can fail. | `TestLogReceivesStandardError` |
+| NFR-O-1 | A log, `WeatherRibbon.log` in the settings folder, records launch, placement recovery, every forecast request with its answer's status, refusals and settings failures; standard error points at it before anything can fail. | The kit's `TestLogReceivesStandardError` (Amendment 8); `keepLog` first in `main`, by inspection |
 
 ### 3.10 Data
 
