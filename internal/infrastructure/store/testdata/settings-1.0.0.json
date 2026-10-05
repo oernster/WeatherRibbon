@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "units": "imperial",
+  "format": "12h",
+  "theme": "dark",
+  "colour": "sunset",
+  "orientation": "horizontal",
+  "alwaysOnTop": true,
+  "placement": {
+    "device": "\\\\.\\DISPLAY2",
+    "work": {
+      "left": 1920,
+      "top": 0,
+      "right": 4480,
+      "bottom": 1392
+    },
+    "dpi": 144,
+    "offset": {
+      "x": 180,
+      "y": -4
+    }
+  },
+  "pinned": false,
+  "lastEdge": {
+    "device": "\\\\.\\DISPLAY2",
+    "edge": "left"
+  },
+  "opacity": 55,
+  "scale": 150,
+  "skippedUpdate": "v1.2.0",
+  "petrichorCountdown": 7,
+  "cities": [
+    {
+      "id": "Q2ZJ7L4MVXH3KSD5TW6RYBNPEA",
+      "geoNamesId": 2643743,
+      "label": "London",
+      "position": 0
+    },
+    {
+      "id": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "geoNamesId": 3143244,
+      "label": "Mum",
+      "position": 1
+    }
+  ]
+}
