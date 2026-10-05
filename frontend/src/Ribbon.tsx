@@ -60,7 +60,7 @@ export function Ribbon({ snapshot, onAddCity, onOpen, reload, refused }: Props) 
         </div>
       )}
       {snapshot.cells.map((each) => (
-        <Cell key={each.id} cell={each} onOpen={onOpen} onDismissPetrichor={(id) => void api.dismissPetrichor(id, refused).then(reload)} />
+        <Cell key={each.id} cell={each} units={snapshot.units} onOpen={onOpen} onDismissPetrichor={(id) => void api.dismissPetrichor(id, refused).then(reload)} />
       ))}
     </Band>
   )

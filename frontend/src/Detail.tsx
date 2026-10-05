@@ -1,17 +1,8 @@
 import { useEffect, useState, type KeyboardEvent } from 'react'
 import { usePanelFit } from '@oernster/ribbonkit'
 import { api, type Detail as DetailData } from './api'
-import { degrees } from './Cell'
+import { degrees, unitsOf } from './units'
 import { Symbol } from './Symbol'
-
-/** The words each system's rain and wind are measured in (FR-703), one home. */
-export const unitWords: Record<string, { rain: string; wind: string }> = {
-  metric: { rain: 'mm', wind: 'km/h' },
-  imperial: { rain: 'in', wind: 'mph' },
-}
-
-/** The places of decimals rain is written to, in each system. */
-const rainPlaces: Record<string, number> = { metric: 1, imperial: 2 }
 
 /** A wind arrow points where the wind blows to: half a turn from where it blows from. */
 const halfTurn = 180
@@ -33,7 +24,7 @@ export function Detail({ id, units, onClose, ready }: Props) {
   const [detail, setDetail] = useState<DetailData | null>(null)
   const [problem, setProblem] = useState('')
   const panel = usePanelFit<HTMLElement>(api, setProblem, ready && detail != null)
-  const words = unitWords[units] ?? unitWords.metric
+  const words = unitsOf(units)
 
   useEffect(() => {
     void api.openDetail(id, setProblem).then(setDetail)
@@ -87,8 +78,8 @@ export function Detail({ id, units, onClose, ready }: Props) {
                     <td>
                       <Symbol symbol={hour.symbol} />
                     </td>
-                    <td>{degrees(hour.temperature)}</td>
-                    <td>{hour.rain.toFixed(rainPlaces[units] ?? rainPlaces.metric)}</td>
+                    <td>{degrees(hour.temperature, units)}</td>
+                    <td>{hour.rain.toFixed(words.rainPlaces)}</td>
                     <td>
                       <span className="wind" aria-label={`from ${Math.round(hour.windFrom)} degrees`} style={{ rotate: `${hour.windFrom + halfTurn}deg` }}>
                         ↑

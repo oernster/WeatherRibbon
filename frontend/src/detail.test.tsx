@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { Detail, unitWords } from './Detail'
+import { Detail } from './Detail'
+import { unitsOf } from './units'
 import { detail, installBridge } from './fakeBridge'
 
 describe('Detail (FR-410, FR-411)', () => {
@@ -10,7 +11,7 @@ describe('Detail (FR-410, FR-411)', () => {
     expect(await screen.findByText('09:00')).toBeTruthy()
     expect(bridge.OpenDetail).toHaveBeenCalledWith('london')
     expect(screen.getByText('Sunrise 07:07')).toBeTruthy()
-    expect(screen.getByText(`Wind (${unitWords.imperial.wind})`)).toBeTruthy()
+    expect(screen.getByText(`Wind (${unitsOf('imperial').wind})`)).toBeTruthy()
     expect(screen.getByLabelText('from 225 degrees')).toBeTruthy()
   })
 

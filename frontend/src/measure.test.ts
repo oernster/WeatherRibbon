@@ -11,9 +11,9 @@ describe('cellWidthNeeded (FR-103)', () => {
       return { width: widest * perCharacter } as DOMRect
     })
     try {
-      const narrow = cellWidthNeeded({ times: ['00:00'], weekdays: ['Sunday'], temperatures: [5], labels: ['Oslo'] })
-      const wide = cellWidthNeeded({ times: ['00:00'], weekdays: ['Sunday'], temperatures: [5], labels: ['Llanfairpwllgwyngyll'] })
-      const cold = cellWidthNeeded({ times: ['00:00'], weekdays: ['Sunday'], temperatures: [-60, 5], labels: ['Oslo'] })
+      const narrow = cellWidthNeeded({ times: ['00:00'], weekdays: ['Sunday'], temperatures: [5], labels: ['Oslo'] }, 'metric')
+      const wide = cellWidthNeeded({ times: ['00:00'], weekdays: ['Sunday'], temperatures: [5], labels: ['Llanfairpwllgwyngyll'] }, 'metric')
+      const cold = cellWidthNeeded({ times: ['00:00'], weekdays: ['Sunday'], temperatures: [-60, 5], labels: ['Oslo'] }, 'metric')
       expect(wide).toBeGreaterThan(narrow)
       expect(cold).toBeGreaterThan(narrow)
     } finally {

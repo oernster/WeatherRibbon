@@ -160,7 +160,11 @@ button:focus-visible {
   align-items: center;
 }
 
+/* A day's high above its low, each its own line, so the outlook stays as narrow as one value. */
 .day .range {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }

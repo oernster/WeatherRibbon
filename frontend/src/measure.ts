@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { api, type Refused, type Snapshot, type TextSamples } from './api'
-import { degrees, outlookDays, weekdayLetters } from './Cell'
+import { outlookDays, weekdayLetters } from './Cell'
+import { degrees, high, highLow, low } from './units'
 
 /**
  * widestLine answers the width of the widest of texts laid out with className inside parent: one
@@ -31,7 +32,7 @@ function sides(style: CSSStyleDeclaration, prefix: string, suffix: string): numb
  * plus the cell's padding and border. It measures a cell that follows another, so the divider between
  * cells is counted.
  */
-export function cellWidthNeeded(samples: TextSamples, doc: Document = document): number {
+export function cellWidthNeeded(samples: TextSamples, units: string, doc: Document = document): number {
   const ribbon = doc.createElement('div')
   ribbon.className = 'ribbon horizontal'
   ribbon.style.cssText = 'position: absolute; visibility: hidden; left: 0; top: 0; width: auto; height: auto'
@@ -41,13 +42,14 @@ export function cellWidthNeeded(samples: TextSamples, doc: Document = document):
   ribbon.append(first, cell)
   doc.body.appendChild(ribbon)
   try {
-    const temperatures = samples.temperatures.map(degrees)
-    const ranges = temperatures.map((text) => `${text} ${text}`)
+    const temperatures = samples.temperatures.map((temperature) => degrees(temperature, units))
+    const ranges = samples.temperatures.map((temperature) => highLow(temperature, temperature, units))
+    const outlookLines = samples.temperatures.flatMap((temperature) => [high(temperature, units), low(temperature, units)])
     const text = Math.max(
       widestLine(cell, 'place label', samples.labels) + widestLine(cell, 'place clock', samples.times),
       widestLine(cell, 'temperature', temperatures),
       widestLine(cell, 'today', ranges),
-      outlookDays * Math.max(widestLine(cell, 'weekday', samples.weekdays.map((day) => day.slice(0, weekdayLetters))), widestLine(cell, 'range', ranges)),
+      outlookDays * Math.max(widestLine(cell, 'weekday', samples.weekdays.map((day) => day.slice(0, weekdayLetters))), widestLine(cell, 'range', outlookLines)),
     )
     const style = doc.defaultView?.getComputedStyle(cell)
     const chrome = style == null ? 0 : sides(style, 'padding', '') + sides(style, 'border', '-width')
@@ -77,7 +79,7 @@ export function useMeasuredCells(snapshot: Snapshot | null, load: () => void, re
       if (samples == null || overtaken) {
         return
       }
-      const cellWidth = cellWidthNeeded(samples)
+      const cellWidth = cellWidthNeeded(samples, units)
       const taken = await api.setMeasured({ units, format, labels: samples.labels, cellWidth }, refused)
       if (taken === null || overtaken) {
         return
