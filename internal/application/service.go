@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/oernster/weatherribbon/internal/domain/forecast"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
 )
 
@@ -27,6 +28,10 @@ type weather struct {
 	asking bool
 	// moment is true while the city's cell shows the petrichor line (FR-413).
 	moment bool
+	// sun is the day's sunrise and sunset, held for sunDate once asked for successfully (FR-411).
+	sun     Sun
+	sunDate forecast.Date
+	sunHeld bool
 }
 
 // Service runs every use case over the current settings. It is safe to call from several

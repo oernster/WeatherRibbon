@@ -118,24 +118,45 @@ func (s *Service) Snapshot() Snapshot {
 	}
 }
 
-// cellFor answers city's cell at now. The caller holds the mutex.
-func (s *Service) cellFor(city settings.City, now time.Time, current settings.Settings) placedCell {
-	cell := Cell{ID: city.ID, Label: city.Label}
+// located is a city's place and zone, else why the city cannot be shown at all.
+type located struct {
+	// place is the city's place where found says the list holds it.
+	place    place.Place
+	found    bool
+	location *time.Location
+	// problem is why the city cannot be shown; empty when place and location are both known
+	// (FR-803, FR-804).
+	problem string
+}
+
+// locate answers where city is. The caller holds the mutex.
+func (s *Service) locate(city settings.City) located {
 	if city.Unreadable != "" {
-		cell.Problem = unreadablePrefix + city.Unreadable
-		return placedCell{cell: cell}
+		return located{problem: unreadablePrefix + city.Unreadable}
 	}
 	chosen, found := s.ports.Places.Place(city.GeoNamesID)
 	if !found {
-		cell.Problem = placeNotFound
-		return placedCell{cell: cell}
+		return located{problem: placeNotFound}
 	}
-	cell.Place = chosen.Description()
 	location, err := s.ports.Places.Resolve(chosen.Zone)
 	if err != nil {
-		cell.Problem = unknownZonePrefix + chosen.Zone
+		return located{place: chosen, found: true, problem: unknownZonePrefix + chosen.Zone}
+	}
+	return located{place: chosen, found: true, location: location}
+}
+
+// cellFor answers city's cell at now. The caller holds the mutex.
+func (s *Service) cellFor(city settings.City, now time.Time, current settings.Settings) placedCell {
+	cell := Cell{ID: city.ID, Label: city.Label}
+	where := s.locate(city)
+	if where.found {
+		cell.Place = where.place.Description()
+	}
+	if where.problem != "" {
+		cell.Problem = where.problem
 		return placedCell{cell: cell}
 	}
+	location := where.location
 	clock := place.ClockAt(now, location, current.Format)
 	cell.Time, cell.ZoneMark = clock.Time, clock.ZoneMark
 	s.fillWeather(&cell, s.weatherOf(city.ID), now, location, current.Units)

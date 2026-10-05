@@ -38,6 +38,9 @@ type Step struct {
 	Time time.Time
 	// AirC is the air temperature at Time in degrees Celsius.
 	AirC float64
+	// WindMS is the wind speed at Time in metres a second; WindFrom the direction it blows from, in
+	// degrees clockwise from north (FR-410).
+	WindMS, WindFrom float64
 	// Next1, Next6 and Next12 are its next_1_hours, next_6_hours and next_12_hours blocks.
 	Next1, Next6, Next12 Period
 }

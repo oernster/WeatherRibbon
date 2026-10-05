@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/oernster/weatherribbon/internal/domain/forecast"
 	"github.com/oernster/weatherribbon/internal/domain/place"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
 )
@@ -75,6 +76,22 @@ func (f *fakeForecasts) Fetch(_ context.Context, request Request) (Answer, error
 	return next(request)
 }
 
+// fakeSun answers each sunrise request in turn from answers, recording the dates asked for.
+type fakeSun struct {
+	asked   []forecast.Date
+	answers []func() (Sun, error)
+}
+
+func (f *fakeSun) Fetch(_ context.Context, _, _ float64, date forecast.Date, _ *time.Location) (Sun, error) {
+	f.asked = append(f.asked, date)
+	if len(f.answers) == 0 {
+		return Sun{}, fmt.Errorf("no sun scripted for request %d", len(f.asked))
+	}
+	next := f.answers[0]
+	f.answers = f.answers[1:]
+	return next()
+}
+
 type fakeCache struct {
 	entries   map[string]Cached
 	loadErr   error
@@ -126,6 +143,7 @@ type rig struct {
 	service   *Service
 	store     *fakeStore
 	forecasts *fakeForecasts
+	sun       *fakeSun
 	cache     *fakeCache
 	clock     *fakeClock
 	pacer     *fakePacer
@@ -136,12 +154,13 @@ func newRig() *rig {
 	r := &rig{
 		store:     &fakeStore{loaded: Loaded{Settings: settings.Defaults()}},
 		forecasts: &fakeForecasts{},
+		sun:       &fakeSun{},
 		cache:     &fakeCache{entries: map[string]Cached{}},
 		clock:     clock,
 		pacer:     &fakePacer{clock: clock},
 	}
 	r.service = New(Ports{
-		Store: r.store, Places: fakePlaces{known: []place.Place{london, tokyo, paris, newYork, nowhere}}, Forecasts: r.forecasts,
+		Store: r.store, Places: fakePlaces{known: []place.Place{london, tokyo, paris, newYork, nowhere}}, Forecasts: r.forecasts, SunTimes: r.sun,
 		Cache: r.cache, Clock: clock, Pacer: r.pacer, IDs: &fakeIDs{}, Draw: func(int) int { return 0 },
 	})
 	return r

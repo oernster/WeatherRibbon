@@ -69,6 +69,18 @@ type Forecasts interface {
 	Fetch(ctx context.Context, request Request) (Answer, error)
 }
 
+// Sun is a day's sunrise and sunset; each the zero time where the sun does not rise or set that day
+// (FR-411).
+type Sun struct {
+	Rise, Set time.Time
+}
+
+// SunTimes asks MET Norway's Sunrise 3.0 for a place's sunrise and sunset on one local date in
+// location (FR-411). Every failure is an error; a 403 is ErrRefused.
+type SunTimes interface {
+	Fetch(ctx context.Context, latitude, longitude float64, date forecast.Date, location *time.Location) (Sun, error)
+}
+
 // Cached is one city's forecast as kept between runs (FR-807).
 type Cached struct {
 	Forecast     forecast.Forecast
@@ -111,6 +123,7 @@ type Ports struct {
 	Store     Store
 	Places    Places
 	Forecasts Forecasts
+	SunTimes  SunTimes
 	Cache     Cache
 	Clock     Clock
 	Pacer     Pacer
