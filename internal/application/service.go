@@ -58,6 +58,7 @@ type Service struct {
 	current     settings.Settings
 	weather     map[string]*weather
 	refused     bool
+	stopped     string
 	loadNotice  string
 	cacheNotice string
 	saveNotice  string
@@ -150,6 +151,10 @@ func (s *Service) notices() []string {
 	if s.refused {
 		// Not dismissed: it stands until the next launch (FR-307).
 		out = append(out, refusedNotice)
+	}
+	if s.stopped != "" {
+		// Not dismissed either: nothing refreshes again in this run.
+		out = append(out, s.stopped)
 	}
 	return out
 }

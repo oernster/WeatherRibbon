@@ -37,7 +37,7 @@ func TestTheDetailShowsTheHours(t *testing.T) {
 		t.Fatalf("detail %+v, %v", detail, err)
 	}
 	first := detail.Hours[0]
-	if first.Time != "08:00" || first.Temperature != 14 || first.Rain != 0.2 || first.Symbol != (Symbol{Icon: "rain"}) {
+	if first.Time != "08:00" || first.Temperature != 14 || first.Rain != 0.2 || first.Symbol != (Symbol{Icon: "rain", Words: "rain"}) {
 		t.Errorf("first hour %+v; want the 07:00Z step at 08:00 BST", first)
 	}
 	if detail.Label != "London" || detail.Place != "London, England, United Kingdom" {

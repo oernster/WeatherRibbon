@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/oernster/ribbonkit/domain/localtime"
+	"github.com/oernster/ribbonkit/domain/ribbon"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
 	"github.com/oernster/weatherribbon/internal/domain/units"
 )
@@ -116,10 +117,10 @@ func TestAMissingPlaceIsNeverReplaced(t *testing.T) {
 func TestAValueASettingDoesNotOfferIsRefused(t *testing.T) {
 	t.Parallel()
 	r := added(t)
-	if err := r.service.SetUnits("kelvin"); !errors.Is(err, ErrUnknownChoice) {
+	if err := r.service.SetUnits("kelvin"); !errors.Is(err, ribbon.ErrUnknownChoice) {
 		t.Errorf("SetUnits(kelvin) answered %v", err)
 	}
-	if err := r.service.SetFormat("13h"); !errors.Is(err, ErrUnknownChoice) {
+	if err := r.service.SetFormat("13h"); !errors.Is(err, ribbon.ErrUnknownChoice) {
 		t.Errorf("SetFormat(13h) answered %v", err)
 	}
 	if err := r.service.SetFormat("12h"); err != nil || r.service.Settings().Format != "12h" {

@@ -15,7 +15,7 @@ import (
 var wirePairs = map[string]string{
 	"sizeDTO": "Size", "layoutDTO": "Layout", "textSamplesDTO": "TextSamples", "measuredDTO": "Measured",
 	"symbolDTO": "WeatherSymbol", "dayDTO": "Day", "cellDTO": "Cell", "snapshotDTO": "Snapshot",
-	"choiceDTO": "MenuChoice", "placeDTO": "Place", "hourDTO": "Hour", "detailDTO": "Detail",
+	"placeDTO": "Place", "hourDTO": "Hour", "detailDTO": "Detail",
 }
 
 // appWords names each constant app.go shares with the page with the shape the page must state its

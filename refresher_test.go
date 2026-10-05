@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 )
@@ -16,6 +17,7 @@ type refresherRig struct {
 	asked    []string
 	reported []string
 	redraws  int
+	halts    []error
 	err      error
 }
 
@@ -30,7 +32,8 @@ func newRefresherRig() *refresherRig {
 		}
 	}
 	g.r = newRefresher(func() time.Time { return g.due }, ask("Refresh"), ask("RefreshNow"),
-		func() { g.redraws++ }, func(doing string, _ error) { g.reported = append(g.reported, doing) })
+		func() { g.redraws++ }, func(doing string, _ error) { g.reported = append(g.reported, doing) },
+		func(err error) { g.halts = append(g.halts, err) })
 	g.r.now = func() time.Time { return refresherNow }
 	g.r.after = func(wait time.Duration) <-chan time.Time {
 		g.waits = append(g.waits, wait)
@@ -99,8 +102,9 @@ func TestAFailedRefreshIsReportedAndTheEndStopsTheLoop(t *testing.T) {
 	}
 }
 
-// A refresh that panics is caught on the refresher's goroutine and reported; the loop then stops
-// rather than spin on a refresh that fails the same way at once.
+// A refresh that panics is caught on the refresher's goroutine, reported and raised as the notice
+// that refreshing has stopped, with a redraw to show it; the loop then stops rather than spin on a
+// refresh that fails the same way at once.
 func TestAPanickingRefreshIsReportedAndStopsTheLoop(t *testing.T) {
 	g := newRefresherRig()
 	g.due = refresherNow
@@ -117,5 +121,8 @@ func TestAPanickingRefreshIsReportedAndStopsTheLoop(t *testing.T) {
 	}
 	if !slices.Equal(g.reported, []string{refreshing}) {
 		t.Errorf("reported %v", g.reported)
+	}
+	if len(g.halts) != 1 || !strings.Contains(g.halts[0].Error(), "planted") || g.redraws != 1 {
+		t.Errorf("halted %v with %d redraws; want the panic said once and drawn", g.halts, g.redraws)
 	}
 }

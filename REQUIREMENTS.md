@@ -16,6 +16,7 @@ where they apply.
 | 6 | 2026-10-05 | A Position item that would leave the ribbon where it stands is greyed (FR-505), as TimeRibbon's Amendment 37. Oliver found Centre on right edge doing nothing beside TimeRibbon; his ruling the same day. |
 | 7 | 2026-10-05 | A cell fits every whole degree from minus 60 to 60 Celsius written in the chosen units, not minus 60 to 60 of whichever unit is chosen (FR-103). Oliver's ruling. |
 | 8 | 2026-10-05 | Behaviour the kit owns is verified by the kit's own tests, named here as the kit names them, never by a second copy in WeatherRibbon (FR-102, FR-105, FR-204, FR-704, FR-705, NFR-O-1). The ribbon's palette is the kit's alone, so its contrast is the kit's test, WeatherRibbon holding its stylesheets to that palette (NFR-U-1). Oliver's ruling. |
+| 9 | 2026-10-06 | A cell fits every weekday, not every weekday and date: no cell draws a date, the outlook naming each day by its weekday alone (FR-103, FR-406). The weather icon's accessible name is the code's words Go sends with it, spelled correctly whichever spelling MET Norway sent (NFR-U-2, FR-412). Refreshing stopped by a fault stands as a notice on the ribbon until the next launch (FR-305). Oliver's instruction to close the gaps. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -241,7 +242,7 @@ Verified by: the kit's `TestDomReadyShowsTheRibbonOnceThePageHasSizedIt` and
 `TestARibbonThePageNeverSizesIsShownByTheFallbackOnce` (Amendment 8); by hand at 150 percent on KDE.
 
 **FR-103 A cell fits its text** (Must). Every cell shall be at least as wide as the widest text it can
-show in the font the page draws with: over every minute of a day, every weekday and date, every
+show in the font the page draws with: over every minute of a day, every weekday (Amendment 9), every
 whole degree from minus 60 to 60 Celsius written in the chosen units and the longest label held. After
 any choice affecting text changes, the page shall measure again. The range is one span of weather
 however it is written (Amendment 7): in Fahrenheit the cell fits minus 76 to 140 degrees.
@@ -349,8 +350,11 @@ Verified by: `TestANotModifiedAnswerKeepsTheForecast` (application); `TestTheCon
 **FR-305 Unreachable** (Must). If a request fails (no network, a timeout, a 5xx or 429 answer), then
 the application shall keep showing the cached forecast. Once its last successful fetch is more than 2
 hours old, the cell shall say `Updated <age> ago`; with no cached forecast it shall say `Forecast
-unavailable`.
-Verified by: `TestAFailedRequestKeepsTheForecast`, `TestAStaleForecastSaysItsAge` (application).
+unavailable`. If refreshing itself stops after a fault, then the ribbon shall say so with the reason
+until the next launch (Amendment 9).
+Verified by: `TestAFailedRequestKeepsTheForecast`, `TestAStaleForecastSaysItsAge`,
+`TestAStoppedRefreshStandsAsANotice` (application); `TestAPanickingRefreshIsReportedAndStopsTheLoop`
+(facade).
 
 **FR-306 Backing off** (Must). After a failed request for a city the next attempt shall wait 10
 minutes, doubling after each further failure to at most 2 hours; a success resets it.
@@ -629,7 +633,7 @@ Verified by: `TestTheCacheSurvivesARestart`, `TestAnUnreadableCacheEntryIsFetche
 | NFR-S-2 | With 12 cities the application makes at most 12 forecast requests per `Expires` window and never more than 1 request a second in total. | `TestRequestsAreSpacedAtLeastASecondApart` (application) |
 | NFR-S-3 | Non-claim: WeatherRibbon issues no warnings; the README says to rely on the national weather service for those. | Inspection of the README |
 | NFR-U-1 | Every text in a cell meets 4.5:1 against the cell in both themes at 100 percent opacity. | The kit's `TestTheKitsTextMeetsTheContrastFloor`, every scheme (Amendment 8); `TestWeatherRibbonDrawsTextOnlyInTheKitsCheckedColours` (structural) |
-| NFR-U-2 | No condition is told by colour alone: each icon carries an accessible name with its words. | `a11y.test.tsx` |
+| NFR-U-2 | No condition is told by colour alone: each icon carries an accessible name with its words. | `a11y.test.tsx`; `TestBothSpellingsOfLightSleetThunderHaveAnIcon` (application) |
 | NFR-U-3 | Every control in Settings, the search and the detail panel is reachable from the keyboard with a visible focus indicator. | `settings.test.tsx`; by hand |
 | NFR-U-4 | Targets are at least 24 by 24 DIP; the tab is exempt, as TimeRibbon's NFR-U-5. | Inspection |
 | NFR-M-1 | Coverage, size and layering are enforced by `test.ps1`, which `build.ps1` runs first with no switch to skip it. | `build.ps1` |

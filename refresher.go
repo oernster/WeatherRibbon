@@ -20,9 +20,11 @@ type refresher struct {
 	due        func() time.Time
 	refresh    func(ctx context.Context) error
 	refreshNow func(ctx context.Context) error
-	// redraw has the page take a fresh snapshot; report writes a failure to the log.
+	// redraw has the page take a fresh snapshot; report writes a failure to the log; halted raises
+	// the notice saying refreshing has stopped (application's RefreshStopped).
 	redraw func()
 	report func(doing string, err error)
+	halted func(err error)
 	// now and after are the clock and the timer, fields so a test can stand in for them.
 	now   func() time.Time
 	after func(wait time.Duration) <-chan time.Time
@@ -33,9 +35,9 @@ type refresher struct {
 }
 
 // newRefresher answers a refresher over the given calls on the real clock.
-func newRefresher(due func() time.Time, refresh, refreshNow func(context.Context) error, redraw func(), report func(string, error)) *refresher {
+func newRefresher(due func() time.Time, refresh, refreshNow func(context.Context) error, redraw func(), report func(string, error), halted func(error)) *refresher {
 	return &refresher{
-		due: due, refresh: refresh, refreshNow: refreshNow, redraw: redraw, report: report,
+		due: due, refresh: refresh, refreshNow: refreshNow, redraw: redraw, report: report, halted: halted,
 		now: time.Now, after: time.After, wake: make(chan struct{}, 1),
 	}
 }
@@ -57,12 +59,16 @@ func (r *refresher) askNow() {
 }
 
 // run refreshes until ctx ends or a refresh panics. A panic is caught here (on the goroutine that
-// raised it) then reported. The loop stops rather than retry a refresh that fails the same way at
-// once; the cells then say how old their forecasts grow (FR-305).
+// raised it), logged and said on the ribbon as a notice, which a redraw shows at once. The loop stops
+// rather than retry a refresh that fails the same way at once; the cells then say how old their
+// forecasts grow (FR-305).
 func (r *refresher) run(ctx context.Context) {
 	defer func() {
 		if failure := recover(); failure != nil {
-			r.report(refreshing, fmt.Errorf("stopped after a panic: %v", failure))
+			err := fmt.Errorf("stopped after a panic: %v", failure)
+			r.report(refreshing, err)
+			r.halted(err)
+			r.redraw()
 		}
 	}()
 	for r.once(ctx) {

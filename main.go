@@ -157,7 +157,7 @@ func run(log io.Writer) error {
 	fetch := newRefresher(service.NextDue, service.Refresh, service.RefreshNow, func() {
 		_ = control.Refitted(nil)
 		control.Redraw()
-	}, func(doing string, err error) { control.Report(doing, err) })
+	}, func(doing string, err error) { control.Report(doing, err) }, service.RefreshStopped)
 	desk := desktop.New(product.App(), func() []menus.Item { return control.Offered(service.TrayMenu(control.Visible())) }, log)
 	app, control := newApp(ctx, service, fetch, window.Config{Service: kitService{service}, Desktop: desk, Log: log, Panels: panels})
 	platform.Prepare(desk, trayIcon, control.ExitWhen)

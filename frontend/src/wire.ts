@@ -1,6 +1,8 @@
 // WeatherRibbon's half of the wire between Go and the page, stated a second time here. dto.go is the
 // other statement; ribbonkit states the window's half. A structural test compares each pair.
 
+import type { MenuChoice } from '@oernster/ribbonkit'
+
 export interface Size {
   width: number
   height: number
@@ -85,17 +87,6 @@ export interface Snapshot {
   collapsed: boolean
   /** The menus' choices, which Settings offers as well (FR-701). */
   choices: MenuChoice[]
-}
-
-/** One of the menus' choices: either a group of children or one item whose action goes back to Choose. */
-export interface MenuChoice {
-  action: string
-  label: string
-  checkable: boolean
-  checked: boolean
-  /** Greyed, as a Position item that would leave the ribbon where it stands is. */
-  disabled: boolean
-  children: MenuChoice[]
 }
 
 /** One entry of the place search (FR-202). */

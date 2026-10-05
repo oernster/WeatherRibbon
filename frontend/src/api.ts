@@ -5,7 +5,7 @@ import { connect, windowCalls, type Refused, type WindowBridge } from '@oernster
 import type { Detail, Measured, Place, Snapshot, TextSamples } from './wire'
 
 export type { Refused } from '@oernster/ribbonkit'
-export type { Cell, Day, Detail, Hour, Measured, MenuChoice, Place, Snapshot, TextSamples, WeatherSymbol } from './wire'
+export type { Cell, Day, Detail, Hour, Measured, Place, Snapshot, TextSamples, WeatherSymbol } from './wire'
 
 /** Bridge is the App Wails binds: the window's methods (WindowBridge) and WeatherRibbon's own (app.go). */
 interface Bridge extends WindowBridge {

@@ -16,14 +16,13 @@ interface Props {
 
 /**
  * Symbol draws a weather symbol: its icon where Go found one, else the code's words in its place
- * (FR-412). The icon's alt text is the code in words, so the weather is never told by picture alone
- * (NFR-U-2).
+ * (FR-412). The icon's alt text is the code's words as Go wrote them, so the weather is never told by
+ * picture alone (NFR-U-2).
  */
 export function Symbol({ symbol, large = false }: Props) {
   const source = symbol.icon !== '' ? iconOf(symbol.icon) : undefined
   if (source == null) {
     return symbol.words === '' ? null : <span className="symbol-words">{symbol.words}</span>
   }
-  const said = symbol.icon.split('_').join(' ')
-  return <img className={large ? 'symbol large' : 'symbol'} src={source} alt={said} title={said} draggable={false} />
+  return <img className={large ? 'symbol large' : 'symbol'} src={source} alt={symbol.words} title={symbol.words} draggable={false} />
 }

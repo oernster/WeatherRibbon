@@ -27,8 +27,8 @@ func TestTheMeasurementRoundTrip(t *testing.T) {
 	if got.Units != units.Imperial || got.Format != localtime.TwelveHour || !slices.Equal(got.Labels, []string{"London"}) || got.CellWidth != 201 {
 		t.Errorf("service was handed %+v", got)
 	}
-	if !slices.Equal(control.calls, []string{"Refitted", "PageMeasured"}) {
-		t.Errorf("the window was asked %v, want the ribbon fitted then the page counted measured", control.calls)
+	if !slices.Equal(control.Calls, []string{"Refitted", "PageMeasured"}) {
+		t.Errorf("the window was asked %v, want the ribbon fitted then the page counted measured", control.Calls)
 	}
 }
 
@@ -37,7 +37,7 @@ func TestARefusedMeasurementIsNotCountedApplied(t *testing.T) {
 	app, service, control, _ := newTestApp(t)
 	service.changeErr = errPlanted
 	_ = app.SetMeasured(measuredDTO{CellWidth: 201})
-	if slices.Contains(control.calls, "PageMeasured") {
+	if slices.Contains(control.Calls, "PageMeasured") {
 		t.Error("a refused measurement counted the page measured")
 	}
 }

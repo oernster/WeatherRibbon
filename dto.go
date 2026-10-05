@@ -8,9 +8,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/oernster/ribbonkit/application/menus"
 	"github.com/oernster/ribbonkit/domain/placement"
 	"github.com/oernster/ribbonkit/domain/ribbon"
+	"github.com/oernster/ribbonkit/ui/window"
 	"github.com/oernster/weatherribbon/internal/application"
 	"github.com/oernster/weatherribbon/internal/domain/forecast"
 	"github.com/oernster/weatherribbon/internal/domain/place"
@@ -47,7 +47,8 @@ type measuredDTO struct {
 	CellWidth int      `json:"cellWidth"`
 }
 
-// symbolDTO is a weather symbol: the icon drawn for it, else its words in its place (FR-412).
+// symbolDTO is a weather symbol: the icon drawn for it, named by its words (NFR-U-2), else the words
+// in its place (FR-412).
 type symbolDTO struct {
 	Icon  string `json:"icon"`
 	Words string `json:"words"`
@@ -105,19 +106,7 @@ type snapshotDTO struct {
 	// Collapsed is true while the window is an unpinned ribbon's tab (FR-706).
 	Collapsed bool `json:"collapsed"`
 	// Choices are the menus' choices, which Settings offers as well (FR-701).
-	Choices []choiceDTO `json:"choices"`
-}
-
-// choiceDTO is one of the menus' choices as Settings draws it (FR-701): either a group of Children
-// or one item whose Action the page hands back to Choose; greyed while Disabled, as a Position item
-// that would not move the ribbon is.
-type choiceDTO struct {
-	Action    string      `json:"action"`
-	Label     string      `json:"label"`
-	Checkable bool        `json:"checkable"`
-	Checked   bool        `json:"checked"`
-	Disabled  bool        `json:"disabled"`
-	Children  []choiceDTO `json:"children"`
+	Choices []window.ChoiceDTO `json:"choices"`
 }
 
 // placeDTO is one entry of the place search (FR-202): the place's GeoNames id, its name and its
@@ -147,18 +136,6 @@ type detailDTO struct {
 	Sunrise string    `json:"sunrise"`
 	Sunset  string    `json:"sunset"`
 	Problem string    `json:"problem"`
-}
-
-// choicesOf answers the wire form of menu items.
-func choicesOf(items []menus.Item) []choiceDTO {
-	out := make([]choiceDTO, 0, len(items))
-	for _, item := range items {
-		out = append(out, choiceDTO{
-			Action: string(item.Action), Label: item.Label, Checkable: item.Checkable, Checked: item.Checked,
-			Disabled: item.Disabled, Children: choicesOf(item.Children),
-		})
-	}
-	return out
 }
 
 func sizeOf(size placement.Size) sizeDTO { return sizeDTO{Width: size.Width, Height: size.Height} }

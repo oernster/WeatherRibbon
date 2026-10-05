@@ -99,7 +99,7 @@ func (a *App) Snapshot() snapshotDTO {
 	seen := a.control.Shown()
 	shown := snapshotOf(a.service.Snapshot())
 	shown.Scrolls, shown.DragThreshold, shown.Collapsed = seen.Scrolls, sizeOf(seen.DragThreshold), seen.Collapsed
-	shown.Choices = choicesOf(a.control.Offered(a.service.SettingsChoices()))
+	shown.Choices = window.ChoicesOf(a.control.Offered(a.service.SettingsChoices()))
 	return shown
 }
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/oernster/ribbonkit/domain/localtime"
+	"github.com/oernster/ribbonkit/domain/ribbon"
 	"github.com/oernster/weatherribbon/internal/domain/place"
 	"github.com/oernster/weatherribbon/internal/domain/settings"
 	"github.com/oernster/weatherribbon/internal/domain/units"
@@ -11,9 +12,6 @@ import (
 
 // ErrUnknownPlace is answered when a city is set to a place the city list does not hold.
 var ErrUnknownPlace = errors.New("no such place in the city list")
-
-// ErrUnknownChoice is answered when a setting is given a value it does not offer.
-var ErrUnknownChoice = errors.New("not one of the values offered")
 
 // Search answers the places matching typed, best first (FR-202, FR-203).
 func (s *Service) Search(typed string) []place.Place {
@@ -97,7 +95,7 @@ func (s *Service) forgetLocked(id string) error {
 // SetUnits chooses how measures are shown (FR-703).
 func (s *Service) SetUnits(system units.System) error {
 	if units.Normalise(system) != system {
-		return ErrUnknownChoice
+		return ribbon.ErrUnknownChoice
 	}
 	return s.change(func(current settings.Settings) (settings.Settings, error) {
 		current.Units = system
@@ -108,7 +106,7 @@ func (s *Service) SetUnits(system units.System) error {
 // SetFormat chooses 24-hour or 12-hour time (FR-401).
 func (s *Service) SetFormat(format localtime.Format) error {
 	if localtime.Normalise(format) != format {
-		return ErrUnknownChoice
+		return ribbon.ErrUnknownChoice
 	}
 	return s.change(func(current settings.Settings) (settings.Settings, error) {
 		current.Format = format

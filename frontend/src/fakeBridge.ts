@@ -1,42 +1,35 @@
 // A stand-in for the Go facade in tests: every call is recorded, every answer is canned. The window's
 // half is ribbonkit's own stand-in; WeatherRibbon's methods are added to it here.
 
-import { install, windowBridge } from '@oernster/ribbonkit/testing'
+import { choiceGroup, choiceItem, install, windowBridge } from '@oernster/ribbonkit/testing'
 import { vi } from 'vitest'
-import type { Cell, Day, Detail, MenuChoice, Place, Snapshot } from './wire'
+import type { Cell, Day, Detail, Place, Snapshot } from './wire'
+import type { MenuChoice } from '@oernster/ribbonkit'
 
 export function day(overrides: Partial<Day> = {}): Day {
   return {
     date: '2026-10-06', weekday: 'Tuesday', high: 16, low: 9, rain: 0.4,
-    symbol: { icon: 'cloudy', words: '' }, known: true, ...overrides,
+    symbol: { icon: 'cloudy', words: 'cloudy' }, known: true, ...overrides,
   }
 }
 
 export function cell(overrides: Partial<Cell> = {}): Cell {
   return {
     id: 'london', label: 'London', place: 'London, England, United Kingdom', time: '08:36', zoneMark: 'BST',
-    temperature: 14, symbol: { icon: 'rain', words: '' }, today: day({ date: '2026-10-05', weekday: 'Monday' }),
+    temperature: 14, symbol: { icon: 'rain', words: 'rain' }, today: day({ date: '2026-10-05', weekday: 'Monday' }),
     outlook: [day(), day({ date: '2026-10-07', weekday: 'Wednesday' }), day({ date: '2026-10-08', weekday: 'Thursday' })],
     age: '', problem: '', petrichor: false, ...overrides,
   }
 }
 
-function item(action: string, label: string, checked?: boolean): MenuChoice {
-  return { action, label, checkable: checked != null, checked: checked === true, disabled: false, children: [] }
-}
-
-function group(label: string, children: MenuChoice[]): MenuChoice {
-  return { action: '', label, checkable: false, checked: false, disabled: false, children }
-}
-
 /** The menus' choices as Go sends them, in their order; Colour cut to two schemes. */
 export const choices: MenuChoice[] = [
-  group('Units', [item('units-metric', 'Metric', true), item('units-imperial', 'Imperial', false)]),
-  group('Colour', [item('colour-classic', 'Classic', true), item('colour-neon', 'Neon', false)]),
-  group('Orientation', [item('horizontal', 'Horizontal', false), item('vertical', 'Vertical', true)]),
-  group('Position', [item('left-edge', 'Centre on left edge'), item('right-edge', 'Centre on right edge')]),
-  item('always-on-top', 'Always on top', false),
-  item('pin', 'Pin ribbon', true),
+  choiceGroup('Units', [choiceItem('units-metric', 'Metric', true), choiceItem('units-imperial', 'Imperial', false)]),
+  choiceGroup('Colour', [choiceItem('colour-classic', 'Classic', true), choiceItem('colour-neon', 'Neon', false)]),
+  choiceGroup('Orientation', [choiceItem('horizontal', 'Horizontal', false), choiceItem('vertical', 'Vertical', true)]),
+  choiceGroup('Position', [choiceItem('left-edge', 'Centre on left edge'), choiceItem('right-edge', 'Centre on right edge')]),
+  choiceItem('always-on-top', 'Always on top', false),
+  choiceItem('pin', 'Pin ribbon', true),
 ]
 
 export function snapshot(overrides: Partial<Snapshot> = {}): Snapshot {
@@ -58,7 +51,7 @@ export const places: Place[] = [
 export function detail(overrides: Partial<Detail> = {}): Detail {
   return {
     id: 'london', label: 'London', place: 'London, England, United Kingdom', sunrise: '07:07', sunset: '18:29', problem: '',
-    hours: [{ time: '09:00', symbol: { icon: 'rain', words: '' }, temperature: 14, rain: 0.2, windSpeed: 18, windFrom: 225 }],
+    hours: [{ time: '09:00', symbol: { icon: 'rain', words: 'rain' }, temperature: 14, rain: 0.2, windSpeed: 18, windFrom: 225 }],
     ...overrides,
   }
 }

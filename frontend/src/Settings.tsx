@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState, type KeyboardEvent } from 'react'
-import { api, type Cell, type MenuChoice, type Place, type Refused, type Snapshot } from './api'
+import { api, type Cell, type Place, type Refused, type Snapshot } from './api'
 import { CityList } from './CityList'
 import { PlaceSearch } from './PlaceSearch'
 import { ArtButton, addCityTip } from './ArtButton'
 import addCityArt from './assets/add-city.png'
 import donateMark from './assets/donate.png'
-import { OpacitySlider, usePanelFit } from '@oernster/ribbonkit'
+import { MenuGroup, MenuToggle, OpacitySlider, usePanelFit } from '@oernster/ribbonkit'
 
 /** The picture alone does not say pressing it leaves the application, so the tip does. */
 export const donateTip = 'Buy the author a drink (opens your browser)'
@@ -35,45 +35,6 @@ const choices: { name: string; key: 'format' | 'theme'; options: Choice[] }[] = 
 ]
 
 const setters = { format: api.setFormat, theme: api.setTheme }
-
-interface ChoiceProps {
-  choice: MenuChoice
-  choose: (action: string) => void
-}
-
-/**
- * MenuGroup draws one of the menus' submenus: ticked items as radio buttons, moves as plain buttons;
- * a disabled item greyed.
- */
-function MenuGroup({ choice, choose }: ChoiceProps) {
-  return (
-    <fieldset>
-      <legend>{choice.label}</legend>
-      {choice.children.map((item) =>
-        item.checkable ? (
-          <label key={item.action}>
-            <input type="radio" name={choice.label} value={item.action} checked={item.checked} disabled={item.disabled} onChange={() => choose(item.action)} />
-            {item.label}
-          </label>
-        ) : (
-          <button key={item.action} type="button" disabled={item.disabled} onClick={() => choose(item.action)}>
-            {item.label}
-          </button>
-        ),
-      )}
-    </fieldset>
-  )
-}
-
-/** MenuToggle draws one of the menus' ticked items that stands alone, such as Pin ribbon. */
-function MenuToggle({ choice, choose }: ChoiceProps) {
-  return (
-    <label>
-      <input type="checkbox" checked={choice.checked} onChange={() => choose(choice.action)} />
-      {choice.label}
-    </label>
-  )
-}
 
 /**
  * Settings is the cities plus every choice, the menus' included (FR-701). Every change applies and

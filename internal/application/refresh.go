@@ -18,6 +18,18 @@ const cacheSaveFailedPrefix = "Forecasts could not be saved: "
 // refusedNotice is shown from MET Norway's refusal until the next launch (FR-307).
 const refusedNotice = "MET Norway refused the forecast request"
 
+// stoppedPrefix begins the notice shown once refreshing has stopped after a fault, until the next
+// launch: the cells go on showing what is held as it grows older; the reason is said.
+const stoppedPrefix = "Forecasts stopped after a fault and resume at the next launch: "
+
+// RefreshStopped raises the notice saying refreshing has stopped, with why, so a fault that ended the
+// refreshing is read on the ribbon and not only in the log.
+func (s *Service) RefreshStopped(reason error) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.stopped = stoppedPrefix + reason.Error()
+}
+
 // asking is one request about to leave: the city and what to ask for.
 type asking struct {
 	id      string

@@ -41,7 +41,7 @@ figure with the fraction dropped, so it fails once cover is lost.
 | `internal/infrastructure/cache`, `metno`, `pacing`, `places`, `store` | 100% | 100% |
 | `internal/product` | 100% | 100% |
 | `tools/gencities` | 90.9% | 90% |
-| the root package (the Wails facade) | 68.6% | 68% |
+| the root package (the Wails facade) | 68.4% | 68% |
 | `installer` | 0% | not gated |
 | `tools/versioninfo`, `payload`, `identity`, `linuxicons` | no tests | not gated |
 
@@ -49,14 +49,14 @@ figure with the fraction dropped, so it fails once cover is lost.
 which runs no statement. The four tools are mains that hand `internal/product` to the kit's
 `delivery` package, where their work and its tests live.
 
-Every figure is the Windows build's, which `test.ps1` measures. That build compiles 176 Go test
+Every figure is the Windows build's, which `test.ps1` measures. That build compiles 177 Go test
 functions, counted from the test files `go list` selects. Twenty-two are the structural tests in
 `tests/structural`, which read the source and are the same on every platform; two more in
 `page_api_test.go` hold the page's calls to what is bound. [ARCHITECTURE.md](ARCHITECTURE.md) lists
 each against its rule. `TestA1Point0SettingsFileIsReadWhole` in `store` holds the settings file's
 promise (NFR-C-1); `TestThePetrichorLinePulsesAndStandsStillWhenAsked` holds FR-413's pulse in Go
 because jsdom draws no animation and Vitest hands a test no stylesheet's text. The macOS and Linux
-builds compile 174. Two are Windows only: the setup program's test, since setup is built for Windows
+builds compile 175. Two are Windows only: the setup program's test, since setup is built for Windows
 alone; `cache/held_windows_test.go`, a cache entry another program holds open being left out and
 fetched again, since only Windows refuses to read a file held open
 ([On macOS and Linux](#on-macos-and-linux)).
@@ -91,7 +91,7 @@ check is the kit's and tested there.
 
 ## What is not tested and why
 
-- **The root package (68.6%).** WeatherRibbon's own half of the facade is tested over a scripted
+- **The root package (68.4%).** WeatherRibbon's own half of the facade is tested over a scripted
   service and a stand-in window: every change fits the ribbon and answers the service's error, a new
   place is asked for at once, the snapshot carries every cell and the window's reading, the search,
   the detail and the petrichor line reach the service, WeatherRibbon's menu actions (a failed one
@@ -118,7 +118,7 @@ macOS and Linux checks are in its TESTING.md.
 | What | macOS | Linux |
 |---|---|---|
 | Tags | `desktop,production` | `desktop,production,webkit2_41` |
-| Go test functions | 174 | 174 |
+| Go test functions | 175 | 175 |
 
 With the platform's tags in `TAGS`, run each and read its exit code:
 

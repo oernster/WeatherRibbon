@@ -190,7 +190,7 @@ scripts are TimeRibbon's with the names changed and have not yet been run for We
 
 All committed, so a clone builds without regenerating them.
 
-- **Icons**, after changing an image in `assets/`: `python tools/genicons.py` writes
+- **Icons**, after changing an image in `assets/`: `python tools/genicons.py` (the work is ribbonkit's `tools/genicons.py`, read where Go builds the kit from) writes
   `build/windows/icon.ico` (both executables, taskbar, tray and shortcuts), `build/appicon.png`, the
   setup page's mark and toggles (`installer/frontend/dist`) and the page's artwork
   (`frontend/src/assets`: the donate mark, the Add city picture and the icon About shows).

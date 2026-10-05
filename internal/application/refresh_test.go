@@ -180,6 +180,19 @@ func TestARefusalStopsEveryRequest(t *testing.T) {
 	}
 }
 
+// Refreshing stopped by a fault stands as a notice with its reason until the next launch, like a
+// refusal: dismissing the notices leaves it; the snapshot carries it to the ribbon.
+func TestAStoppedRefreshStandsAsANotice(t *testing.T) {
+	t.Parallel()
+	r := added(t, london.GeoNamesID)
+	r.service.RefreshStopped(errPlanted)
+	r.service.DismissNotices()
+	want := stoppedPrefix + errPlanted.Error()
+	if got := r.service.Snapshot().Notices; !slices.Equal(got, []string{want}) {
+		t.Errorf("notices %v; want %q to stand", got, want)
+	}
+}
+
 // NFR-S-2: requests leave at least a second apart, across refreshes too.
 func TestRequestsAreSpacedAtLeastASecondApart(t *testing.T) {
 	t.Parallel()

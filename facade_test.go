@@ -39,8 +39,8 @@ func TestEveryChangeFitsTheRibbonAndAnswersTheServicesError(t *testing.T) {
 			if !slices.Contains(service.calls, name) {
 				t.Errorf("%s never reached the service", name)
 			}
-			if control.count("Refitted") != 1 {
-				t.Errorf("%s (service answered %v) fitted the ribbon %d times, want once", name, failure, control.count("Refitted"))
+			if control.Count("Refitted") != 1 {
+				t.Errorf("%s (service answered %v) fitted the ribbon %d times, want once", name, failure, control.Count("Refitted"))
 			}
 		}
 	}
@@ -73,7 +73,7 @@ func TestTheSnapshotCarriesEveryCellAndTheWindowsReading(t *testing.T) {
 		Scale:   125,
 	}
 	service.choices = []menus.Item{{Action: menus.Pin, Label: "Pin ribbon", Checkable: true}}
-	control.shown = window.Shown{Collapsed: true, Scrolls: true, DragThreshold: placement.Size{Width: 4, Height: 4}}
+	control.Showing = window.Shown{Collapsed: true, Scrolls: true, DragThreshold: placement.Size{Width: 4, Height: 4}}
 	got := app.Snapshot()
 	if len(got.Cells) != 1 || got.Cells[0].Symbol != (symbolDTO{Icon: "rain"}) || got.Cells[0].Today.Date != "2026-10-05" {
 		t.Errorf("cells %+v, want the one cell the service answered", got.Cells)
@@ -135,8 +135,8 @@ func TestTheDetailAndThePetrichorLineReachTheService(t *testing.T) {
 func TestWeatherRibbonsMenuActions(t *testing.T) {
 	app, service, control, fetch := newTestApp(t)
 	app.actOn(application.ActionAddCity)
-	if !slices.Equal(control.panels, []string{openAtAddCity}) {
-		t.Errorf("Add city opened %v, want the place search", control.panels)
+	if !slices.Equal(control.Panels, []string{openAtAddCity}) {
+		t.Errorf("Add city opened %v, want the place search", control.Panels)
 	}
 	app.actOn(application.ActionRefreshNow)
 	if fetch.asked != 1 {
@@ -145,23 +145,23 @@ func TestWeatherRibbonsMenuActions(t *testing.T) {
 	app.actOn(application.ActionImperial)
 	app.actOn(menus.Action("colour-neon"))
 	app.actOn(menus.OrientHorizontal)
-	if service.units != units.Imperial || !slices.Equal(control.colours, []string{"neon"}) || !slices.Equal(control.turned, []string{"horizontal"}) {
-		t.Errorf("units %q, colours %v, orientations %v; want each choice made", service.units, control.colours, control.turned)
+	if service.units != units.Imperial || !slices.Equal(control.Colours, []string{"neon"}) || !slices.Equal(control.Turned, []string{"horizontal"}) {
+		t.Errorf("units %q, colours %v, orientations %v; want each choice made", service.units, control.Colours, control.Turned)
 	}
-	if control.count("Redraw") != 3 {
-		t.Errorf("the page was told to redraw %d times, want once for each of the three choices", control.count("Redraw"))
+	if control.Count("Redraw") != 3 {
+		t.Errorf("the page was told to redraw %d times, want once for each of the three choices", control.Count("Redraw"))
 	}
 }
 
 func TestAMenuChoiceThatFailedIsReported(t *testing.T) {
 	app, service, control, _ := newTestApp(t)
-	service.changeErr, control.choiceErr = errPlanted, errPlanted
+	service.changeErr, control.ChoiceErr = errPlanted, errPlanted
 	for _, action := range []menus.Action{application.ActionMetric, "colour-ocean", menus.OrientVertical} {
 		app.actOn(action)
 	}
 	want := []string{"changing the units", "changing the colour", "changing the orientation"}
-	if !slices.Equal(control.reported, want) {
-		t.Errorf("reported %v, want %v", control.reported, want)
+	if !slices.Equal(control.Reported, want) {
+		t.Errorf("reported %v, want %v", control.Reported, want)
 	}
 }
 
@@ -169,8 +169,8 @@ func TestAMenuChoiceThatFailedIsReported(t *testing.T) {
 func TestAnUnknownActionChangesNothing(t *testing.T) {
 	app, service, control, fetch := newTestApp(t)
 	app.actOn("no-such-action")
-	if len(service.calls) != 0 || len(control.calls) != 0 || len(control.panels) != 0 || fetch.asked != 0 {
-		t.Errorf("service %v, window %v, panels %v; want nothing", service.calls, control.calls, control.panels)
+	if len(service.calls) != 0 || len(control.Calls) != 0 || len(control.Panels) != 0 || fetch.asked != 0 {
+		t.Errorf("service %v, window %v, panels %v; want nothing", service.calls, control.Calls, control.Panels)
 	}
 }
 
