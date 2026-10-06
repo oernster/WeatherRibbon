@@ -63,12 +63,13 @@ fetched again, since only Windows refuses to read a file held open
 
 ### The front end
 
-26 tests in 7 files under Vitest with jsdom, run from `frontend`: the cells in the kit's band, each
+30 tests in 8 files under Vitest with jsdom, run from `frontend`: the cells in the kit's band, each
 city's time, weather now, today and outlook, a symbol shown as words, a problem said in place of the
 weather, a stale forecast's age, the empty ribbon and opening the detail (`ribbon.test.tsx`); the
 detail's hours, its sun times and closing it (`detail.test.tsx`); Settings, its search, removing a
 city, the menus' choices with a greyed Position choice, the time format and the donate button
-(`settings.test.tsx`); measuring a cell's widest text (`measure.test.ts`, FR-103); the petrichor line
+(`settings.test.tsx`); measuring a cell's widest text (`measure.test.ts`, FR-103); every number written with its unit,
+a high and a low with their letters (`units.test.ts`, FR-703); the petrichor line
 (`petrichor.test.tsx`, FR-413); every shipped weather icon named by its code in words
 (`a11y.test.tsx`, NFR-U-2); every timer the page schedules, the kit's included, against a reasoned
 allow-list through the kit's `describePageTimers` (`timers.test.ts`, NFR-P-3). No coverage provider is installed, so no figure is claimed.

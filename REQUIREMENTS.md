@@ -17,6 +17,7 @@ where they apply.
 | 7 | 2026-10-05 | A cell fits every whole degree from minus 60 to 60 Celsius written in the chosen units, not minus 60 to 60 of whichever unit is chosen (FR-103). Oliver's ruling. |
 | 8 | 2026-10-05 | Behaviour the kit owns is verified by the kit's own tests, named here as the kit names them, never by a second copy in WeatherRibbon (FR-102, FR-105, FR-204, FR-704, FR-705, NFR-O-1). The ribbon's palette is the kit's alone, so its contrast is the kit's test, WeatherRibbon holding its stylesheets to that palette (NFR-U-1). Oliver's ruling. |
 | 9 | 2026-10-06 | A cell fits every weekday, not every weekday and date: no cell draws a date, the outlook naming each day by its weekday alone (FR-103, FR-406). The weather icon's accessible name is the code's words Go sends with it, spelled correctly whichever spelling MET Norway sent (NFR-U-2, FR-412). Refreshing stopped by a fault stands as a notice on the ribbon until the next launch (FR-305). Oliver's instruction to close the gaps. |
+| 10 | 2026-10-06 | Every number on the ribbon says what it measures: a temperature carries its scale (`14°C`, `58°F`), a high and a low their letters (`H 20°C L 14°C`) and rain its measure (`0.4 mm`), the outlook putting each day's high above its low so cells stay narrow (FR-404, FR-406, FR-703). Oliver found bare numbers on the cell while testing by hand. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -400,10 +401,12 @@ Verified by: `TestAForecastThatHasRunOutShowsNothingAsCurrent` (domain).
 
 **FR-404 Today** (Must; OQ-5). Each cell shall show today's high and low temperature and rain total
 over the forecast's periods from now to the end of the city's local date. The README states that
-late in the day these figures describe the remaining hours alone (OQ-5).
+late in the day these figures describe the remaining hours alone (OQ-5). The high and low are marked
+`H` and `L` on one line, the rain total written with its measure and shown only when above zero
+(Amendment 10).
 Acceptance: at 22:30 local with steps to midnight, today's high and low come from the 22:00 and 23:00
-steps alone.
-Verified by: `TestTodayCoversNowToMidnightLocal` (domain).
+steps alone; a metric day reads `H 20°C L 14°C 0.4 mm`.
+Verified by: `TestTodayCoversNowToMidnightLocal` (domain); `ribbon.test.tsx`, `units.test.ts`.
 
 **FR-405 Which day a period belongs to** (Must). A period shall count for the local date in which its
 midpoint falls in the city's zone.
@@ -412,9 +415,9 @@ next local date (06:00 there); for Kathmandu (UTC+5:45) 06:00Z to 12:00Z counts 
 Verified by: `TestAPeriodBelongsToTheDayOfItsMidpoint` (domain).
 
 **FR-406 The outlook** (Must; OQ-3). Each cell shall show the 3 days after today, each with its
-weekday, a symbol, its high and low.
+weekday, a symbol, its high and low, the high marked `H` above the low marked `L` (Amendment 10).
 Acceptance: on a Monday the outlook reads Tuesday, Wednesday and Thursday in the city's zone.
-Verified by: `TestTheOutlookCoversTheFollowingDays` (domain); `ribbon.test.tsx`.
+Verified by: `TestTheOutlookCoversTheFollowingDays` (domain); `ribbon.test.tsx`, `units.test.ts`.
 
 **FR-407 A day's high and low** (Must). A day's high shall be the greatest of its steps' air
 temperatures and its periods' `air_temperature_max`; its low the least of its steps' air
@@ -548,9 +551,10 @@ Verified by: `TestChangingASettingPersistsIt` (application).
 **FR-703 Units** (Must; OQ-1). Settings and a `Units` submenu in both menus shall offer `Metric`
 (degrees Celsius, millimetres, kilometres per hour) and `Imperial` (degrees Fahrenheit, inches, miles
 per hour), converted from MET Norway's units, Metric when none is held (OQ-1); temperatures are
-shown rounded to whole degrees.
-Acceptance: 14.4 degrees Celsius shows as `14°` metric and `58°` imperial; 5 m/s as 18 km/h and 11 mph.
-Verified by: `TestEachUnitConvertsAndRounds` (domain).
+shown rounded to whole degrees. Every number shown carries its unit: the scale on a temperature, the
+measure on rain, the detail panel's wind column naming its measure in its heading; rain written to 1 decimal in millimetres and 2 in inches (Amendment 10).
+Acceptance: 14.4 degrees Celsius shows as `14°C` metric and `58°F` imperial; 5 m/s as 18 km/h and 11 mph.
+Verified by: `TestEachUnitConvertsAndRounds` (domain); `units.test.ts`.
 
 **FR-704 Opacity** (Should). Settings shall offer an Opacity slider in steps of 5 from 20 to 100
 percent, its value shown beside it, previewed while it moves and saved once let go. Only the ribbon's
