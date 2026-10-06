@@ -57,9 +57,8 @@ the same rules; the kit's own invariants are listed in its ARCHITECTURE.md.
 
 The structural tests that read the kit's files (the Licence panel's width) read the kit Go builds
 against, through `go list -m`; `page_api_test.go` reads the kit's `bridge.ts` as npm installed it,
-since that is what the page compiles. `TestTheFixtureIsWhatThisVersionWrites` in the same file as the
-contract test holds the fixture to what this version writes until 1.0.0 ships, when it is deleted and
-the fixture frozen.
+since that is what the page compiles. The contract test's fixture was compared byte for byte with what
+1.0.0 writes, then frozen.
 
 ## Layers
 
@@ -176,19 +175,24 @@ drag"). What WeatherRibbon decides:
 The refresher (`refresher.go`) keeps the forecasts fresh on a goroutine of its own: it waits until
 the next city falls due, a wake (a city added, moved or Refresh now) or the end of the run, refreshes,
 then has the page redraw. Every forecast request leaves from that one goroutine, so a menu never
-waits on the network. A panic there is recovered on that goroutine and logged; the loop then stops.
-The cells say how old their forecasts grow from then on (FR-305).
+waits on the network. A panic there is recovered on that goroutine and logged; the loop then stops
+and the service's `RefreshStopped` raises a notice on the ribbon saying so, with the reason, until
+the next launch. The cells say how old their forecasts grow from then on (FR-305).
 
-The service decides what is asked (`refresh.go`): a city only once its cached forecast has passed its
-`Expires` (FR-303), with `If-Modified-Since` from its `Last-Modified` (FR-304); after a failure not
+The service decides what is asked (`refresh.go`): a city only once its cached forecast is
+`expiryGrace` past its `Expires`; after an answer leaving `Expires` no later than now, not before
+that grace again, since MET Norway answers 304 with the same `Expires` until its new forecast exists
+(FR-303, Amendment 12); with `If-Modified-Since` from its `Last-Modified` (FR-304); after a failure not
 before its back-off ends (FR-306), unless Refresh now asks (FR-309); never two requests for one city
 at once (FR-310); at least a second between any two requests, through the `Pacer` (NFR-S-2). A 403
 stops every request for the rest of the run (FR-307).
 
 `metno` sends the User-Agent `product.UserAgent()` names (FR-301), waits at most 10 seconds for an
 answer and refuses one over 1 MiB, one that is not JSON or one without a `timeseries` (FR-308),
-logging one line per request. Sunrise 3.0 is asked at most once per city per local date; a failure
-is asked again on the next opening of the detail (FR-411).
+logging one line per request. Sunrise 3.0 is asked at most once per city per local date, as the
+detail opens rather than from the refresher, holding the same lock and pacing as the forecasts, so
+opening a detail can wait behind a refresh under way; a failure is asked again on the next opening of
+the detail (FR-411).
 
 Each successful forecast is written to `forecasts` in the settings folder, one file per city named
 after its id hex encoded, with its `Expires`, its `Last-Modified` and the city's dry spell (FR-807,
@@ -216,8 +220,8 @@ found` (FR-803).
 
 **The file is a contract from the first release (NFR-C-1).** No key is renamed, dropped or given
 another meaning. `TestA1Point0SettingsFileIsReadWhole` reads the fixture
-`store/testdata/settings-1.0.0.json`, every key set away from its default; once 1.0.0 ships the fixture
-is never regenerated.
+`store/testdata/settings-1.0.0.json`, every key set away from its default; the fixture is frozen and
+never regenerated.
 
 ## Colour
 

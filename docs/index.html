@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WeatherRibbon: the weather in your cities, in a ribbon</title>
+    <meta name="description" content="WeatherRibbon is a small frameless ribbon of weather for Windows, macOS and Linux: one cell per city you choose, each with its local time, the weather now, today's high, low and rain and the three days after.">
+    <meta name="theme-color" content="#111418">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="WeatherRibbon: the weather in your cities, in a ribbon">
+    <meta property="og:description" content="What is the weather where your friends and family are, today and over the next few days? One glance at a ribbon of cities. For Windows, macOS and Linux.">
+    <meta property="og:image" content="https://weatherribbon.world/icon.png">
+    <meta property="og:url" content="https://weatherribbon.world/">
+    <link rel="stylesheet" href="styles.css?v=ddecf59f50">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "WeatherRibbon",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Windows, macOS, Linux",
+        "description": "A ribbon of weather for the cities you choose, for Windows, macOS and Linux, horizontal or vertical.",
+        "author": {"@type": "Person", "name": "Oliver Ernster", "url": "https://ernster.dev"},
+        "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+        "downloadUrl": "https://github.com/oernster/WeatherRibbon/releases/latest",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "GBP"}
+    }
+    </script>
+</head>
+<body>
+
+<header class="wrap site-head">
+    <a class="brand" href="#top"><img src="icon.png" alt="" width="34" height="34"> WeatherRibbon</a>
+    <nav aria-label="Sections">
+        <a href="features.html" class="hide-sm">Features</a>
+        <a href="download.html">Download</a>
+        <a href="https://github.com/oernster/WeatherRibbon">GitHub</a>
+    </nav>
+</header>
+
+<main id="top">
+
+    <div class="wrap hero">
+        <div>
+            <p class="eyebrow">
+                <span class="pill">v<!--VERSION-->1.0.0<!--/VERSION--></span>
+                <span class="pill">Windows</span>
+                <span class="pill">macOS</span>
+                <span class="pill">Linux</span>
+                <span class="pill">Free and open source</span>
+            </p>
+            <h1>WeatherRibbon</h1>
+            <p class="lead">A small ribbon of weather for the cities you choose, horizontal or vertical.
+                <strong>What is the weather where your friends and family are, today and over the next few days?</strong>
+                One cell per city, each with its local time, the weather now, today's high, low
+                and rain and the three days after, in a small frameless ribbon you can put
+                anywhere on any monitor.</p>
+            <div class="cta">
+                <a class="btn btn-primary" href="download.html">Download</a>
+                <a class="btn" href="https://github.com/oernster/WeatherRibbon">View the source</a>
+            </div>
+        </div>
+        <img class="hero-mark" src="icon.png" alt="" width="256" height="256">
+    </div>
+
+    <section class="wrap" id="look">
+        <p class="kicker">A look</p>
+        <h2>Every city's weather, one glance.</h2>
+        <figure class="shot-wide">
+            <img src="screenshots/screenshot.png"
+                alt="WeatherRibbon as a horizontal ribbon of weather cells, one per city, running east from Greenwich. Each cell shows the city's name, its local time with its zone's abbreviation, a weather symbol with the temperature now, today's high, low and rain; below them the next three days by weekday, each with a symbol, its high and its low.">
+        </figure>
+        <div class="shot">
+            <figure>
+                <img src="screenshots/screenshot2.png"
+                    alt="WeatherRibbon as a vertical ribbon of the same weather cells stacked one above another, each with its city, local time, the weather now, today's figures and the three days after; the resize grip sits in the bottom corner.">
+            </figure>
+            <div class="two-col">
+                <div class="card">
+                    <h3>What you are looking at</h3>
+                    <ul>
+                        <li><strong>Two shapes, one ribbon:</strong> horizontal or vertical,
+                            from the menus or Settings. The grip in the corner resizes the
+                            cells by hand.</li>
+                        <li><strong>A cell per city:</strong> its local time, the weather
+                            now, today's high, low and rain, then the three days after.</li>
+                        <li><strong>Today means from now to midnight</strong> in that city,
+                            so late in the day its figures describe the hours left.</li>
+                        <li><strong>London first,</strong> then cities further east; the
+                            Americas last, since they are behind UTC.</li>
+                        <li><strong>The hours in detail:</strong> a click on a cell opens
+                            the next 24 hours there, with sunrise and sunset.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>What it does not do</h3>
+                    <ul>
+                        <li><strong>Weather warnings.</strong> It issues none and is no
+                            substitute for your national weather service.</li>
+                        <li><strong>The internet, beyond two questions.</strong> It asks
+                            MET Norway for forecasts and sun times, sending each city's
+                            position rounded to four decimal places and a User-Agent naming
+                            WeatherRibbon; it asks GitHub for the latest release, sending
+                            nothing about you. The donate button and Download hand their
+                            addresses to your browser.</li>
+                        <li><strong>Radar or maps.</strong> No radar, satellite, air
+                            quality, pollen, tides or marine forecasts.</li>
+                        <li><strong>The chance of rain.</strong> MET Norway gives it for
+                            the Nordic countries alone, so cells would disagree.</li>
+                        <li><strong>People.</strong> A cell is a place, never a person.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap support" id="support">
+        <p class="kicker">Supporting WeatherRibbon</p>
+        <h2>Free. It stays free.</h2>
+        <div class="prose">
+            <p>There is no paid tier, no licence key and no feature held back behind a
+                donation. If WeatherRibbon earns its place on your screen, a contribution
+                supports its maintenance. The same button sits at the foot of Settings.</p>
+        </div>
+        <div class="cta">
+            <a class="btn btn-donate" href="https://www.paypal.com/ncp/payment/88LQG589TJEM6">
+                <img src="donate.png" alt="">
+                Donate
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="wrap site-foot">
+    <span>&copy; Oliver Ernster. GPL-3.0.
+        <a href="https://ernster.dev/commercial-licensing.html">Commercial licences</a> available.</span>
+    <span><a href="./">Home</a> &middot;
+        <a href="features.html">Features</a> &middot;
+        <a href="download.html">Download</a> &middot;
+        <a href="https://github.com/oernster/WeatherRibbon">Source</a> &middot;
+        <a href="https://ernster.dev">More of my work</a></span>
+</footer>
+
+</body>
+</html>

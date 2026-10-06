@@ -18,6 +18,8 @@ where they apply.
 | 8 | 2026-10-05 | Behaviour the kit owns is verified by the kit's own tests, named here as the kit names them, never by a second copy in WeatherRibbon (FR-102, FR-105, FR-204, FR-704, FR-705, NFR-O-1). The ribbon's palette is the kit's alone, so its contrast is the kit's test, WeatherRibbon holding its stylesheets to that palette (NFR-U-1). Oliver's ruling. |
 | 9 | 2026-10-06 | A cell fits every weekday, not every weekday and date: no cell draws a date, the outlook naming each day by its weekday alone (FR-103, FR-406). The weather icon's accessible name is the code's words Go sends with it, spelled correctly whichever spelling MET Norway sent (NFR-U-2, FR-412). Refreshing stopped by a fault stands as a notice on the ribbon until the next launch (FR-305). Oliver's instruction to close the gaps. |
 | 10 | 2026-10-06 | Every number on the ribbon says what it measures: a temperature carries its scale (`14°C`, `58°F`), a high and a low their letters (`H 20°C L 14°C`) and rain its measure (`0.4 mm`), the outlook putting each day's high above its low so cells stay narrow (FR-404, FR-406, FR-703). Oliver found bare numbers on the cell while testing by hand. |
+| 11 | 2026-10-06 | NFR-P-1 and NFR-P-2 measured for the first release: launch is timed from the process starting to the log's `launch: shown` line, since the log's lines after the first carry no time; the search's benchmark exists. Oliver's instruction to measure both. |
+| 12 | 2026-10-06 | A forecast is asked for again 10 seconds after its `Expires`, not at it; an answer that leaves `Expires` not past now waits those 10 seconds again rather than the second between requests (FR-303). Measured the same day: until MET Norway's new forecast exists it answers 304 with the `Expires` already held, its clock 3 to 4 seconds behind this machine's, so a city asked at `Expires` was asked six times in six seconds. Oliver's ruling. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -226,7 +228,7 @@ through the shared module (CON-10) rather than being written again.
 ## 3. Requirements
 
 Every requirement names the test that verifies it; "by hand" means checked by a person in a real
-build on each platform. Test names are proposals until written.
+build on each platform.
 
 ### 3.1 The ribbon
 
@@ -336,11 +338,14 @@ places, the most MET Norway's terms allow.
 Acceptance: Kathmandu at 27.70169, 85.3206 is asked for as `lat=27.7017&lon=85.3206`.
 Verified by: `TestCoordinatesAreRoundedToFourPlaces` (domain).
 
-**FR-303 Expires is honoured** (Must). The application shall request a city's forecast only once its
-cached copy has passed its `Expires` time or when it holds none.
+**FR-303 Expires is honoured** (Must; Amendment 12). The application shall request a city's forecast
+only when it holds none or once its cached copy is 10 seconds past its `Expires` time. When an answer
+leaves `Expires` no later than now, the next request for that city shall wait those 10 seconds again.
 Acceptance: a forecast cached at 07:36:04Z with `Expires` 08:00:28Z is not requested again before
-08:00:28Z, whatever triggers a refresh.
-Verified by: `TestNothingIsRequestedBeforeExpires` (application).
+08:00:38Z, whatever triggers a refresh; asked then and answered 304 with `Expires` still 08:00:28Z, it
+is not asked again before 08:00:48Z.
+Verified by: `TestNothingIsRequestedBeforeExpires`, `TestAnUnchangedExpiresWaitsTheGraceBeforeAskingAgain`
+(application); measured on MET Norway by hand.
 
 **FR-304 Conditional requests** (Must). A request for a city holding a cached forecast shall carry
 `If-Modified-Since` with that forecast's `Last-Modified`; a 304 answer keeps the cached forecast and
@@ -629,8 +634,8 @@ Verified by: `TestTheCacheSurvivesARestart`, `TestAnUnreadableCacheEntryIsFetche
 
 | ID | Requirement | Method |
 |---|---|---|
-| NFR-P-1 | Launch to cells drawn from the cache in at most 1.5 s on TimeRibbon's reference machine. | Log's first line to first snapshot, median of 5 launches |
-| NFR-P-2 | A place search over the whole city list answers each keystroke within 50 ms at the 95th percentile on the reference machine. | Benchmark over 200 typed prefixes |
+| NFR-P-1 | Launch to cells drawn from the cache in at most 1.5 s on TimeRibbon's reference machine. | The process starting to the log's `launch: shown` line, which follows the page sizing its cells, median of 5 launches (Amendment 11). Measured 2026-10-06 by a temporary probe on the installed build: median 623 ms; the first, cold, 1,218 ms |
+| NFR-P-2 | A place search over the whole city list answers each keystroke within 50 ms at the 95th percentile on the reference machine. | `BenchmarkSearchTheWholeCityListAsTyped` (places): the first one to four letters of 50 names spread through the list, 200 keystrokes. Measured 2026-10-06 in three runs of ten: 95th percentile 4.02, 4.04 and 4.02 ms, mean about 2 ms |
 | NFR-P-3 | The page schedules no periodic timer more often than once a minute. | `timers.test.ts` |
 | NFR-C-2 | The bundled city list adds at most 4 MB to the executable. | Size of the built extract. Measured 2026-10-05 (Amendment 3): DATA-1's nine fields as tab-separated text for all 34,153 places, 2,974,978 bytes; 896,700 compressed by gzip at level 9 |
 | NFR-S-1 | No network request but forecasts and sun times to `api.met.no` and the update check to GitHub; neither sends anything about the user beyond the cities' coordinates and the User-Agent. | `TestOnlyTheForecastAndUpdateImportANetworkPackage`, `TestNothingOfWeatherRibbonsStartsAProcess`, `TestThePageMakesNoRequest` (structural) |
@@ -760,6 +765,7 @@ Each number in a requirement above is stated once there; this list says where it
 | 2 hours before `Updated <age> ago` | Proposal, about five `Expires` windows at the 24 minutes measured |
 | 10 minutes to 2 hours back-off | Proposal; MET Norway names no figure |
 | 1 request a second | Proposal, far inside MET Norway's 20 a second per application |
+| 10 seconds after `Expires` | Amendment 12: MET Norway's clock measured 3 to 4 seconds behind this machine's; its new forecast arrived 5 seconds after the first request at `Expires` |
 | 20 to 100 percent opacity, steps of 5 | TimeRibbon's FR-622 |
 | 75 to 200 percent scale | TimeRibbon's FR-623 |
 | 34,153 places | GeoNames `cities15000`, measured 2026-10-05 |

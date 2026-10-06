@@ -22,6 +22,11 @@ Set-Location $root
 $version = (Get-Content (Join-Path $root 'VERSION') -Raw).Trim()
 if ($version -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') { throw "VERSION holds '$version', not major.minor.patch" }
 
+# The site under docs/ cannot read VERSION when it is served, so its version tokens are stamped
+# from it on every build: a bump reaches the site without anyone remembering to.
+python (Join-Path $root 'stamp_version.py')
+if ($LASTEXITCODE -ne 0) { throw "stamp_version.py failed with exit code $LASTEXITCODE" }
+
 # The names come from where they are already stated: the module from go.mod, each executable's name
 # from its wails.json.
 $module = go list -m

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Download WeatherRibbon for Windows, macOS and Linux</title>
+    <meta name="description" content="Download WeatherRibbon for Windows, macOS or Linux: a setup program, a disk image signed and notarised by Apple or a Flatpak bundle. Free and open source.">
+    <meta name="theme-color" content="#111418">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Download WeatherRibbon for Windows, macOS and Linux">
+    <meta property="og:description" content="Download WeatherRibbon for Windows, macOS or Linux: a setup program, a disk image signed and notarised by Apple or a Flatpak bundle. Free and open source.">
+    <meta property="og:image" content="https://weatherribbon.world/icon.png">
+    <meta property="og:url" content="https://weatherribbon.world/download.html">
+    <link rel="stylesheet" href="styles.css?v=ddecf59f50">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Download WeatherRibbon for Windows, macOS and Linux",
+        "description": "Download WeatherRibbon for Windows, macOS or Linux: a setup program, a disk image signed and notarised by Apple or a Flatpak bundle. Free and open source.",
+        "url": "https://weatherribbon.world/download.html",
+        "isPartOf": {"@type": "WebSite", "name": "WeatherRibbon", "url": "https://weatherribbon.world/"},
+        "inLanguage": "en-GB"
+    }
+    </script>
+</head>
+<body>
+
+<header class="wrap site-head">
+    <a class="brand" href="./"><img src="icon.png" alt="" width="34" height="34"> WeatherRibbon</a>
+    <nav aria-label="Sections">
+        <a href="features.html" class="hide-sm">Features</a>
+        <a href="download.html">Download</a>
+        <a href="https://github.com/oernster/WeatherRibbon">GitHub</a>
+    </nav>
+</header>
+
+<main id="top">
+
+    <section class="wrap" id="download">
+        <p class="kicker">Download</p>
+        <h2>Install it for yourself.</h2>
+        <span class="dl-version" id="dl-version">Version <!--VERSION-->1.0.0<!--/VERSION--></span>
+        <!--
+            The button points at GitHub's releases/latest/download redirect, which always
+            serves the newest release's file. The name carries no version, so the link
+            cannot go stale. The script at the foot adds the file size when it can reach
+            the API; without it the page still says everything that matters.
+        -->
+        <div class="downloads">
+            <div class="dl-card">
+                <div class="ico">&#x1FA9F;</div>
+                <h3>Windows</h3>
+                <p class="req">Windows 10 or 11</p>
+                <a class="btn btn-primary" href="https://github.com/oernster/WeatherRibbon/releases/latest/download/WeatherRibbonSetup.exe">Download for Windows</a>
+                <p class="meta" data-asset="WeatherRibbonSetup.exe">Setup program (.exe)</p>
+                <p class="meta">Windows may show a SmartScreen warning when you run
+                    it: <a href="https://ernster.dev/windows-smartscreen.html">here is why</a>.</p>
+                <p class="how">Run <code>WeatherRibbonSetup.exe</code> and choose Install. It
+                    installs for your account only, so Windows never asks for administrator
+                    rights. It offers a Start Menu entry, a Desktop shortcut and Start with
+                    Windows.</p>
+                <p class="how">Run the same program again to update, repair or uninstall.
+                    You can also remove it from the Apps list in Windows Settings; your
+                    cities and the kept forecasts stay unless you tick
+                    <em>Also forget my settings</em>.</p>
+            </div>
+            <div class="dl-card">
+                <div class="ico">&#x1F34E;</div>
+                <h3>macOS</h3>
+                <p class="req">macOS 12 or later, Apple Silicon</p>
+                <a class="btn btn-primary" href="https://github.com/oernster/WeatherRibbon/releases/latest/download/WeatherRibbon.dmg">Download for macOS</a>
+                <p class="meta" data-asset="WeatherRibbon.dmg">Disk image (.dmg)</p>
+                <p class="meta">Signed and notarised by Apple.</p>
+                <p class="how">Open <code>WeatherRibbon.dmg</code> and drag WeatherRibbon to
+                    Applications. Its icon sits in the menu bar; a click opens its menu.</p>
+                <p class="how">To remove it, turn off Open at Login in its Settings, then
+                    move it to the Bin. Your cities stay in
+                    <code>~/Library/Application Support/WeatherRibbon</code>.</p>
+            </div>
+            <div class="dl-card">
+                <div class="ico">&#x1F427;</div>
+                <h3>Linux</h3>
+                <p class="req">Any desktop that runs Flatpaks</p>
+                <a class="btn btn-primary" href="https://github.com/oernster/WeatherRibbon/releases/latest/download/weatherribbon.flatpak">Download for Linux</a>
+                <p class="meta" data-asset="weatherribbon.flatpak">Flatpak bundle (.flatpak)</p>
+                <p class="meta">Runs on the GNOME 50 runtime from Flathub.</p>
+                <p class="how">Install it for your account with
+                    <code>flatpak install --user weatherribbon.flatpak</code>, then start it
+                    from your applications or with
+                    <code>flatpak run uk.codecrafter.WeatherRibbon</code>.</p>
+                <p class="how">Before installing a newer release over it, choose Exit from its
+                    menu: a copy left running keeps the old release going.</p>
+                <p class="how">To remove it, turn off Start when I sign in in its Settings and
+                    choose Exit, then run
+                    <code>flatpak uninstall --user uk.codecrafter.WeatherRibbon</code>. Your
+                    cities stay in <code>~/.var/app/uk.codecrafter.WeatherRibbon/config/WeatherRibbon</code>.</p>
+            </div>
+        </div>
+        <p class="dl-links">
+            <a id="dl-whats-new" href="https://github.com/oernster/WeatherRibbon/releases/latest">What is new in this release</a>
+            &nbsp;&middot;&nbsp;
+            <a href="https://github.com/oernster/WeatherRibbon/releases">All releases</a>
+            &nbsp;&middot;&nbsp;
+            <a href="https://github.com/oernster/WeatherRibbon">Source on GitHub</a>
+        </p>
+    </section>
+
+</main>
+
+<footer class="wrap site-foot">
+    <span>&copy; Oliver Ernster. GPL-3.0.
+        <a href="https://ernster.dev/commercial-licensing.html">Commercial licences</a> available.</span>
+    <span><a href="./">Home</a> &middot;
+        <a href="features.html">Features</a> &middot;
+        <a href="download.html">Download</a> &middot;
+        <a href="https://github.com/oernster/WeatherRibbon">Source</a> &middot;
+        <a href="https://ernster.dev">More of my work</a></span>
+</footer>
+
+<script>
+    // The download button never goes stale: it points at GitHub's releases/latest/download
+    // redirect, which always serves the newest release's file. This script only decorates
+    // the page: the version chip, the notes link and the file's size, read from the GitHub
+    // API. Where the call fails, the static text stands on its own; the chip then carries
+    // the version stamped into this page from the VERSION file. No date is ever shown.
+    (function () {
+        var api = 'https://api.github.com/repos/oernster/WeatherRibbon/releases/latest';
+        fetch(api).then(function (r) {
+            if (!r.ok) { throw new Error('release lookup failed'); }
+            return r.json();
+        }).then(function (rel) {
+            var version = (rel.tag_name || '').replace(/^v/, '');
+            if (version) {
+                document.getElementById('dl-version').textContent = 'Version ' + version;
+            }
+            if (rel.html_url) {
+                document.getElementById('dl-whats-new').href = rel.html_url;
+            }
+            (rel.assets || []).forEach(function (asset) {
+                var meta = document.querySelector('[data-asset="' + asset.name + '"]');
+                if (meta && asset.size) {
+                    var mb = (asset.size / (1024 * 1024)).toFixed(1);
+                    meta.textContent = meta.textContent + ' · ' + mb + ' MB';
+                }
+            });
+        }).catch(function () { /* The static page already says everything essential. */ });
+    })();
+</script>
+
+</body>
+</html>

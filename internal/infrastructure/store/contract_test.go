@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -35,23 +34,5 @@ func TestA1Point0SettingsFileIsReadWhole(t *testing.T) {
 	}
 	if got, want := loaded.Settings, full(); !reflect.DeepEqual(got, want) {
 		t.Errorf("a 1.0.0 file read as\n%+v\nwant\n%+v", got, want)
-	}
-}
-
-// The fixture is what this version writes for the same settings, so it is 1.0.0's shape exactly. Once
-// 1.0.0 ships this test is deleted and the fixture kept as it is.
-func TestTheFixtureIsWhatThisVersionWrites(t *testing.T) {
-	t.Parallel()
-	raw, err := os.ReadFile(contractFixture)
-	if err != nil {
-		t.Fatal(err)
-	}
-	dir := t.TempDir()
-	if err := New(dir, productName).Save(full()); err != nil {
-		t.Fatal(err)
-	}
-	// A checkout may turn the fixture's line ends into CRLF; the shape is what is compared.
-	if written := read(t, dir); written != strings.ReplaceAll(string(raw), "\r\n", "\n") {
-		t.Errorf("this version writes\n%s\nthe fixture holds\n%s", written, raw)
 	}
 }

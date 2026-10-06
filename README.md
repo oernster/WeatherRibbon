@@ -45,7 +45,7 @@ monitor.
 - **Metric or Imperial.** Metric is degrees Celsius, millimetres and kilometres an hour; Imperial is
   degrees Fahrenheit, inches and miles an hour.
 - **Asks no more often than it should.** A forecast is asked for again only once MET Norway says it
-  has expired. The request carries the date of the copy already held, so an unchanged forecast is not
+  has expired, ten seconds after, so MET Norway has its new forecast ready. The request carries the date of the copy already held, so an unchanged forecast is not
   sent twice. Requests leave at least a second apart. Refresh now asks at once for every city whose
   forecast has expired or that is waiting to try again after a failure.
 - **Keeps working offline.** The last forecasts are kept on disk; with no network the cells show them,
@@ -58,7 +58,7 @@ monitor.
 - **Unpinned, it waits as a thin tab** against the edge it stands on, opening when the pointer rests
   on it.
 - **Goes where you put it** on any monitor and opens there next time; Position centres it on an edge,
-  greying an edge it could not move to. Beside TimeRibbon it never lands on it.
+  greying an edge that would leave it where it stands. Beside TimeRibbon it never lands on it.
 - **Fits its cells, then scrolls,** each cell as wide as the widest time, weekday, temperature and
   label its font can draw.
 - **Choices that apply at once:** ten colour schemes, light, dark or the system's theme, 12-hour or
@@ -97,8 +97,8 @@ monitor.
 
 ## Getting it
 
-No release has been published yet. Until one is, build the files below from source as
-[DEVELOPMENT.md](DEVELOPMENT.md) describes.
+Each file below is attached to the [latest release](https://github.com/oernster/WeatherRibbon/releases/latest);
+[DEVELOPMENT.md](DEVELOPMENT.md) builds them from source.
 
 ### Windows
 
@@ -157,7 +157,9 @@ measured floors. [TESTING.md](TESTING.md) has the figures.
 | Linux | `bash build_flatpak.sh` | `weatherribbon.flatpak` and an install for your account |
 
 `build.ps1` runs the gate first. [DEVELOPMENT.md](DEVELOPMENT.md) sets up each machine;
-[ARCHITECTURE.md](ARCHITECTURE.md) explains the layering.
+[ARCHITECTURE.md](ARCHITECTURE.md) explains the layering; [DECISIONS-TRADEOFFS.md](DECISIONS-TRADEOFFS.md)
+gives the decisions with what each costs; [TECH_DEBT.md](TECH_DEBT.md) lists what is still open, what
+is deliberately left and what only looks like debt.
 
 ## Supporting WeatherRibbon
 

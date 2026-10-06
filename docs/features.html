@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WeatherRibbon features: what the ribbon does</title>
+    <meta name="description" content="What WeatherRibbon does: the weather now, today and three days ahead for each city you choose, the hours in detail, an offline city search, metric or imperial, on Windows, macOS and Linux.">
+    <meta name="theme-color" content="#111418">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="WeatherRibbon features: what the ribbon does">
+    <meta property="og:description" content="What WeatherRibbon does: the weather now, today and three days ahead for each city you choose, the hours in detail, an offline city search, metric or imperial, on Windows, macOS and Linux.">
+    <meta property="og:image" content="https://weatherribbon.world/icon.png">
+    <meta property="og:url" content="https://weatherribbon.world/features.html">
+    <link rel="stylesheet" href="styles.css?v=ddecf59f50">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "WeatherRibbon features: what the ribbon does",
+        "description": "What WeatherRibbon does: the weather now, today and three days ahead for each city you choose, the hours in detail, an offline city search, metric or imperial, on Windows, macOS and Linux.",
+        "url": "https://weatherribbon.world/features.html",
+        "isPartOf": {"@type": "WebSite", "name": "WeatherRibbon", "url": "https://weatherribbon.world/"},
+        "inLanguage": "en-GB"
+    }
+    </script>
+</head>
+<body>
+
+<header class="wrap site-head">
+    <a class="brand" href="./"><img src="icon.png" alt="" width="34" height="34"> WeatherRibbon</a>
+    <nav aria-label="Sections">
+        <a href="features.html" class="hide-sm">Features</a>
+        <a href="download.html">Download</a>
+        <a href="https://github.com/oernster/WeatherRibbon">GitHub</a>
+    </nav>
+</header>
+
+<main id="top">
+
+    <section class="wrap" id="features">
+        <p class="kicker">What it does</p>
+        <h2>Every city's own weather. Nothing to look up by hand.</h2>
+        <div class="prose">
+            <p>What the ribbon does, in short: a cell per city with its time and its
+                weather, in a ribbon you can shape, size and leave where you like.</p>
+            <p>The forecasts and the sunrise and sunset times come from
+                <a href="https://api.met.no/">MET Norway</a> under CC BY 4.0. The city list is
+                <a href="https://www.geonames.org/">GeoNames'</a>, under CC BY 4.0; the weather
+                symbols are the Yr icons from MET Norway, under MIT. All three are credited
+                under Help, then About.</p>
+        </div>
+        <div class="features">
+            <div class="feature">
+                <h3>The weather now</h3>
+                <p>Each cell shows its city's temperature and a weather symbol from MET
+                    Norway's forecast for the hour. Once a forecast has run out the cell says
+                    so rather than show an old value as current.</p>
+            </div>
+            <div class="feature">
+                <h3>Today and three days ahead</h3>
+                <p>Today's high, low and rain cover the hours from now to midnight in that
+                    city, so late in the day they describe the hours left. Each of the next
+                    three days shows its weekday, a symbol, its high and its low.</p>
+            </div>
+            <div class="feature">
+                <h3>The hours in detail</h3>
+                <p>A click on a cell opens the next 24 hours for that city: the temperature,
+                    symbol, rain and wind each hour, with the city's sunrise and sunset. Close
+                    or Escape takes you back to the ribbon.</p>
+            </div>
+            <div class="feature">
+                <h3>Each city's own time</h3>
+                <p>Every cell carries its city's local time with its zone's abbreviation (such
+                    as BST); where a zone has no letters it shows the offset from UTC instead. The ribbon runs
+                    east from Greenwich: London, Berlin, Tokyo, then New York.</p>
+            </div>
+            <div class="feature">
+                <h3>Find any city, offline</h3>
+                <p>Search the 34,153 places of GeoNames' list of cities over 15,000 people,
+                    built in, so a search never touches the network. What you type matches the
+                    start of a word of the name, region or country. A label can be anything up to
+                    32 characters.</p>
+            </div>
+            <div class="feature">
+                <h3>Metric or Imperial</h3>
+                <p>Metric is degrees Celsius, millimetres and kilometres an hour; Imperial is
+                    degrees Fahrenheit, inches and miles an hour. Every number on the ribbon
+                    carries its unit.</p>
+            </div>
+            <div class="feature">
+                <h3>Asks no more often than it should</h3>
+                <p>A forecast is asked for again only once MET Norway says it has expired,
+                    ten seconds after, so its new forecast is ready; an unchanged one is not sent
+                    twice. Requests leave at least a second apart.
+                    Refresh now asks at once for every city whose forecast has expired.</p>
+            </div>
+            <div class="feature">
+                <h3>Keeps working offline</h3>
+                <p>The last forecasts are kept on disk; with no network the cells show them,
+                    saying how old they are once that passes two hours. A failed request is tried
+                    again after 10 minutes, waiting twice as long after each further failure, up
+                    to two hours.</p>
+            </div>
+            <div class="feature">
+                <h3>Your way round</h3>
+                <p>Ten colour schemes from Classic to Neon, Ocean, Ruby and Contrast; 12 hour or
+                    24 hour; horizontal or vertical; light, dark or following the system. Every
+                    choice applies at once, with no Save step.</p>
+            </div>
+            <div class="feature">
+                <h3>Any size, see-through if you like</h3>
+                <p>Drag the grip in the ribbon's corner to draw the cells from 75 to 200 percent
+                    of their size, everything in them together; double-click it to put them back.
+                    The Opacity slider in Settings fades the ribbon's background from 20 to 100
+                    percent while the weather stays solid.</p>
+            </div>
+            <div class="feature">
+                <h3>Fits, then scrolls</h3>
+                <p>Each cell is as wide as the widest time, weekday, temperature and label its
+                    font can draw. The ribbon is as long as its cells until it reaches the edge of
+                    the display; past that its cells scroll rather than shrink or wrap.</p>
+            </div>
+            <div class="feature">
+                <h3>Stays where you leave it</h3>
+                <p>Drag it by any empty part onto any monitor and it opens there next time.
+                    Position centres it flush on an edge of its display, greying an edge that
+                    would leave it where it already stands; choosing horizontal sends it to the
+                    top edge and vertical to the right.</p>
+            </div>
+            <div class="feature">
+                <h3>Shares the screen with its sibling</h3>
+                <p>Run WeatherRibbon beside TimeRibbon and it never lands on it: a ribbon being
+                    placed moves along its edge to the nearest free space, else to the opposite
+                    edge, while one already in place stays where it is.</p>
+            </div>
+            <div class="feature">
+                <h3>Two menus, one list</h3>
+                <p>The icon in the notification area, the menu bar or the system tray and a
+                    right-click on the ribbon both offer Add city, Settings, Units, Colour,
+                    Orientation, Position, Always on top, Pin ribbon, Refresh now, Help (About,
+                    Licence and Check for updates), Hide ribbon and Exit. Untick Pin ribbon and
+                    it waits against its edge as a thin tab until the pointer rests on it.</p>
+            </div>
+            <div class="feature">
+                <h3>Knows when there is more</h3>
+                <p>When a newer release is out, the ribbon says so and offers the download for
+                    your platform; it never installs an update itself. Help's Check for updates
+                    asks at any time. Now and then, after a long dry spell, a city may have a
+                    question for you.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="wrap site-foot">
+    <span>&copy; Oliver Ernster. GPL-3.0.
+        <a href="https://ernster.dev/commercial-licensing.html">Commercial licences</a> available.</span>
+    <span><a href="./">Home</a> &middot;
+        <a href="features.html">Features</a> &middot;
+        <a href="download.html">Download</a> &middot;
+        <a href="https://github.com/oernster/WeatherRibbon">Source</a> &middot;
+        <a href="https://ernster.dev">More of my work</a></span>
+</footer>
+
+</body>
+</html>

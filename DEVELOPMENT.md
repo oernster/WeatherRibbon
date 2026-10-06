@@ -13,7 +13,7 @@ repository root: PowerShell on Windows, the Terminal's shell elsewhere. Testing 
 | Node.js with npm | a current LTS | the front end, its lint, type check and tests | [nodejs.org](https://nodejs.org/) or `winget install OpenJS.NodeJS.LTS` |
 | Wails CLI | v2.12.0, the module `go.mod` requires | both executables and running from source | `go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0` |
 | WebView2 runtime | any current | the window; Windows 11 ships it | Microsoft's WebView2 page |
-| Python 3, Pillow | any current | only to regenerate the committed icons | [python.org](https://www.python.org/), `python -m pip install pillow` |
+| Python 3, Pillow | any current | stamping the site; Pillow only to regenerate the committed icons | [python.org](https://www.python.org/), `python -m pip install pillow` |
 
 The gate fetches staticcheck through `go run` on its first run, so it needs the network once. No C
 compiler is needed: `build.ps1` pins cgo off. If `wails` is not found, `%USERPROFILE%\go\bin` is not
@@ -59,8 +59,8 @@ npm --prefix frontend run build
 
 It stops at the first failure:
 
-1. Reads `VERSION`, refusing anything but `major.minor.patch`; reads the module path and executable
-   names.
+1. Reads `VERSION`, refusing anything but `major.minor.patch`; stamps the site's version tokens and
+   asset hashes through `python stamp_version.py`; reads the module path and executable names.
 2. Pins `CGO_ENABLED=0`, so the tests exercise what ships; pins `GOWORK=off`, so what ships is the
    kit tag `go.mod` requires rather than a working copy a local `go.work` names.
 3. Runs `test.ps1` ([TESTING.md](TESTING.md#running-it)), with no switch to skip it.
@@ -209,12 +209,12 @@ go run ./tools/gencities -dir C:\path\to\downloads -downloaded 2026-10-05
 ## Versioning and releases
 
 `VERSION` holds the one version string. Each build script passes it through the same `-X` flag; the
-version resources, the DMG's `Info.plist` and the Flatpak's metainfo are written from it. The setup
-program compares it with the Apps list's record to choose its screen; the update check compares it
-with GitHub's latest release tag, so a development placeholder is never offered one.
+version resources, the DMG's `Info.plist`, the Flatpak's metainfo and the site's tokens are written
+from it. The setup program compares it with the Apps list's record to choose its screen; the update
+check compares it with GitHub's latest release tag, so a development placeholder is never offered one.
 
 1. Set `VERSION`.
-2. Run `./build.ps1` and read its exit code.
+2. Run `./build.ps1` and read its exit code; commit the site's stamped version with `VERSION`.
 3. Run `bash builddmg.sh` on the Mac and `bash build_flatpak.sh` on Linux, with the checks in
    [TESTING.md](TESTING.md#on-macos-and-linux).
 4. Check by hand what no test reaches (window, tray, focus, paint, the install) in all three builds.
@@ -236,11 +236,11 @@ with GitHub's latest release tag, so a development placeholder is never offered 
 | `internal/domain`, `internal/application` | WeatherRibbon's pure rules (forecasts, units, places, settings, back-off, petrichor); its use cases over their ports |
 | `internal/infrastructure` | WeatherRibbon's own adapters: MET Norway, the forecast cache, the settings store, the city list and the request pacing |
 | `internal/product` | names, repository, User-Agent, version, donation address, author, sign-in label, credits |
-| `build.ps1`, `test.ps1`, `VERSION` | the Windows build; the gate; the version |
+| `build.ps1`, `test.ps1`, `VERSION`, `stamp_version.py` | the Windows build; the gate; the version; the site stamp |
 | `builddmg.sh`, `build_flatpak.sh`, `cleanup_flatpak.sh` | the macOS DMG; the Flatpak and its removal |
 | `frontend/src`, `installer/` | the React page; the setup program's composition root, which carries the payload and the page's pictures (`installer/frontend/dist`, made by `tools/genicons.py`) |
 | `tools/` | thin mains over the kit's delivery (`identity`, `linuxicons`, `payload`, `versioninfo`); WeatherRibbon's own generators (`gencities`, `genicons.py`) |
-| `tests/structural`, `assets/` | the architecture's tests; master artwork |
+| `tests/structural`, `assets/`, `docs/` | the architecture's tests; master artwork; the site |
 
 ## House rules worth knowing before a first change
 
