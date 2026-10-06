@@ -124,6 +124,8 @@ finish-args:
   - --socket=x11
   - --device=dri
   - --talk-name=org.kde.StatusNotifierWatcher
+  # logind on the system bus: the ribbon leaves when shutdown is announced, before the shell is torn down.
+  - --system-talk-name=org.freedesktop.login1
   - --own-name=${SINGLE_INSTANCE_NAME}
   - --filesystem=xdg-config/autostart:create
   # The folder every ribbon on ribbonkit shares, so two products never land on each other (FR-506).
