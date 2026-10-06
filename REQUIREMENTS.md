@@ -20,6 +20,7 @@ where they apply.
 | 10 | 2026-10-06 | Every number on the ribbon says what it measures: a temperature carries its scale (`14°C`, `58°F`), a high and a low their letters (`H 20°C L 14°C`) and rain its measure (`0.4 mm`), the outlook putting each day's high above its low so cells stay narrow (FR-404, FR-406, FR-703). Oliver found bare numbers on the cell while testing by hand. |
 | 11 | 2026-10-06 | NFR-P-1 and NFR-P-2 measured for the first release: launch is timed from the process starting to the log's `launch: shown` line, since the log's lines after the first carry no time; the search's benchmark exists. Oliver's instruction to measure both. |
 | 12 | 2026-10-06 | A forecast is asked for again 10 seconds after its `Expires`, not at it; an answer that leaves `Expires` not past now waits those 10 seconds again rather than the second between requests (FR-303). Measured the same day: until MET Norway's new forecast exists it answers 304 with the `Expires` already held, its clock 3 to 4 seconds behind this machine's, so a city asked at `Expires` was asked six times in six seconds. Oliver's ruling. |
+| 13 | 2026-10-06 | On macOS WeatherRibbon has no Dock icon, reversing amendment 3's; it quits when macOS asks at log out, restart or shut down, where it had interrupted a restart. On Linux the window Wails shows before the ribbon is placed is kept invisible, where the Flatpak showed it black at login (FR-101, FR-602). As TimeRibbon's Amendment 39, from ribbonkit v0.15.1; Oliver's findings of the same day. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -232,9 +233,9 @@ build on each platform.
 
 ### 3.1 The ribbon
 
-**FR-101 Frameless ribbon** (Must; Amendment 3). The ribbon shall be a window with no title bar, no
-system border and no taskbar button on Windows or Linux; on macOS WeatherRibbon keeps its Dock icon,
-as TimeRibbon's FR-101. On macOS and Linux any spare area of the window shall answer a right-click and
+**FR-101 Frameless ribbon** (Must; Amendments 3, 13). The ribbon shall be a window with no title bar,
+no system border and no taskbar button on Windows or Linux; on macOS the application shall have no
+Dock icon, as TimeRibbon's FR-101. No window of it shall be seen before the ribbon is placed. On macOS and Linux any spare area of the window shall answer a right-click and
 a drag as the ribbon does.
 Verified by: by hand.
 

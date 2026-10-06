@@ -364,7 +364,7 @@ kit's, which every ribbon's file shares.
 
 Placing, dragging, snapping, the thin tab of an unpinned ribbon, the corner grip, opacity on the
 backgrounds alone, the tray and both menus, one copy at a time, start at sign-in, the update check,
-Linux through X11 and the Dock icon kept on macOS all come from ribbonkit, as TimeRibbon's
+Linux through X11, no Dock icon on macOS and quitting when macOS asks all come from ribbonkit, as TimeRibbon's
 DECISIONS-TRADEOFFS.md describes them. That behaviour is verified by the kit's own tests, never by a
 second copy here.
 
