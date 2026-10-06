@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/oernster/weatherribbon/internal/application"
 )
@@ -35,11 +36,26 @@ func NewWith(baseURL, userAgent string, client Doer, log io.Writer) *Forecasts {
 
 // Fetch asks for the forecast at request's coordinates. A 304 answers NotModified with the new
 // Expires; a 403 is application.ErrRefused (FR-307); any other failure is an error the service backs
-// off from (FR-305, FR-308). Each request and its outcome is one line in the log.
+// off from (FR-305, FR-308). Each request and its outcome is one line in the log: a new forecast or
+// not modified with the Expires it carries, else why it failed (NFR-O-1).
 func (f *Forecasts) Fetch(ctx context.Context, request application.Request) (application.Answer, error) {
 	answer, err := f.fetch(ctx, request)
-	f.logged("forecast "+coordinates(request.Latitude, request.Longitude), err)
-	return answer, err
+	what := "forecast " + coordinates(request.Latitude, request.Longitude)
+	if err != nil {
+		f.logged(what, err)
+		return answer, err
+	}
+	f.wrote(what, outcomeOf(answer))
+	return answer, nil
+}
+
+// outcomeOf names what a usable answer was and when it expires.
+func outcomeOf(answer application.Answer) string {
+	kind := "new forecast"
+	if answer.NotModified {
+		kind = "not modified"
+	}
+	return kind + ", expires " + answer.Expires.UTC().Format(time.RFC3339)
 }
 
 func (f *Forecasts) fetch(ctx context.Context, request application.Request) (application.Answer, error) {

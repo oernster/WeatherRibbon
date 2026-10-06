@@ -25,7 +25,8 @@ func added(t *testing.T, ids ...int) *rig {
 	return r
 }
 
-// FR-303: a forecast cached at 07:36:04Z expiring 08:00:28Z is not asked for again before 08:00:28Z.
+// FR-303, Amendment 12: a forecast cached at 07:36:04Z expiring 08:00:28Z is not asked for again
+// before 08:00:28Z and the grace after it.
 func TestNothingIsRequestedBeforeExpires(t *testing.T) {
 	t.Parallel()
 	r := added(t, london.GeoNamesID)
@@ -34,19 +35,47 @@ func TestNothingIsRequestedBeforeExpires(t *testing.T) {
 	if err := r.service.Refresh(context.Background()); err != nil || len(r.forecasts.asked) != 1 {
 		t.Fatalf("first refresh asked %d times, %v", len(r.forecasts.asked), err)
 	}
-	r.clock.now = expires.Add(-time.Second)
+	r.clock.now = expires
 	_ = r.service.RefreshNow(context.Background())
 	if len(r.forecasts.asked) != 1 {
-		t.Fatalf("asked again before Expires: %d requests", len(r.forecasts.asked))
+		t.Fatalf("asked again at Expires, before the grace: %d requests", len(r.forecasts.asked))
 	}
-	if got := r.service.NextDue(); !got.Equal(expires) {
-		t.Errorf("next due %v; want %v", got, expires)
+	if got, want := r.service.NextDue(), expires.Add(expiryGrace); !got.Equal(want) {
+		t.Errorf("next due %v; want %v", got, want)
 	}
-	r.clock.now = expires
+	r.clock.now = expires.Add(expiryGrace)
 	r.forecasts.answers = append(r.forecasts.answers, answer(expires.Add(time.Hour), ""))
 	_ = r.service.Refresh(context.Background())
 	if len(r.forecasts.asked) != 2 {
-		t.Errorf("not asked once Expires came: %d requests", len(r.forecasts.asked))
+		t.Errorf("not asked once the grace after Expires came: %d requests", len(r.forecasts.asked))
+	}
+}
+
+// Amendment 12, measured 2026-10-06: until MET Norway's new forecast exists it answers not modified
+// with the Expires already held. Such an answer waits the grace before the next request, never the
+// second between requests, so five of them in a row cost five graces rather than five seconds.
+func TestAnUnchangedExpiresWaitsTheGraceBeforeAskingAgain(t *testing.T) {
+	t.Parallel()
+	r := added(t, london.GeoNamesID)
+	expires := r.clock.now.Add(24 * time.Minute)
+	r.forecasts.answers = append(r.forecasts.answers, answer(expires, "Mon, 05 Oct 2026 07:30:00 GMT"))
+	_ = r.service.Refresh(context.Background())
+	r.clock.now = expires.Add(expiryGrace)
+	r.forecasts.answers = append(r.forecasts.answers, func(Request) (Answer, error) {
+		return Answer{NotModified: true, Expires: expires}, nil
+	})
+	_ = r.service.Refresh(context.Background())
+	asked := r.clock.now
+	if len(r.forecasts.asked) != 2 {
+		t.Fatalf("%d requests; want the one at the grace after Expires", len(r.forecasts.asked))
+	}
+	r.clock.now = asked.Add(requestSpacing)
+	_ = r.service.Refresh(context.Background())
+	if len(r.forecasts.asked) != 2 {
+		t.Fatalf("asked again a second after an answer that left Expires behind: %d requests", len(r.forecasts.asked))
+	}
+	if got, want := r.service.NextDue(), asked.Add(expiryGrace); !got.Equal(want) {
+		t.Errorf("next due %v; want the grace after the answer, %v", got, want)
 	}
 }
 
@@ -58,22 +87,26 @@ func TestANotModifiedAnswerKeepsTheForecast(t *testing.T) {
 	first := r.clock.now.Add(24 * time.Minute)
 	r.forecasts.answers = append(r.forecasts.answers, answer(first, "Mon, 05 Oct 2026 07:30:00 GMT"))
 	_ = r.service.Refresh(context.Background())
-	r.clock.now = first
+	asked := first.Add(expiryGrace)
+	r.clock.now = asked
 	later := first.Add(30 * time.Minute)
 	r.forecasts.answers = append(r.forecasts.answers, func(Request) (Answer, error) {
 		return Answer{NotModified: true, Expires: later}, nil
 	})
 	_ = r.service.Refresh(context.Background())
-	asked := r.forecasts.asked
-	if asked[0].Latitude != 51.5085 || asked[0].Longitude != -0.1257 || asked[0].LastModified != "" {
-		t.Errorf("first request %+v; want rounded coordinates and no Last-Modified", asked[0])
+	requests := r.forecasts.asked
+	if len(requests) != 2 {
+		t.Fatalf("%d requests; want the first and one at the grace after Expires", len(requests))
 	}
-	if asked[1].LastModified != "Mon, 05 Oct 2026 07:30:00 GMT" {
-		t.Errorf("second request %+v; want the cached Last-Modified", asked[1])
+	if requests[0].Latitude != 51.5085 || requests[0].Longitude != -0.1257 || requests[0].LastModified != "" {
+		t.Errorf("first request %+v; want rounded coordinates and no Last-Modified", requests[0])
+	}
+	if requests[1].LastModified != "Mon, 05 Oct 2026 07:30:00 GMT" {
+		t.Errorf("second request %+v; want the cached Last-Modified", requests[1])
 	}
 	kept := r.cache.entries["city-1"]
-	if !kept.Expires.Equal(later) || kept.LastModified != "Mon, 05 Oct 2026 07:30:00 GMT" || !kept.Fetched.Equal(first) {
-		t.Errorf("kept %+v; want the new Expires with the old Last-Modified, fetched at %v", kept, first)
+	if !kept.Expires.Equal(later) || kept.LastModified != "Mon, 05 Oct 2026 07:30:00 GMT" || !kept.Fetched.Equal(asked) {
+		t.Errorf("kept %+v; want the new Expires with the old Last-Modified, fetched at %v", kept, asked)
 	}
 }
 
@@ -87,7 +120,7 @@ func TestAFailedRequestKeepsTheForecast(t *testing.T) {
 		return Answer{Forecast: hourlyAround(fetched, 14.4, 0), Expires: expires}, nil
 	})
 	_ = r.service.Refresh(context.Background())
-	r.clock.now = expires
+	r.clock.now = expires.Add(expiryGrace)
 	r.forecasts.answers = append(r.forecasts.answers, failure(errPlanted))
 	_ = r.service.Refresh(context.Background())
 	if len(r.forecasts.asked) != 2 {
@@ -121,7 +154,7 @@ func TestRefreshNowAsksOnlyTheExpired(t *testing.T) {
 		r.forecasts.answers = append(r.forecasts.answers, byCity)
 	}
 	_ = r.service.Refresh(context.Background())
-	r.clock.now = start.Add(5 * time.Minute)
+	r.clock.now = start.Add(5 * time.Minute).Add(expiryGrace)
 	_ = r.service.RefreshNow(context.Background())
 	var again []float64
 	for _, each := range r.forecasts.asked[3:] {

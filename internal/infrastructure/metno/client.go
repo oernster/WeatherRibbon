@@ -76,6 +76,11 @@ func (c caller) logged(what string, err error) {
 	if err != nil {
 		outcome = err.Error()
 	}
+	c.wrote(what, outcome)
+}
+
+// wrote writes one line naming what was asked and the outcome given.
+func (c caller) wrote(what, outcome string) {
 	fmt.Fprintf(c.log, "%s: %s\n", what, outcome)
 }
 

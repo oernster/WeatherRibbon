@@ -85,7 +85,7 @@ func TestEveryRequestIdentifiesTheApplication(t *testing.T) {
 	if client.sent.Header.Get("If-Modified-Since") != "" {
 		t.Error("a first request carried If-Modified-Since")
 	}
-	if log != "forecast 51.5085,-0.1257: ok\n" {
+	if log != "forecast 51.5085,-0.1257: new forecast, expires 2026-10-05T08:00:28Z\n" {
 		t.Errorf("log %q", log)
 	}
 	if New(testUserAgent, io.Discard).baseURL != LocationforecastURL {
@@ -98,9 +98,12 @@ func TestEveryRequestIdentifiesTheApplication(t *testing.T) {
 func TestTheConditionalHeaderIsSent(t *testing.T) {
 	t.Parallel()
 	client := answering(http.StatusNotModified, nil)
-	answer, _, err := fetchWith(t, client, fixedModified)
+	answer, log, err := fetchWith(t, client, fixedModified)
 	if err != nil || !answer.NotModified || client.sent.Header.Get("If-Modified-Since") != fixedModified {
 		t.Fatalf("answer %+v, %v, If-Modified-Since %q", answer, err, client.sent.Header.Get("If-Modified-Since"))
+	}
+	if log != "forecast 51.5085,-0.1257: not modified, expires 2026-10-05T08:00:28Z\n" {
+		t.Errorf("log %q", log)
 	}
 	if want := time.Date(2026, time.October, 5, 8, 0, 28, 0, time.UTC); !answer.Expires.Equal(want) {
 		t.Errorf("Expires %v; want %v", answer.Expires, want)

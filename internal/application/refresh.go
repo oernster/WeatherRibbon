@@ -12,6 +12,13 @@ import (
 // requestSpacing is the least time between any two forecast requests (NFR-S-2).
 const requestSpacing = time.Second
 
+// expiryGrace is how long after a forecast's Expires it is asked for again; it is also how long to
+// wait again after an answer whose Expires has not moved past now (FR-303, Amendment 12). Measured
+// 2026-10-06: until MET Norway's new forecast exists it answers not modified with the same Expires,
+// its clock a few seconds behind this machine's; asked at Expires a city was asked six times in six
+// seconds, the new forecast arriving five seconds after the first.
+const expiryGrace = 10 * time.Second
+
 // cacheSaveFailedPrefix begins the notice raised while forecasts cannot be kept on disk (FR-807).
 const cacheSaveFailedPrefix = "Forecasts could not be saved: "
 
@@ -101,13 +108,16 @@ func (s *Service) claim(backingOff bool) []asking {
 }
 
 // due answers whether a city may be asked for at now: not already being asked for, past any
-// back-off unless backingOff, holding nothing or holding a forecast past its Expires.
+// back-off unless backingOff, holding nothing or holding a forecast past its Expires and the grace.
 func due(state *weather, now time.Time, backingOff bool) bool {
 	if state.asking || (!backingOff && now.Before(state.retryAt)) {
 		return false
 	}
-	return !state.held || !now.Before(state.cached.Expires)
+	return !state.held || !now.Before(askAfter(state.cached.Expires))
 }
+
+// askAfter answers when a forecast expiring at expires is next asked for.
+func askAfter(expires time.Time) time.Time { return expires.Add(expiryGrace) }
 
 // requestFor answers the request for chosen, conditional on the forecast held (FR-302, FR-304).
 func requestFor(chosen place.Place, state *weather) Request {
@@ -161,6 +171,10 @@ func (s *Service) keep(id string, answer Answer, err error) {
 		state.cached.LastModified = answer.LastModified
 	}
 	state.cached.Expires, state.cached.Fetched, state.held = answer.Expires, now, true
+	if !askAfter(answer.Expires).After(now) {
+		// The answer has not moved Expires on, so the city would be due at once: wait the grace.
+		state.retryAt = now.Add(expiryGrace)
+	}
 	s.saveCachedLocked(id, state)
 }
 
@@ -185,8 +199,8 @@ func (s *Service) NextDue() time.Time {
 	for _, city := range s.current.Cities {
 		state := s.weatherOf(city.ID)
 		at := now
-		if state.held && state.cached.Expires.After(at) {
-			at = state.cached.Expires
+		if state.held && askAfter(state.cached.Expires).After(at) {
+			at = askAfter(state.cached.Expires)
 		}
 		if state.retryAt.After(at) {
 			at = state.retryAt
