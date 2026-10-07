@@ -72,7 +72,7 @@ var allCredits = []Credit{
 	{"golang.org/x/sys", "golang.org/x/sys", "BSD-3-Clause", "the tray icon, the displays, the window and Start with Windows", windowsOnly},
 	{"golang.org/x/sys", "golang.org/x/sys", "BSD-3-Clause", "sending the runtime's own error reports to the log", []string{MacOS}},
 	{"golang.org/x/sys", "golang.org/x/sys", "BSD-3-Clause", "sending the runtime's own error reports to the log; also used by Wails", []string{Linux}},
-	{"github.com/godbus/dbus/v5", "godbus", "BSD-2-Clause", "the tray icon and its menu", []string{Linux}},
+	{"github.com/godbus/dbus/v5", "godbus", "BSD-2-Clause", "the tray icon and its menu; hearing a shutdown or restart coming", []string{Linux}},
 	{"github.com/go-ole/go-ole", "go-ole", "MIT", "the setup program's Start Menu and Desktop shortcuts", windowsOnly},
 	// Linked in by the modules above rather than named by this application; each role says which.
 	{"github.com/wailsapp/go-webview2", "go-webview2", "MIT", "used by Wails", windowsOnly},
