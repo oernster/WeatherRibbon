@@ -21,6 +21,8 @@ where they apply.
 | 11 | 2026-10-06 | NFR-P-1 and NFR-P-2 measured for the first release: launch is timed from the process starting to the log's `launch: shown` line, since the log's lines after the first carry no time; the search's benchmark exists. Oliver's instruction to measure both. |
 | 12 | 2026-10-06 | A forecast is asked for again 10 seconds after its `Expires`, not at it; an answer that leaves `Expires` not past now waits those 10 seconds again rather than the second between requests (FR-303). Measured the same day: until MET Norway's new forecast exists it answers 304 with the `Expires` already held, its clock 3 to 4 seconds behind this machine's, so a city asked at `Expires` was asked six times in six seconds. Oliver's ruling. |
 | 13 | 2026-10-06 | On macOS WeatherRibbon has no Dock icon, reversing amendment 3's; it quits when macOS asks at log out, restart or shut down, where it had interrupted a restart. On Linux the window Wails shows before the ribbon is placed is kept invisible, where the Flatpak showed it black at login (FR-101, FR-602). As TimeRibbon's Amendment 39, from ribbonkit v0.15.1; Oliver's findings of the same day. |
+| 14 | 2026-10-06 | On Linux the ribbon leaves when logind announces a shutdown or restart, holding a delay lock on the system bus until it has gone; without the system bus it carries on as before. The Flatpak is granted `org.freedesktop.login1` on the system bus (FR-602, section 5). Measured on the FW13: with the ribbons running, 6 of 8 restarts hung GNOME Shell before; none did after. From ribbonkit v0.15.2; Oliver's finding of the same day. |
+| 15 | 2026-10-07 | On macOS the Dock never records WeatherRibbon as a recent app: the bundle declares `LSUIElement`, so the application checks in as an agent; ribbonkit refuses Wails' switch to a regular application during launch (FR-101, section 5). Measured from the Mac's log: a recents tile at every launch before; none in two log ins after. From ribbonkit v0.15.3; Oliver's finding of the same day. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -233,11 +235,12 @@ build on each platform.
 
 ### 3.1 The ribbon
 
-**FR-101 Frameless ribbon** (Must; Amendments 3, 13). The ribbon shall be a window with no title bar,
-no system border and no taskbar button on Windows or Linux; on macOS the application shall have no
-Dock icon, as TimeRibbon's FR-101. No window of it shall be seen before the ribbon is placed. On macOS and Linux any spare area of the window shall answer a right-click and
-a drag as the ribbon does.
-Verified by: by hand.
+**FR-101 Frameless ribbon** (Must; Amendments 3, 13, 15). The ribbon shall be a window with no title
+bar, no system border and no taskbar button on Windows or Linux; on macOS the application shall have
+no Dock icon and the Dock shall not record it as a recent app, as TimeRibbon's FR-101. No window of
+it shall be seen before the ribbon is placed. On macOS and Linux any spare area of the window shall
+answer a right-click and a drag as the ribbon does.
+Verified by: the kit's `TestWailsCannotMakeTheRibbonRegularAsItLaunches`; by hand.
 
 **FR-102 Shown once sized** (Must). At launch the application shall show the ribbon only once the page
 has reported its scale and its measured widths; a page that never reports is shown one second
@@ -533,7 +536,10 @@ Verified by: the shared module's tests; `TestTheRibbonUsesTheSharedPlacement` (s
 **FR-601 Tray icon and menu** (Must). As TimeRibbon's FR-501 to FR-504, the menu offering the
 context menu's items with `Show ribbon` or `Hide ribbon`, the tooltip `WeatherRibbon`.
 
-**FR-602 Always on top, one instance, Alt+F4** (Must). As TimeRibbon's FR-505 to FR-507.
+**FR-602 Always on top, one instance, Alt+F4** (Must; Amendments 13, 14). As TimeRibbon's FR-505 to
+FR-507. On macOS the application shall quit when macOS asks at log out, restart or shut down; on
+Linux it shall leave when logind announces a shutdown or restart.
+Verified by (the logind check): the kit's `TestOnlyAShutdownStartingEndsTheRibbon`; by hand.
 
 **FR-603 Help** (Must). Both menus hold `Help` with `About`, `Licence` and `Check for updates`, as
 TimeRibbon's FR-508 to FR-509 and FR-607 to FR-609, against WeatherRibbon's own GitHub releases.
@@ -677,9 +683,10 @@ live in Claude's project memory, never in these documents.
 
 As TimeRibbon's section 5 and FR-801 to FR-811, under the name WeatherRibbon: `build.ps1` reading
 `VERSION` and running `test.ps1` first; the setup program as a second Wails application whose header
-shows `assets/light-mode.png` or `assets/dark-mode.png` with the theme; a signed and notarised DMG; a
-Flatpak granted the network for `api.met.no` and GitHub plus the occupancy folder of FR-506
-(`xdg-run/ribbonkit`, Amendment 3). The application icon is generated from
+shows `assets/light-mode.png` or `assets/dark-mode.png` with the theme; a signed and notarised DMG
+whose bundle declares `LSUIElement` (Amendment 15); a Flatpak granted the network for `api.met.no`
+and GitHub, the occupancy folder of FR-506 (`xdg-run/ribbonkit`, Amendment 3) plus logind on the
+system bus (Amendment 14). The application icon is generated from
 `assets/application-icon.png`.
 
 ---

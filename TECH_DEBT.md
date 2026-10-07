@@ -26,5 +26,4 @@ every act to the kit's install policy.
 pull out is TimeRibbon's, so the adapter refusing one is the design, not a missing feature.
 
 **The macOS and Linux build scripts are TimeRibbon's with the names changed.** They are shared in
-shape on purpose, so a fix found in one is carried to the other; that they have not yet been run for
-WeatherRibbon is a release check, not debt.
+shape on purpose, so a fix found in one is carried to the other.

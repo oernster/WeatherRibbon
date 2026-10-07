@@ -364,8 +364,8 @@ kit's, which every ribbon's file shares.
 
 Placing, dragging, snapping, the thin tab of an unpinned ribbon, the corner grip, opacity on the
 backgrounds alone, the tray and both menus, one copy at a time, start at sign-in, the update check,
-Linux through X11, no Dock icon on macOS and quitting when macOS asks all come from ribbonkit, as TimeRibbon's
-DECISIONS-TRADEOFFS.md describes them. That behaviour is verified by the kit's own tests, never by a
+Linux through X11, no Dock icon on macOS, quitting when macOS asks and leaving when Linux announces a
+restart all come from ribbonkit, as TimeRibbon's DECISIONS-TRADEOFFS.md describes them. That behaviour is verified by the kit's own tests, never by a
 second copy here.
 
 - **Rather than:** writing it again; testing it twice.
@@ -445,15 +445,38 @@ forecasts are removed only when asked.
 - **Gains:** Gatekeeper lets it open.
 - **Costs:** Intel Macs are not served; signing needs a Terminal at the Mac itself.
 
+### macOS: declared a background app in its bundle
+
+The application bundle tells macOS that WeatherRibbon is a background app with no Dock presence, on
+top of the kit turning it into one as it launches. Without the declaration macOS met it first as an
+ordinary app and the Dock kept a recent-apps tile for it at every launch, though the running app
+showed no Dock icon.
+
+- **Rather than:** relying on the kit's switch alone, which comes too late for the Dock's record.
+- **Gains:** no Dock icon and no recents tile; the menu-bar icon is the one way in.
+- **Costs:** the kit must still undo Wails' own switch to an ordinary app during launch, so both
+  halves are needed and each depends on the other staying in place.
+
 ### A Flatpak with a narrow sandbox
 
 The sandbox holds X11, the GPU, the tray, the single-instance name, the autostart folder, the folder
-the ribbons share and the network.
+the ribbons share, the network and a line to logind on the system bus.
 
 - **Rather than:** a native package; wider access.
 - **Gains:** the application holds only what it uses.
 - **Costs:** Linux users need Flatpak; the network is granted to the whole application for MET
   Norway and the update check.
+
+### Leaving when Linux announces a restart
+
+The Flatpak may talk to logind on the system bus, so the ribbon can hold a delay lock and leave as
+soon as a shutdown or restart is announced, before the desktop shell is taken down around it.
+Without the system bus it carries on as before.
+
+- **Rather than:** a sandbox with no system bus access, leaving the ribbon to be stopped alongside
+  GNOME Shell, which hung most restarts measured.
+- **Gains:** restarts with the ribbon running complete cleanly.
+- **Costs:** one more permission in the sandbox, shown to anyone who inspects it.
 
 ## Engineering
 

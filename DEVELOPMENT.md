@@ -154,13 +154,14 @@ It stops at the first failure:
 3. Reads the oldest macOS the Go toolchain supports from an empty Go program and hands it to cgo.
 4. Builds with `go build -tags desktop,production`, refusing a link of code built for a newer macOS.
 5. Makes `iconfile.icns` with `sips` and `iconutil`.
-6. Assembles `build/bin/WeatherRibbon.app` with its `Info.plist`.
+6. Assembles `build/bin/WeatherRibbon.app` with its `Info.plist`, which declares `LSUIElement` so
+   macOS treats the application as an agent and the Dock never records it as a recent app.
 7. Signs it with the hardened runtime, notarises and staples it.
 8. Makes, signs, notarises and staples the DMG, then runs `stapler validate` and `spctl --assess`.
 
 The output is `WeatherRibbon.dmg`. For a local trial, `DEVELOPER_ID_APPLICATION=-` signs ad hoc and
 `ALLOW_UNNOTARIZED=1` skips notarising; such a DMG opens only on the Mac that built it. The script is
-TimeRibbon's with the names changed and has not yet been run for WeatherRibbon.
+TimeRibbon's with the names changed.
 
 ## Building on Linux
 
@@ -181,10 +182,11 @@ bash build_flatpak.sh
 It writes the desktop entry, metainfo and manifest (gitignored), stops a copy left running, builds the
 page, icons and executable (`-tags desktop,production,webkit2_41`) in the sandbox, installs the
 result for the current user and exports `weatherribbon.flatpak`. The sandbox is granted the network,
-which MET Norway's forecasts need. `cleanup_flatpak.sh` wipes it entirely: the app, all its data in
+which MET Norway's forecasts need; it is granted logind on the system bus too, so the ribbon leaves
+as soon as a shutdown or restart is announced. `cleanup_flatpak.sh` wipes it entirely: the app, all its data in
 `~/.var/app/uk.codecrafter.WeatherRibbon` (settings with the cities, the forecast cache, the log),
 its sign-in entry and the build outputs, so the next build's first launch is a true first run. Both
-scripts are TimeRibbon's with the names changed and have not yet been run for WeatherRibbon.
+scripts are TimeRibbon's with the names changed.
 
 ## Generated files
 

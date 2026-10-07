@@ -51,10 +51,13 @@ monitor.
 - **Keeps working offline.** The last forecasts are kept on disk; with no network the cells show them,
   saying how old they are once that passes two hours. A failed request is tried again after 10
   minutes, waiting twice as long after each further failure, up to two hours.
-- **Stays out of the way.** No title bar, border or taskbar button; its icon sits in the notification
-  area, menu bar or tray. The icon's menu and the ribbon's right-click menu offer Add city, Settings,
-  Units, Colour, Orientation, Position, Always on top, Pin ribbon, Refresh now, Help, Hide and Exit.
-  Hiding the ribbon leaves WeatherRibbon running.
+- **Stays out of the way.** No title bar, border, taskbar button or Dock icon; its icon sits in the
+  notification area, menu bar or tray. The icon's menu and the ribbon's right-click menu offer Add
+  city, Settings, Units, Colour, Orientation, Position, Always on top, Pin ribbon, Refresh now, Help,
+  Hide ribbon and Exit. Hiding the ribbon leaves WeatherRibbon running.
+- **Leaves when the computer does.** On macOS it quits when asked at log out, restart or shut down
+  and never appears among the Dock's recent apps. On Linux it leaves as soon as a restart or shut
+  down is announced, so the desktop is never kept waiting on it.
 - **Unpinned, it waits as a thin tab** against the edge it stands on, opening when the pointer rests
   on it.
 - **Goes where you put it** on any monitor and opens there next time; Position centres it on an edge,
@@ -161,13 +164,13 @@ measured floors. [TESTING.md](TESTING.md) has the figures.
 gives the decisions with what each costs; [TECH_DEBT.md](TECH_DEBT.md) lists what is still open, what
 is deliberately left and what only looks like debt.
 
-## Supporting WeatherRibbon
+## Supporting the project
 
 WeatherRibbon is free and stays free: no paid tier, no licence key, no feature held back behind a
 donation. If it earns its place on your screen, a donation is welcome. The same button sits at the
 foot of Settings.
 
-<a href="https://www.paypal.com/ncp/payment/88LQG589TJEM6"><img src="assets/donate.png" alt="Donate to WeatherRibbon" width="120"></a>
+<a href="https://www.paypal.com/ncp/payment/88LQG589TJEM6"><img src="docs/donate.png" alt="Donate to WeatherRibbon" width="120"></a>
 
 ## Licence
 

@@ -75,7 +75,9 @@
                 <p class="meta" data-asset="WeatherRibbon.dmg">Disk image (.dmg)</p>
                 <p class="meta">Signed and notarised by Apple.</p>
                 <p class="how">Open <code>WeatherRibbon.dmg</code> and drag WeatherRibbon to
-                    Applications. Its icon sits in the menu bar; a click opens its menu.</p>
+                    Applications. It has no Dock icon and never appears among the Dock's
+                    recent apps: its icon sits in the menu bar, where a click opens its menu.
+                    It quits by itself when you log out, restart or shut down.</p>
                 <p class="how">To remove it, turn off Open at Login in its Settings, then
                     move it to the Bin. Your cities stay in
                     <code>~/Library/Application Support/WeatherRibbon</code>.</p>
@@ -90,7 +92,9 @@
                 <p class="how">Install it for your account with
                     <code>flatpak install --user weatherribbon.flatpak</code>, then start it
                     from your applications or with
-                    <code>flatpak run uk.codecrafter.WeatherRibbon</code>.</p>
+                    <code>flatpak run uk.codecrafter.WeatherRibbon</code>. It leaves by itself
+                    as soon as the system announces a restart or shut down, so it never holds
+                    one up.</p>
                 <p class="how">Before installing a newer release over it, choose Exit from its
                     menu: a copy left running keeps the old release going.</p>
                 <p class="how">To remove it, turn off Start when I sign in in its Settings and

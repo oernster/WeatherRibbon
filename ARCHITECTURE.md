@@ -58,7 +58,7 @@ the same rules; the kit's own invariants are listed in its ARCHITECTURE.md.
 The structural tests that read the kit's files (the Licence panel's width) read the kit Go builds
 against, through `go list -m`; `page_api_test.go` reads the kit's `bridge.ts` as npm installed it,
 since that is what the page compiles. The contract test's fixture was compared byte for byte with what
-1.0.0 writes, then frozen.
+the first release writes, then frozen.
 
 ## Layers
 
@@ -110,7 +110,11 @@ since that is what the page compiles. The contract test's fixture was compared b
 kit's among them), injects them into the service, prepares the platform, starts the tray, starts the
 refresher and hands the facade to Wails. What it does for the platform is the kit's `platform`
 package: on Linux and macOS `platform.Prepare` hands the desktop the icon and ends the run on SIGTERM
-or SIGINT; on Linux importing it sends GTK through X11 and turns off the DMABUF renderer.
+or SIGINT; on Linux it also takes a logind delay lock on the system bus and ends the run the same way
+when logind announces a shutdown or restart, carrying on as before where there is no system bus; on
+Linux importing it sends GTK through X11 and turns off the DMABUF renderer. On macOS the kit makes the
+application an accessory once it has launched and refuses Wails' switch to a regular one during
+launch, so it has no Dock icon; it also quits when macOS asks at log out, restart or shut down.
 WeatherRibbon says only where its tray icon lies (`trayicon_unix.go`; none on Windows, whose tray
 reads the executable's). The cell size (`layout`) and panel sizes (`panels`) live there. No service
 is held in a global.
@@ -255,14 +259,16 @@ what ships is the kit tag `go.mod` requires.
 
 - `builddmg.sh` builds for Apple Silicon, assembles and signs `WeatherRibbon.app` with the hardened
   runtime, notarises and staples it, then the DMG. The minimum macOS is read from the Go toolchain and
-  passed through the cgo flags; a link of code built for a newer macOS is refused.
+  passed through the cgo flags; a link of code built for a newer macOS is refused. The bundle's
+  `Info.plist` declares `LSUIElement`, so the application checks in with macOS as an agent and the
+  Dock never records it as a recent app (Amendment 15).
 - `build_flatpak.sh` builds in the GNOME 50 SDK against WebKitGTK 4.1 (`-tags webkit2_41`). The
-  sandbox gets X11 with IPC, the GPU, the tray host's bus name, the single-instance lock's bus name,
-  the autostart folder, the shared ribbon folder (`xdg-run/ribbonkit`) and the network for MET
-  Norway's forecasts and the update check (NFR-S-1). Both scripts first stop a copy left running,
-  which holds the single-instance lock.
+  sandbox gets X11 with IPC, the GPU, the tray host's bus name, logind on the system bus (for the
+  kit's shutdown watch, Amendment 14), the single-instance lock's bus name, the autostart folder, the
+  shared ribbon folder (`xdg-run/ribbonkit`) and the network for MET Norway's forecasts and the update
+  check (NFR-S-1). Both scripts first stop a copy left running, which holds the single-instance lock.
 
-Both are TimeRibbon's scripts with the names changed and have not yet been run for WeatherRibbon.
+Both are TimeRibbon's scripts with the names changed.
 
 **The setup program** (Windows) is a second Wails application in `installer/`, embedding the built
 application as a zip. `build.ps1` packs it through `tools/payload`, builds setup, then writes the
