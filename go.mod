@@ -2,7 +2,7 @@ module github.com/oernster/weatherribbon
 
 go 1.26.3
 
-require github.com/oernster/ribbonkit v0.15.2
+require github.com/oernster/ribbonkit v0.15.3
 
 require (
 	git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3 // indirect
