@@ -23,6 +23,7 @@ where they apply.
 | 13 | 2026-10-06 | On macOS WeatherRibbon has no Dock icon, reversing amendment 3's; it quits when macOS asks at log out, restart or shut down, where it had interrupted a restart. On Linux the window Wails shows before the ribbon is placed is kept invisible, where the Flatpak showed it black at login (FR-101, FR-602). As TimeRibbon's Amendment 39, from ribbonkit v0.15.1; Oliver's findings of the same day. |
 | 14 | 2026-10-06 | On Linux the ribbon leaves when logind announces a shutdown or restart, holding a delay lock on the system bus until it has gone; without the system bus it carries on as before. The Flatpak is granted `org.freedesktop.login1` on the system bus (FR-602, section 5). Measured on the FW13: with the ribbons running, 6 of 8 restarts hung GNOME Shell before; none did after. From ribbonkit v0.15.2; Oliver's finding of the same day. |
 | 15 | 2026-10-07 | On macOS the Dock never records WeatherRibbon as a recent app: the bundle declares `LSUIElement`, so the application checks in as an agent; ribbonkit refuses Wails' switch to a regular application during launch (FR-101, section 5). Measured from the Mac's log: a recents tile at every launch before; none in two log ins after. From ribbonkit v0.15.3; Oliver's finding of the same day. |
+| 16 | 2026-10-07 | A symbol's words name it as an everyday forecast does (`Light showers`, `Thundery snow showers`), as a sentence begins and without its variant, where they had been the code with its underscore made a space (`lightrainshowers day`); light snow showers and thunder finds its icon under the doubled s, as light sleet showers and thunder already did (FR-412, NFR-U-2). Oliver found `lightrainshowers day` as an icon's tooltip; his ruling on the names the same day. |
 
 Source: Oliver's request of 2026-10-05 ("a weather forecast including today app, which has similar
 functionality to the TimeRibbon app" that learns TimeRibbon's lessons, resizing and opacity among
@@ -455,11 +456,11 @@ fails, then the panel shall show the hours without them; the next opening of the
 again; a failed request does not count towards the once per date (Amendment 3).
 Verified by: `TestSunTimesAreAskedOncePerDay`, `TestAFailedSunRequestIsAskedAgain` (application).
 
-**FR-412 Unknown symbol** (Must). A symbol's words shall be its English name from the legend, as a
-sentence begins and without its variant (`lightrainshowers_day` is `Light rain showers`); a code the
-legend lacks is written as itself, its variant mark a space and its first letter capital
-(`Sandstorm day`). If a symbol code has no icon, then the cell shall show its words in place of the
-icon and log the code once. `lightsleetshowersandthunder` and `lightssleetshowersandthunder`, like
+**FR-412 Symbol words and unknown symbols** (Must; Amendment 16). A symbol's words shall name it as
+an everyday forecast does, as a sentence begins and without its variant (`lightrainshowers_day` is
+`Light showers`); a code the legend lacks is written as itself, its variant mark a space and its
+first letter capital (`Sandstorm day`). If a symbol code has no icon, then the cell shall show its
+words in place of the icon and log the code once. `lightsleetshowersandthunder` and `lightssleetshowersandthunder`, like
 `lightsnowshowersandthunder` and `lightssnowshowersandthunder`, each find the icon the set files
 under the doubled s and are named in the single s.
 Verified by: `TestAnUnknownSymbolShowsItsWords`, `TestASymbolOutsideTheLegendIsWrittenAsItself`,
@@ -801,7 +802,7 @@ and supplying the donation link; OQ-6 and OQ-7 were settled by measurement the s
 | OQ-4 | In what order do the cities run? | East from Greenwich, as TimeRibbon | FR-108 |
 | OQ-5 | What do today's high, low and rain cover? | Now to local midnight, stated in the README | FR-404 |
 | OQ-6 | Is rain probability shown? | No: measured present for Nordic cities alone | Section 1.3 |
-| OQ-7 | Does every symbol code have an icon? | Yes: 83 codes, 83 icons per format; both spellings of one code accepted. How each icon reads on a dark cell is checked by hand | ASM-5, FR-412 |
+| OQ-7 | Does every symbol code have an icon? | Yes: 83 codes, 83 icons per format; both spellings of two codes accepted. How each icon reads on a dark cell is checked by hand | ASM-5, FR-412 |
 | OQ-8 | Which donation link? | `https://www.paypal.com/ncp/payment/88LQG589TJEM6` | FR-709 |
 | OQ-9 | What is the shared module and where does it live? | `ribbonkit`, a public repository holding a Go module plus an npm package at its root (Amendment 1) | CON-10 |
 | OQ-10 | An `Add city` picture beside the place search? | Supplied as `assets/add-city.png` | FR-208 |

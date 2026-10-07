@@ -82,7 +82,8 @@ the first release writes, then frozen.
   `arranger.Monitors` and `arranger.Neighbours`, the kit's `controls.Startup` and `release.Source`).
   It edits cities and searches places (`cities.go`), refreshes forecasts (`refresh.go`), builds the
   snapshot (`snapshot.go`), keeps the petrichor moment (`moments.go`), opens the detail
-  (`detail.go`), names each symbol's icon (`symbols.go`), takes the page's measurements
+  (`detail.go`), finds each symbol's icon and names it as an everyday forecast does (`symbols.go`,
+  `symbolwords.go`, FR-412), takes the page's measurements
   (`measure.go`) and answers the menus (`menus.go`). It embeds the kit's `arranger.Arranger` and
   `controls.Controls`, so arranging the ribbon and the ribbon's own choices are the service's own
   method set. The arranger asks its `Host` for the ribbon's choices and content read together; the
@@ -321,6 +322,7 @@ Errors are wrapped with `%w` at each boundary, so `errors.Is` finds sentinels su
 | The city list built in (DATA-1) | The search works offline and sends nothing about what is typed | An online geocoder |
 | One goroutine sends every forecast request | Spacing and one request per city hold by construction; a menu never waits on the network | A request per city as it falls due |
 | Which symbols have an icon is read from the embedded files | The icon set is the one home of that answer, so a code and its icon cannot disagree | A list of codes kept beside the icons |
+| Each symbol's words come from a table of everyday names, checked against the icon set by test | A forecast says `Light showers`, never `lightrainshowers day`; a shipped icon left unnamed fails the suite | The code with its underscore made a space |
 | The page measures the cells | Only the page knows its font and the ratio it is drawn at | Widths written into Go |
 
 See also [TESTING.md](TESTING.md) and [DEVELOPMENT.md](DEVELOPMENT.md).

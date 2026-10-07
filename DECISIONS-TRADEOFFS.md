@@ -306,12 +306,25 @@ is asked again at the next opening.
 ### The icon set says which symbols have icons
 
 Which symbols have an icon is read from the built-in Yr icon files themselves. A symbol without one
-shows its words and is logged once. One code MET Norway may spell two ways finds its icon either
-way and is said in its correct spelling.
+shows its words and is logged once. The two codes MET Norway may spell two ways find their icons
+either way.
 
 - **Rather than:** a list of codes kept beside the icons.
 - **Gains:** a code and its icon cannot disagree; an unknown symbol still says what it is.
 - **Costs:** a new symbol shows as words until its icon is added.
+
+### Symbols named as a forecast says them
+
+Each symbol's words, shown when the pointer rests on its icon and read by a screen reader, are an
+everyday name such as "Light showers" or "Thundery snow showers", not MET Norway's code. Showers
+alone are of rain; day and night are left to the icon, which draws the sun or the moon. A test fails
+for any shipped icon the names leave out.
+
+- **Rather than:** the code with its underscore made a space; a name read word for word off the code,
+  such as "Light rain showers".
+- **Gains:** the words read as English a person would say.
+- **Costs:** a list of names kept beside the icons, held to them by a test; a symbol MET Norway adds
+  is written as its code until it is named.
 
 ## The petrichor moment
 
