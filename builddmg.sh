@@ -216,6 +216,10 @@ section "Assembling ${APP_BUNDLE}"
 mkdir -p "${APP_BUNDLE}/Contents/MacOS" "${APP_BUNDLE}/Contents/Resources"
 cp "${EXECUTABLE}" "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
 cp "${WORK_DIR}/${ICON_FILE}.icns" "${APP_BUNDLE}/Contents/Resources/${ICON_FILE}.icns"
+# LSUIElement makes the app check in with macOS as an agent, so the Dock never records it as a
+# recent app. Without it the app checked in as a regular one before any code ran and left a recents
+# tile behind at every launch (measured 2026-10-07 from the Mac's log). Wails still makes the app
+# regular as it launches; ribbonkit switches it back, so both are needed.
 cat > "${APP_BUNDLE}/Contents/Info.plist" << PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -239,6 +243,8 @@ cat > "${APP_BUNDLE}/Contents/Info.plist" << PLIST
 	<string>${ICON_FILE}</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>${MIN_MACOS}</string>
+	<key>LSUIElement</key>
+	<true/>
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
