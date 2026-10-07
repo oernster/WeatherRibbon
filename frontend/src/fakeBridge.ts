@@ -9,14 +9,14 @@ import type { MenuChoice } from '@oernster/ribbonkit'
 export function day(overrides: Partial<Day> = {}): Day {
   return {
     date: '2026-10-06', weekday: 'Tuesday', high: 16, low: 9, rain: 0.4,
-    symbol: { icon: 'cloudy', words: 'cloudy' }, known: true, ...overrides,
+    symbol: { icon: 'cloudy', words: 'Cloudy' }, known: true, ...overrides,
   }
 }
 
 export function cell(overrides: Partial<Cell> = {}): Cell {
   return {
     id: 'london', label: 'London', place: 'London, England, United Kingdom', time: '08:36', zoneMark: 'BST',
-    temperature: 14, symbol: { icon: 'rain', words: 'rain' }, today: day({ date: '2026-10-05', weekday: 'Monday' }),
+    temperature: 14, symbol: { icon: 'rain', words: 'Rain' }, today: day({ date: '2026-10-05', weekday: 'Monday' }),
     outlook: [day(), day({ date: '2026-10-07', weekday: 'Wednesday' }), day({ date: '2026-10-08', weekday: 'Thursday' })],
     age: '', problem: '', petrichor: false, ...overrides,
   }
@@ -51,7 +51,7 @@ export const places: Place[] = [
 export function detail(overrides: Partial<Detail> = {}): Detail {
   return {
     id: 'london', label: 'London', place: 'London, England, United Kingdom', sunrise: '07:07', sunset: '18:29', problem: '',
-    hours: [{ time: '09:00', symbol: { icon: 'rain', words: 'rain' }, temperature: 14, rain: 0.2, windSpeed: 18, windFrom: 225 }],
+    hours: [{ time: '09:00', symbol: { icon: 'rain', words: 'Rain' }, temperature: 14, rain: 0.2, windSpeed: 18, windFrom: 225 }],
     ...overrides,
   }
 }

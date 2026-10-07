@@ -65,7 +65,7 @@ func TestTheSnapshotCarriesEveryCellAndTheWindowsReading(t *testing.T) {
 	service.snapshot = application.Snapshot{
 		Cells: []application.Cell{{
 			ID: "city-1", Label: "London", Time: "08:36", Symbol: application.Symbol{Icon: "rain"},
-			Today:   application.Day{Date: forecast.Date{Year: 2026, Month: 10, Day: 5}, Symbol: application.Symbol{Words: "fog"}},
+			Today:   application.Day{Date: forecast.Date{Year: 2026, Month: 10, Day: 5}, Symbol: application.Symbol{Words: "Fog"}},
 			Outlook: []application.Day{{Date: forecast.Date{Year: 2026, Month: 10, Day: 6}, Weekday: "Tuesday", High: 15, Known: true}},
 		}},
 		Units:   units.Imperial,
@@ -78,7 +78,7 @@ func TestTheSnapshotCarriesEveryCellAndTheWindowsReading(t *testing.T) {
 	if len(got.Cells) != 1 || got.Cells[0].Symbol != (symbolDTO{Icon: "rain"}) || got.Cells[0].Today.Date != "2026-10-05" {
 		t.Errorf("cells %+v, want the one cell the service answered", got.Cells)
 	}
-	if got.Notices == nil || got.Cells[0].Today.Symbol.Words != "fog" {
+	if got.Notices == nil || got.Cells[0].Today.Symbol.Words != "Fog" {
 		t.Error("the notices went out as null or the day's words were lost")
 	}
 	if outlook := got.Cells[0].Outlook; len(outlook) != 1 || outlook[0].Date != "2026-10-06" || outlook[0].Weekday != "Tuesday" || outlook[0].High != 15 || !outlook[0].Known {

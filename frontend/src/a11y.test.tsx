@@ -37,9 +37,9 @@ describe('weather symbols (NFR-U-2)', () => {
   it('shows a code with no icon as its words, as text', () => {
     installBridge()
     const { container } = render(
-      <Ribbon snapshot={snapshot({ cells: [cell({ symbol: { icon: '', words: 'lightrainshowers day' }, outlook: [] })] })} onAddCity={vi.fn()} onOpen={vi.fn()} reload={vi.fn()} refused={vi.fn()} />,
+      <Ribbon snapshot={snapshot({ cells: [cell({ symbol: { icon: '', words: 'Light rain showers' }, outlook: [] })] })} onAddCity={vi.fn()} onOpen={vi.fn()} reload={vi.fn()} refused={vi.fn()} />,
     )
-    expect(container.textContent).toContain('lightrainshowers day')
+    expect(container.textContent).toContain('Light rain showers')
   })
 
   it('finds a symbol picture with no name, so it can catch one', () => {

@@ -7,19 +7,22 @@ import "strings"
 type Symbol struct {
 	// Icon names the icon's file, without its extension; empty when there is none.
 	Icon string
-	// Words are the code written as words, such as "lightrainshowers day", in the spelling that
-	// reads correctly whichever one MET Norway sent.
+	// Words name the symbol in English, such as "Light rain showers", whichever spelling MET Norway
+	// sent (symbolWords); a code the legend lacks is written as itself, its first letter capital.
 	Words string
 }
 
-// variantMark joins a symbol to its variant in a code, as in "clearsky_day"; a code's words put a
-// space where it stood.
+// variantMark joins a symbol to its variant in a code, as in "clearsky_day"; a code the legend lacks
+// is written with a space where it stood.
 const variantMark = "_"
 
 // iconSpelling maps a symbol's correct spelling to the one the icon set files it under (FR-412): the
-// legend spells light sleet showers and thunder with a doubled s. MET Norway may send either; the
-// icon is found under the second and the words are written in the first.
-var iconSpelling = map[string]string{"lightsleetshowersandthunder": "lightssleetshowersandthunder"}
+// legend spells light sleet showers and thunder and light snow showers and thunder with a doubled s.
+// MET Norway may send either; the icon is found under the second and the words name the first.
+var iconSpelling = map[string]string{
+	"lightsleetshowersandthunder": "lightssleetshowersandthunder",
+	"lightsnowshowersandthunder":  "lightssnowshowersandthunder",
+}
 
 // symbolOf answers how code is shown: its icon where the set holds one, always with its words; the
 // words alone where there is none, the code then told to the icons port the first time it is met in
@@ -29,14 +32,18 @@ func (s *Service) symbolOf(code string) Symbol {
 		return Symbol{}
 	}
 	name, variant, hasVariant := strings.Cut(code, variantMark)
-	said, icon := name, name
-	for correct, filed := range iconSpelling {
-		if name == correct || name == filed {
-			said, icon = correct, filed
+	correct, icon := name, name
+	for spelt, filed := range iconSpelling {
+		if name == spelt || name == filed {
+			correct, icon = spelt, filed
 		}
 	}
+	said, known := symbolWords[correct]
+	if !known {
+		said = strings.ReplaceAll(code, variantMark, " ")
+		said = strings.ToUpper(said[:1]) + said[1:]
+	}
 	if hasVariant {
-		said += " " + variant
 		icon += variantMark + variant
 	}
 	if s.ports.Icons.Has(icon) {

@@ -174,7 +174,7 @@ func (f *fakeIcons) Missing(code string) {
 
 // testIcons are the icons the rig's set holds: the symbols the tests' forecasts carry plus the
 // doubled-s spelling of light sleet showers and thunder (FR-412).
-var testIcons = []string{"rain", "cloudy", "lightssleetshowersandthunder_day"}
+var testIcons = []string{"rain", "cloudy", "lightssleetshowersandthunder_day", "lightssnowshowersandthunder_night"}
 
 // testLayout is the cell geometry the tests arrange with, in DIP.
 var testLayout = Layout{

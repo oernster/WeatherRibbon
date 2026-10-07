@@ -16,12 +16,12 @@ describe('Ribbon', () => {
     expect(london.textContent).toContain('08:36 BST')
     expect(london.textContent).toContain('H 16°C L 9°C')
     expect(london.querySelectorAll('.day')).toHaveLength(3)
-    expect(screen.getAllByRole('img', { name: 'rain' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('img', { name: 'Rain' }).length).toBeGreaterThan(0)
   })
 
   it('shows a symbol with no icon as its words (FR-412)', () => {
-    ribbon(snapshot({ cells: [cell({ symbol: { icon: '', words: 'lightrainshowers day' } })] }))
-    expect(screen.getByText('lightrainshowers day')).toBeTruthy()
+    ribbon(snapshot({ cells: [cell({ symbol: { icon: '', words: 'Light rain showers' } })] }))
+    expect(screen.getByText('Light rain showers')).toBeTruthy()
   })
 
   it('says why a city cannot show the weather, showing none (FR-305, FR-403, NFR-U-2)', () => {

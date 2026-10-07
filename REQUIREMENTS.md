@@ -455,10 +455,15 @@ fails, then the panel shall show the hours without them; the next opening of the
 again; a failed request does not count towards the once per date (Amendment 3).
 Verified by: `TestSunTimesAreAskedOncePerDay`, `TestAFailedSunRequestIsAskedAgain` (application).
 
-**FR-412 Unknown symbol** (Must). If a symbol code has no icon, then the cell shall show the code's
-words (`lightrainshowers day`) in place of the icon and log the code once. `lightsleetshowersandthunder`
-and `lightssleetshowersandthunder` each find the icon the set files under the second.
-Verified by: `TestAnUnknownSymbolShowsItsWords`, `TestBothSpellingsOfLightSleetThunderHaveAnIcon`
+**FR-412 Unknown symbol** (Must). A symbol's words shall be its English name from the legend, as a
+sentence begins and without its variant (`lightrainshowers_day` is `Light rain showers`); a code the
+legend lacks is written as itself, its variant mark a space and its first letter capital
+(`Sandstorm day`). If a symbol code has no icon, then the cell shall show its words in place of the
+icon and log the code once. `lightsleetshowersandthunder` and `lightssleetshowersandthunder`, like
+`lightsnowshowersandthunder` and `lightssnowshowersandthunder`, each find the icon the set files
+under the doubled s and are named in the single s.
+Verified by: `TestAnUnknownSymbolShowsItsWords`, `TestASymbolOutsideTheLegendIsWrittenAsItself`,
+`TestBothSpellingsOfTheDoubledSSymbolsHaveAnIcon`, `TestEveryShippedIconIsNamedInEnglish`
 (application).
 
 **FR-413 The petrichor moment** (Could; Amendment 4; OQ-13 to OQ-16). A rare, quiet line inviting
@@ -649,7 +654,7 @@ Verified by: `TestTheCacheSurvivesARestart`, `TestAnUnreadableCacheEntryIsFetche
 | NFR-S-2 | With 12 cities the application makes at most 12 forecast requests per `Expires` window and never more than 1 request a second in total. | `TestRequestsAreSpacedAtLeastASecondApart` (application) |
 | NFR-S-3 | Non-claim: WeatherRibbon issues no warnings; the README says to rely on the national weather service for those. | Inspection of the README |
 | NFR-U-1 | Every text in a cell meets 4.5:1 against the cell in both themes at 100 percent opacity. | The kit's `TestTheKitsTextMeetsTheContrastFloor`, every scheme (Amendment 8); `TestWeatherRibbonDrawsTextOnlyInTheKitsCheckedColours` (structural) |
-| NFR-U-2 | No condition is told by colour alone: each icon carries an accessible name with its words. | `a11y.test.tsx`; `TestBothSpellingsOfLightSleetThunderHaveAnIcon` (application) |
+| NFR-U-2 | No condition is told by colour alone: each icon carries an accessible name with its words. | `a11y.test.tsx`; `TestBothSpellingsOfTheDoubledSSymbolsHaveAnIcon`, `TestEveryShippedIconIsNamedInEnglish` (application) |
 | NFR-U-3 | Every control in Settings, the search and the detail panel is reachable from the keyboard with a visible focus indicator. | `settings.test.tsx`; by hand |
 | NFR-U-4 | Targets are at least 24 by 24 DIP; the tab is exempt, as TimeRibbon's NFR-U-5. | Inspection |
 | NFR-M-1 | Coverage, size and layering are enforced by `test.ps1`, which `build.ps1` runs first with no switch to skip it. | `build.ps1` |
