@@ -1,11 +1,12 @@
 package application
 
-// symbolWords names each of the 41 symbols in MET Norway's legend.csv in English as a sentence
-// begins (FR-412, NFR-U-2), keyed by the symbol's correct spelling without its variant. The variant
-// is not said: the icon itself draws the sun or the moon.
+// symbolWords names each of the 41 symbols in MET Norway's legend.csv as an everyday forecast says
+// it, as a sentence begins (FR-412, NFR-U-2), keyed by the symbol's correct spelling without its
+// variant: showers alone are of rain, showers with thunder are thundery. The variant is not said:
+// the icon itself draws the sun or the moon.
 var symbolWords = map[string]string{
-	"clearsky":                    "Clear sky",
-	"fair":                        "Fair",
+	"clearsky":                    "Clear skies",
+	"fair":                        "Mostly clear",
 	"partlycloudy":                "Partly cloudy",
 	"cloudy":                      "Cloudy",
 	"fog":                         "Fog",
@@ -15,12 +16,12 @@ var symbolWords = map[string]string{
 	"lightrainandthunder":         "Light rain and thunder",
 	"rainandthunder":              "Rain and thunder",
 	"heavyrainandthunder":         "Heavy rain and thunder",
-	"lightrainshowers":            "Light rain showers",
-	"rainshowers":                 "Rain showers",
-	"heavyrainshowers":            "Heavy rain showers",
-	"lightrainshowersandthunder":  "Light rain showers and thunder",
-	"rainshowersandthunder":       "Rain showers and thunder",
-	"heavyrainshowersandthunder":  "Heavy rain showers and thunder",
+	"lightrainshowers":            "Light showers",
+	"rainshowers":                 "Showers",
+	"heavyrainshowers":            "Heavy showers",
+	"lightrainshowersandthunder":  "Light thundery showers",
+	"rainshowersandthunder":       "Thundery showers",
+	"heavyrainshowersandthunder":  "Heavy thundery showers",
 	"lightsleet":                  "Light sleet",
 	"sleet":                       "Sleet",
 	"heavysleet":                  "Heavy sleet",
@@ -30,9 +31,9 @@ var symbolWords = map[string]string{
 	"lightsleetshowers":           "Light sleet showers",
 	"sleetshowers":                "Sleet showers",
 	"heavysleetshowers":           "Heavy sleet showers",
-	"lightsleetshowersandthunder": "Light sleet showers and thunder",
-	"sleetshowersandthunder":      "Sleet showers and thunder",
-	"heavysleetshowersandthunder": "Heavy sleet showers and thunder",
+	"lightsleetshowersandthunder": "Light thundery sleet showers",
+	"sleetshowersandthunder":      "Thundery sleet showers",
+	"heavysleetshowersandthunder": "Heavy thundery sleet showers",
 	"lightsnow":                   "Light snow",
 	"snow":                        "Snow",
 	"heavysnow":                   "Heavy snow",
@@ -42,7 +43,7 @@ var symbolWords = map[string]string{
 	"lightsnowshowers":            "Light snow showers",
 	"snowshowers":                 "Snow showers",
 	"heavysnowshowers":            "Heavy snow showers",
-	"lightsnowshowersandthunder":  "Light snow showers and thunder",
-	"snowshowersandthunder":       "Snow showers and thunder",
-	"heavysnowshowersandthunder":  "Heavy snow showers and thunder",
+	"lightsnowshowersandthunder":  "Light thundery snow showers",
+	"snowshowersandthunder":       "Thundery snow showers",
+	"heavysnowshowersandthunder":  "Heavy thundery snow showers",
 }

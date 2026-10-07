@@ -4,8 +4,8 @@ import { cell, installBridge, snapshot } from './fakeBridge'
 import { Ribbon } from './Ribbon'
 
 // No condition is told by colour or picture alone: each weather icon carries an accessible name
-// holding the code's words Go sends with it; a code with no icon shows the words themselves (NFR-U-2,
-// FR-412). How the words are spelled is Go's (TestBothSpellingsOfLightSleetThunderHaveAnIcon).
+// holding the words Go sends with it; a code with no icon shows the words themselves (NFR-U-2,
+// FR-412). Which words name each symbol is Go's (TestEveryShippedIconIsNamedInEnglish).
 
 /** Every icon the page ships, by name: the files Symbol.tsx draws from. */
 const shipped = Object.keys(import.meta.glob('./assets/weather/*.svg')).map((path) => path.slice(path.lastIndexOf('/') + 1, -'.svg'.length))
@@ -37,9 +37,9 @@ describe('weather symbols (NFR-U-2)', () => {
   it('shows a code with no icon as its words, as text', () => {
     installBridge()
     const { container } = render(
-      <Ribbon snapshot={snapshot({ cells: [cell({ symbol: { icon: '', words: 'Light rain showers' }, outlook: [] })] })} onAddCity={vi.fn()} onOpen={vi.fn()} reload={vi.fn()} refused={vi.fn()} />,
+      <Ribbon snapshot={snapshot({ cells: [cell({ symbol: { icon: '', words: 'Light showers' }, outlook: [] })] })} onAddCity={vi.fn()} onOpen={vi.fn()} reload={vi.fn()} refused={vi.fn()} />,
     )
-    expect(container.textContent).toContain('Light rain showers')
+    expect(container.textContent).toContain('Light showers')
   })
 
   it('finds a symbol picture with no name, so it can catch one', () => {

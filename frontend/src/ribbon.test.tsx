@@ -20,8 +20,8 @@ describe('Ribbon', () => {
   })
 
   it('shows a symbol with no icon as its words (FR-412)', () => {
-    ribbon(snapshot({ cells: [cell({ symbol: { icon: '', words: 'Light rain showers' } })] }))
-    expect(screen.getByText('Light rain showers')).toBeTruthy()
+    ribbon(snapshot({ cells: [cell({ symbol: { icon: '', words: 'Light showers' } })] }))
+    expect(screen.getByText('Light showers')).toBeTruthy()
   })
 
   it('says why a city cannot show the weather, showing none (FR-305, FR-403, NFR-U-2)', () => {

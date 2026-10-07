@@ -16,7 +16,7 @@ func TestAnUnknownSymbolShowsItsWords(t *testing.T) {
 	t.Parallel()
 	r := newRig()
 	for range 2 {
-		if got := r.service.symbolOf("lightrainshowers_day"); got != (Symbol{Words: "Light rain showers"}) {
+		if got := r.service.symbolOf("lightrainshowers_day"); got != (Symbol{Words: "Light showers"}) {
 			t.Errorf("a code with no icon showed %+v", got)
 		}
 	}
@@ -53,11 +53,11 @@ func TestBothSpellingsOfTheDoubledSSymbolsHaveAnIcon(t *testing.T) {
 	}{
 		{
 			[]string{"lightsleetshowersandthunder_day", "lightssleetshowersandthunder_day"},
-			Symbol{Icon: "lightssleetshowersandthunder_day", Words: "Light sleet showers and thunder"},
+			Symbol{Icon: "lightssleetshowersandthunder_day", Words: "Light thundery sleet showers"},
 		},
 		{
 			[]string{"lightsnowshowersandthunder_night", "lightssnowshowersandthunder_night"},
-			Symbol{Icon: "lightssnowshowersandthunder_night", Words: "Light snow showers and thunder"},
+			Symbol{Icon: "lightssnowshowersandthunder_night", Words: "Light thundery snow showers"},
 		},
 	}
 	for _, c := range cases {

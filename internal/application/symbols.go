@@ -7,8 +7,9 @@ import "strings"
 type Symbol struct {
 	// Icon names the icon's file, without its extension; empty when there is none.
 	Icon string
-	// Words name the symbol in English, such as "Light rain showers", whichever spelling MET Norway
-	// sent (symbolWords); a code the legend lacks is written as itself, its first letter capital.
+	// Words name the symbol as an everyday forecast does, such as "Light showers", whichever
+	// spelling MET Norway sent (symbolWords); a code the legend lacks is written as itself, its first
+	// letter capital.
 	Words string
 }
 
