@@ -1,0 +1,5 @@
+# robots.txt for WeatherRibbon (https://weatherribbon.world/)
+User-agent: *
+Allow: /
+
+Sitemap: https://weatherribbon.world/sitemap.xml
