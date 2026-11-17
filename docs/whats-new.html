@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>What's new in WeatherRibbon: release history</title>
+    <meta name="description" content="WeatherRibbon's release history: weather symbols named as a forecast says them, no Dock icon on macOS, no hung restarts on Linux and the first release.">
+    <meta name="theme-color" content="#111418">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="What's new in WeatherRibbon: release history">
+    <meta property="og:description" content="Weather symbols named as a forecast says them, no Dock icon on macOS, no hung restarts on Linux and the first release.">
+    <meta property="og:image" content="https://weatherribbon.world/icon.png">
+    <meta property="og:url" content="https://weatherribbon.world/whats-new.html">
+    <link rel="canonical" href="https://weatherribbon.world/whats-new.html">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:site_name" content="WeatherRibbon">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="256">
+    <meta property="og:image:height" content="256">
+    <meta property="og:image:alt" content="WeatherRibbon app icon">
+    <meta property="og:locale" content="en_GB">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="What's new in WeatherRibbon: release history">
+    <meta name="twitter:description" content="Weather symbols named as a forecast says them, no Dock icon on macOS, no hung restarts on Linux and the first release.">
+    <meta name="twitter:image" content="https://weatherribbon.world/icon.png">
+    <meta name="twitter:image:alt" content="WeatherRibbon app icon">
+    <link rel="stylesheet" href="styles.css?v=cc8463c5e8">
+<script>window.goatcounter = {path: function (p) { return location.host + p }}</script>
+<script data-goatcounter="https://oernster.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<header class="wrap site-head">
+    <a class="brand" href="./"><img src="icon.png" alt="" width="34" height="34"> WeatherRibbon</a>
+    <nav aria-label="Sections">
+        <a href="features.html" class="hide-sm">Features</a>
+        <a href="whats-new.html" aria-current="page">What's New</a>
+        <a href="download.html">Download</a>
+        <a href="https://github.com/oernster/WeatherRibbon">GitHub</a>
+    </nav>
+</header>
+
+<main id="top">
+
+    <section class="wrap" id="whats-new">
+        <p class="kicker">Changelog</p>
+        <h2>What's new</h2>
+        <div class="prose">
+            <p>Recent releases have focused on WeatherRibbon behaving well around the
+                desktop it sits on and speaking plainly: no Dock icon on macOS, no hung
+                restarts on Linux and weather symbols named the way a forecast says them.
+                The ribbon itself, its cells, settings and menus, is as the first release
+                made it.</p>
+        </div>
+
+        <div class="changelog">
+
+            <div class="card">
+                <div class="ver-tag">v<!--VERSION-->1.1.1<!--/VERSION--></div>
+                <h3>Weather symbols named as a forecast says them</h3>
+                <ul>
+                    <li>Resting the pointer on a weather symbol showed MET Norway's internal code, run together in lower case. It now shows an everyday name such as Light showers, Thundery showers or Heavy snow showers, the same words a screen reader reads out; the icon's sun or moon says whether it is day or night</li>
+                    <li>Light snow showers with thunder now find their icon whichever spelling MET Norway sends, as light sleet showers with thunder already did</li>
+                    <li>Nothing else on the ribbon has changed</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="ver-tag">v1.1.0</div>
+                <h3>At home in the Dock, at logout and at restart</h3>
+                <ul>
+                    <li>The ribbon itself is unchanged: the cells, the settings and the menus are as they were</li>
+                    <li>macOS: WeatherRibbon no longer shows a Dock icon and the Dock no longer adds it to its recent apps. It lives in the menu bar alone, where a click on its icon opens its menu</li>
+                    <li>macOS: it quits when asked during a log out, restart or shut down, where before it could stop a restart from going ahead</li>
+                    <li>Linux: the Flatpak no longer shows a large black window for a moment at login before the ribbon takes its place</li>
+                    <li>Linux: restarting with WeatherRibbon running no longer hangs GNOME Shell. The ribbon leaves as soon as the system announces a restart or shut down, before the desktop is taken down around it</li>
+                    <li>To do this the Flatpak asks for one more permission: to talk to logind, the system service that announces a restart or shut down. Where that is not available the ribbon carries on as before</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="ver-tag">v1.0.0</div>
+                <h3>The first release</h3>
+                <ul>
+                    <li>A small frameless ribbon of weather for the cities you choose, horizontal or vertical, for Windows, macOS and Linux. Each cell shows the city's local time, the weather now, today's high, low and rain, then the three days after</li>
+                    <li>Today's figures cover the hours from now to midnight in that city. A click on a cell opens the next 24 hours there, each hour with its temperature, symbol, rain and wind, beside sunrise and sunset</li>
+                    <li>Metric or Imperial, applied at once to every cell</li>
+                    <li>The city search runs over GeoNames' list of places of more than 15,000 people, built in, so typing never touches the network</li>
+                    <li>Polite to MET Norway: a forecast is asked for again only once it has expired and an unchanged one is not sent twice. The last forecasts are kept on disk, so the ribbon starts with them and keeps showing them with no network, saying how old they are</li>
+                    <li>Built on ribbonkit, the library TimeRibbon shares: no title bar or taskbar button, a grip that resizes the cells from 75 to 200 percent, an Opacity slider and ten colour schemes. Running beside TimeRibbon, neither ribbon ever lands on the other</li>
+                    <li>Its network requests are MET Norway's forecasts and sunrise times, sending each city's position rounded to four decimal places, plus the update check to GitHub. It issues no weather warnings</li>
+                    <li>A setup program installs it on Windows for your account alone, with no administrator rights. macOS has a disk image signed and notarised by Apple; Linux has a Flatpak</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="cta changelog-more">
+            <a class="btn" href="https://github.com/oernster/WeatherRibbon/releases">View all releases on GitHub</a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="wrap site-foot">
+    <span>&copy; Oliver Ernster. GPL-3.0.
+        <a href="https://ernster.dev/commercial-licensing.html">Commercial licences</a> available.</span>
+    <span><a href="./">Home</a> &middot;
+        <a href="features.html">Features</a> &middot;
+        <a href="whats-new.html">What's New</a> &middot;
+        <a href="download.html">Download</a> &middot;
+        <a href="https://github.com/oernster/WeatherRibbon">Source</a> &middot;
+        <a href="https://ernster.dev">More of my work</a></span>
+</footer>
+
+</body>
+</html>
